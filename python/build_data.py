@@ -243,6 +243,34 @@ def roster_w5():
     return r[["hhid", "indiv", "age", "female", "rel_code", "is_head"]]
 
 
+def insurance_w5():
+    """Health-insurance coverage from Section 5A, questions 16-17c.
+
+    s5aq16 asks whether any household member holds insurance; s5aq17a__N marks
+    the types held and s5aq17b_* / s5aq17c_* name the covered members by their
+    roster id. The release ships no codebook, so the health type was identified
+    empirically: every one of the ten households that reported paying a
+    health-insurance premium in the consumption module (item 363) carries type
+    1, and no other type shows that correspondence. The check is reprinted on
+    every run below so the identification cannot silently rot.
+    """
+    d = read(config.W5_PP / "sect5a2_plantingw5.csv")
+    d["any_insurance"] = flag(yes(d["s5aq16"]) == 1)
+    d["insured_health"] = flag(yes(d["s5aq17a__1"]) == 1)
+
+    member_cols = [c for c in d.columns
+                   if c.startswith("s5aq17b_") or c.startswith("s5aq17c_")]
+    counts = []
+    for _, r in d.iterrows():
+        if not r["insured_health"]:
+            counts.append(0)
+            continue
+        ids = {int(float(r[c])) for c in member_cols if pd.notna(r[c])}
+        counts.append(len(ids))
+    d["n_insured_members"] = counts
+    return d[["hhid", "any_insurance", "insured_health", "n_insured_members"]]
+
+
 def employment_w5():
     """Individual formal/informal status, and the household sector flag.
 
@@ -382,7 +410,30 @@ def build_w5():
     # under-report frequent small payments (O'Donnell et al. 2008).
     oop_cons_module = hh["oop_services"] + hh["oop_drugs"] + hh["oop_equipment"]
     hh["oop_consumption_module"] = oop_cons_module
-    hh["insured_any"] = flag(hh["health_insurance_paid"] > 0)
+    hh["premium_paid"] = flag(hh["health_insurance_paid"] > 0)
+
+    # --- health-insurance coverage -----------------------------------------
+    # Section 5A questions 16-17c (sect5a2) ask directly whether anyone in the
+    # household holds insurance, of what type, and which members are covered.
+    # This is a coverage measure, distinct from `premium_paid` above, which
+    # only catches households that paid a premium themselves in the past year -
+    # employer-paid and subsidised cover show up here but not there.
+    # hh is indexed by hhid at this point, like the consumption blocks above,
+    # so join rather than merge - merge would silently reset the index.
+    cover = insurance_w5().set_index("hhid")
+    hh = hh.join(cover[["insured_health", "n_insured_members"]])
+    hh["insured_health"] = hh["insured_health"].fillna(0).astype(int)
+    hh["n_insured_members"] = hh["n_insured_members"].fillna(0).astype(int)
+    hh["insured_any"] = hh["insured_health"]
+
+    # Re-run the identification every build. If a future release renumbers the
+    # insurance types, this correspondence breaks and the run says so instead of
+    # quietly repricing the paper.
+    payers = hh["premium_paid"] == 1
+    agree = int((payers & (hh["insured_health"] == 1)).sum())
+    print(f"  insurance type check: {agree} of {int(payers.sum())} households that "
+          f"paid a health premium report type 1"
+          + ("" if agree == int(payers.sum()) else "   <-- IDENTIFICATION SUSPECT"))
 
     # Health-module OOP is attached after the individual file is built; the
     # consumption total is completed there too, so that health spending enters
@@ -554,7 +605,10 @@ def build_w4():
     # as a trend check and are never pooled with wave 5.
     hh["informal"] = 1
     hh["sector_label"] = "All households"
+    # Wave 4 carries no insurance module; the column exists only so the wave-4
+    # file has the same shape as wave 5.
     hh["insured_any"] = 0
+    hh["premium_paid"] = 0
     hh = hh.reset_index()
     hh = hh[(hh["cons_annual"] > 0) & (hh["hh_weight"] > 0)].copy()
     hh = add_welfare_variables(hh)

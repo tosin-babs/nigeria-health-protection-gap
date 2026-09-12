@@ -242,6 +242,49 @@ def sector_gap_tests(hh):
 
 
 # ---------------------------------------------------------------------------
+
+def table1b_coverage(hh):
+    """Observed health-insurance coverage, by sector, quintile and residence.
+
+    Section 5A of the wave-5 questionnaire asks directly who holds insurance, so
+    coverage is measured here rather than assumed. Two rates are reported and
+    they differ by an order of magnitude: households holding cover, and
+    households that paid a premium themselves in the past year. Employer-paid
+    and subsidised cover sits in the gap between them.
+    """
+    dh = Design(hh, config.HH_WEIGHT, config.STRATA, "cluster")
+    di = Design(hh, "popwt", config.STRATA, "cluster")
+    rows = []
+
+    def add(dim, group, mask=None):
+        sub_h = dh if mask is None else dh.subset(mask)
+        sub_i = di if mask is None else di.subset(mask)
+        cov, cov_se = sub_h.mean(hh["insured_health"].to_numpy(float))
+        pay, pay_se = sub_h.mean(hh["premium_paid"].to_numpy(float))
+        ppl, ppl_se = sub_i.mean(
+            (hh["n_insured_members"] / hh["hhsize"].clip(lower=1)).to_numpy(float))
+        rows.append({
+            "dimension": dim, "group": group,
+            "hh_with_cover_pct": 100 * cov, "hh_with_cover_se": 100 * cov_se,
+            "individuals_covered_pct": 100 * ppl,
+            "individuals_covered_se": 100 * ppl_se,
+            "hh_paid_premium_pct": 100 * pay, "hh_paid_premium_se": 100 * pay_se,
+            "n": int(len(hh) if mask is None else mask.sum()),
+        })
+
+    add("Overall", "All households")
+    for v, lab in [(1, "Informal"), (0, "Formal")]:
+        add("Sector", lab, (hh["informal"] == v).to_numpy())
+    for q in sorted(hh["quintile"].unique()):
+        m = (hh["quintile"] == q).to_numpy()
+        add("Consumption quintile", hh.loc[m, "quintile_label"].iloc[0], m)
+    for v, lab in [(1, "Urban"), (0, "Rural")]:
+        add("Residence", lab, (hh["urban"] == v).to_numpy())
+    for z in sorted(hh["zone"].dropna().unique()):
+        add("Zone", str(z), (hh["zone"] == z).to_numpy())
+    return pd.DataFrame(rows)
+
+
 def main():
     hh = pd.read_csv(config.DERIVED / "hh_w5.csv")
     hh = add_che_flags(hh)
@@ -254,11 +297,19 @@ def main():
     gaps = sector_gap_tests(hh)
 
     t1.to_csv(config.TABLES / "table1_sample.csv", index=False)
+    cov = table1b_coverage(hh)
+    cov.to_csv(config.TABLES / "table1b_coverage.csv", index=False)
     t2.to_csv(config.TABLES / "table2_che.csv", index=False)
     imp.to_csv(config.TABLES / "table2b_impoverishment.csv", index=False)
     t3.to_csv(config.TABLES / "table3_concentration.csv", index=False)
     dec.to_csv(config.TABLES / "table3b_decomposition.csv", index=False)
     gaps.to_csv(config.TABLES / "table2c_sector_gaps.csv", index=False)
+
+    print("\n=== Observed health-insurance coverage ===")
+    print(cov[cov["dimension"].isin(["Overall", "Sector"])]
+          [["dimension", "group", "hh_with_cover_pct", "individuals_covered_pct",
+            "hh_paid_premium_pct"]]
+          .to_string(index=False, float_format=lambda x: f"{x:,.2f}"))
 
     print("\n=== RQ1: catastrophic health expenditure ===")
     overall = t2[t2["dimension"] == "Overall"]

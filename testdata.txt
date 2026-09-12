@@ -1,0 +1,471 @@
+The World Bank Working for a World Free of Poverty
+Microdata Library
+Data Catalog
+About
+Collections
+Citations
+Terms of use
+Login
+Home / Central Data Catalog / LSMS / NGA_2023_GHSP-W5_V01_M
+lsms
+General Household Survey, Panel 2023-2024
+Wave 5
+Nigeria, 2023 - 2024 Get Microdata
+Reference ID
+NGA_2023_GHSP-W5_v01_M
+DOI
+https://doi.org/10.48529/zd5s-tj25
+Producer(s)
+National Bureau of Statistics (NBS)
+Collection(s)
+Living Standards Measurement Study (LSMS)
+Metadata
+ Documentation in PDF DDI/XML JSON
+Created on
+Nov 21, 2024
+Last modified
+Nov 21, 2024
+Page views
+492964
+Downloads
+98197
+Study Description
+Data Description
+Documentation
+ Get Microdata
+Search for...
+Data files
+secta_plantingw5.dta
+sect1_plantingw5.dta
+sect1a_plantingw5.dta
+sect1b_plantingw5.dta
+sect1ca_plantingw5.dta
+sect1c_plantingw5.dta
+sect1d_plantingw5.dta
+sect1e_plantingw5.dta
+sect3_plantingw5.dta
+sect4a_plantingw5.dta
+sect4b_plantingw5.dta
+sect5a1_plantingw5.dta
+sect5a2_plantingw5.dta
+sect5b_plantingw5.dta
+sect5c1_plantingw5.dta
+sect5c2_plantingw5.dta
+sect6a_plantingw5.dta
+sect6b_plantingw5.dta
+sect6c_plantingw5.dta
+sect7a_plantingw5.dta
+sect7b_plantingw5.dta
+sect7c_plantingw5.dta
+sect8_plantingw5.dta
+sect9_plantingw5.dta
+sect10_plantingw5.dta
+sect11_plantingw5.dta
+sect11a_plantingw5.dta
+sect11a1_plantingw5.dta
+sect11b1_plantingw5.dta
+sect11c1_plantingw5.dta
+sect11c1a_plantingw5.dta
+sect11c1b_plantingw5.dta
+sect11e1_plantingw5.dta
+sect11e2_plantingw5.dta
+sect11f_plantingw5.dta
+sect11i_plantingw5.dta
+sect11j_plantingw5.dta
+sect11k1_plantingw5.dta
+sect11k2_plantingw5.dta
+sect11k3_plantingw5.dta
+sect11l1_plantingw5.dta
+sect11l2_plantingw5.dta
+sect12_plantingw5.dta
+sectc_plantingw5.dta
+sectc1_plantingw5.dta
+sectc2_plantingw5.dta
+sectc3a_plantingw5.dta
+sectc3b_plantingw5.dta
+sectc4a_plantingw5.dta
+sectc4b_plantingw5.dta
+sectc4c_plantingw5.dta
+sectc5_plantingw5.dta
+sectc6_plantingw5.dta
+sectc7_plantingw5.dta
+secta_harvestw5.dta
+sect1_harvestw5.dta
+sect2_harvestw5.dta
+sect2b_harvestw5.dta
+sect2c_harvestw5.dta
+sect3a_harvestw5.dta
+sect3b_harvestw5.dta
+sect3c_harvestw5.dta
+sect3d_harvestw5.dta
+sect4a_harvestw5.dta
+sect4b_harvestw5.dta
+sect5a_harvestw5.dta
+sect5b_harvestw5.dta
+sect5c_harvestw5.dta
+sect6a_harvestw5.dta
+sect6b_harvestw5.dta
+sect6c_harvestw5.dta
+sect7_harvestw5.dta
+sect8a_harvestw5.dta
+sect8b_harvestw5.dta
+sect8c_harvestw5.dta
+sect8d_harvestw5.dta
+sect9_harvestw5.dta
+sect10_harvestw5.dta
+sect11a_harvestw5.dta
+sect11b_harvestw5.dta
+sect12_harvestw5.dta
+sectaa_harvestw5.dta
+secta1_harvestw5.dta
+secta2a_harvestw5.dta
+secta2b_harvestw5.dta
+secta3i_harvestw5.dta
+secta3iii_harvestw5.dta
+secta3ii_harvestw5.dta
+sectaphl1_harvestw5.dta
+sectaphl2_harvestw5.dta
+secta4_harvestw5.dta
+secta5b_harvestw5.dta
+secta11c2_harvestw5.dta
+secta11c3_harvestw5.dta
+secta11c3q12_harvestw5.dta
+secta12_harvestw5.dta
+sectc_harvestw5.dta
+sectc1_harvestw5.dta
+sectc2a_harvestw5.dta
+sectc2b_harvestw5.dta
+sectc3_harvestw5.dta
+sectc4_harvestw5.dta
+sectc5_harvestw5.dta
+sectc6_harvestw5.dta
+sectc6b_harvestw5.dta
+sectc8_harvestw5.dta
+Data Description
+Data file	Cases	Variables
+secta_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section Cover. This section captures household-level information. The dataset includes household identifiers, enumerator and supervisor identifiers, the date and time of the interview, questions to determine whether the household is engaged in agricultural activities, and observation notes recorded by the enumerator during the interview.
+5067	35
+sect1_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 1 (Household Roster). This section captures a roster of individuals living in the household, including their relationship to the household head, gender, year of birth, age, marital status, spouse identification, religion, parental status, and details for new members such as the date and reason for joining the household, as well as migration information.
+32009	122
+sect1a_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 1A (Migration Past 12 Months). This section captures individual-level information. This section dataset contains the migration experiences of current household members over the past 12 months, including the reasons for migration, destinations, and purposes of their absence.
+27421	57
+sect1b_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 1B (Migration Past 10 Years). This section captures individual-level information. This dataset contains information on the migration experiences of current household members over the past 10 years, excluding any migration episodes from the past 12 months that have already been reported in Section 1A.
+27421	44
+sect1ca_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 1C (Absentees, question 0a). This section captures household-level information. This dataset includes a filter variable that identifies households with members who have moved away.
+4771	7
+sect1c_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 1C (Absentees, questions 2-17). This section collects information on former household members who have migrated within or outside the country in the past 10 years and are not current household members.
+304	34
+sect1d_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 1D (Migration Aspirations). This section records individual-level information on migration desires, plans, and unsuccessful attempts among household members aged 15 years and older.
+27421	58
+sect1e_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 1E (Remittances). This section records individual-level information on remittances received, both from abroad and within Nigeria.
+27421	22
+sect3_plantingw5.dta
+Data collected through Post Planting Household Questionnaire Section 3 (Health). This section records individual-level information on general health status, healthcare utilization and costs, functioning and disability status, and the use of bed nets.
+27421	64
+sect4a_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 4A (Labour). This section records individual-level information on labor market participation over the past 7 days, including temporary absences, job search activities, and wage work (covering benefits, work hours, and payment).
+27421	135
+sect4b_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 4B (Work Activities). This section records individual-activity level information on the work activities of household members over the past 12 months.
+712946	41
+sect5a1_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 5A (Savings and Insurance, questions 1-7). This section records individual-level information on savings practices and financial practices.
+27421	22
+sect5a2_plantingw5.dta
+Data collected through Post Planting Household Questionnaire Section 5A (Savings and Insurance, questions 16-17c). This section records household-level information on insurance coverage.
+4771	23
+sect5b_plantingw5.dta
+Data collected through Post Planting Household Questionnaire Section 5B (ICT). This section records individual-level information on access to mobile phones and Internet usage.
+27421	26
+sect5c1_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 5C (Credit, questions 1, 23 and 24). This section records household-level information on attempts to borrow money, including reasons for not doing so.
+4771	19
+sect5c2_plantingw5.dta
+Data collected through Post Planting Household Questionnaire Section 5C (Credit, questions 2b-22). This section records household-loan level information on credit history including loans received, loans pending, and loan refusals.
+683	42
+sect6a_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 6A (Meals away from home). This section records household-meal level information on the value of food consumed outside the home during the past 7 days.
+42939	10
+sect6b_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 6B (Food Consumption). This section records household-food item level information on the quantity and value of food consumed within the household during the past 7 days, as well as the quantity and value of food purchased during the past 30 days.
+529470	26
+sect6c_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 6C (Aggregate Food Consumption). This section records household-food item level information on the number of days the household consumed each food group item during the last 7 days.
+52481	11
+sect7a_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 7 (Non-Food Expenditure, questions 1-2). This section records household-nonfood item level information on non-food expenditure during the last week.
+23855	9
+sect7b_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 7 (Non-Food Expenditure, questions 3-4). This section records household-nonfood item level information on non-food expenditure during the last month.
+224237	9
+sect7c_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 7 (Non-Food Expenditure, questions 5-6). This section records household-nonfood item level information on non-food expenditure during the last 12 months.
+305344	9
+sect8_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 8 (Petrol). This section records household-level information on the experience of buying petrol over the past 30 days, including the quantity purchased, the cost, issues faced during the purchase, and reasons for buying it. It also captures awareness of the government’s petrol subsidy program and support for its reform.
+4771	29
+sect9_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 9 (Food Security). This section records household-level information on food security status of the household during the last 30 days/last 12 months.
+4771	45
+sect10_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 10 (Household Assets). This section records household-asset level information on durable goods currently possessed by the household.
+200382	25
+sect11_plantingw5.dta
+Data collected through Post-Planting Household Questionnaire Section 11 (Other Household Income). This section records household-income level information on miscellaneous income received by the household.
+33397	15
+sect11a_plantingw5.dta
+Data collected through Post-Planting Agriculture Questionnaire Section Cover. This section captures household-level information. The dataset includes household identifiers, enumerator and supervisor identifiers, the date and time of the interview, questions to determine whether the household is engaged in agricultural activities.
+4771	21
+sect11a1_plantingw5.dta
+Data collected through Post-Planting Agriculture Questionnaire Section 11A1 (Plot Roster). This section captures a roster of all plots owned and/or managed by the household, farmer estimated area, GPS measured area, GPS measured location of the plot, decision maker of the plot.
+9232	23
+sect11b1_plantingw5.dta
+Data collected through Post-Planting Agriculture Questionnaire Section 11B (Land Inventory). This section records plot-level information on plot acquisition, tenure (legal title, ownership document), rental arrangement, sharecropping arrangement, use rights (collateral, inheritance).
+9232	196
+sect11c1_plantingw5.dta
+Data collected through Post Planting Agriculture Questionnaire Section 11C1 (Household Labour, questions 0-0a). This section records household-level information on household labour that worked on the plot.
+3345	8
+sect11c1a_plantingw5.dta
+Data collected through Post Planting Agriculture Questionnaire Section 11C1 (Household Labour, questions 1a-1d). This section records individual-plot level information on household labour that worked on the plot. Includes information on amount of time spent by each person.
+34923	17
+sect11c1b_plantingw5.dta
+Data collected through Post Planting Agriculture Questionnaire Section 11C2 (Hired and Exchange Labour). This section records plot-level information on hired and free/exchange labour that worked on the plot. Includes information on amount of time spent by each person-type and payments made to hired labour.
+4112	64
+sect11e1_plantingw5.dta
+Data collected through Post Planting Agriculture Questionnaire Section 11E (Seed Acquisition, questions 1-15). This section asks about the acquisition of the seeds that were used to plant the crops cultivated on the household PLOTS during this agricultural season. Information is captured at the SEED TYPE level – improved or traditional/local.
+8210	41
+sect11e2_plantingw5.dta
+Data collected through Post Planting Agriculture Questionnaire Section 11E (Seed Acquisition, questions 16-17). This section records household-level information on seed transportation costs.
+3314	8
+sect11f_plantingw5.dta
+Data collected through Post Planting Agriculture Questionnaire Section 11F (Planted Field Crops). This section captures a roster of all the field and tree crops cultivated on the plot, seeds planted, last completed production of tree/permanent crops, expected harvest.
+10606	49
+sect11i_plantingw5.dta
+Data collected through Post Planting Agriculture Questionnaire Section 11I (Animal Holdings). This section records household-level information on farm animals owned by the household and commercial activity with these animals.
+3650	71
+sect11j_plantingw5.dta
+Data collected through Post Planting Agriculture Questionnaire Section 11J (Animal Costs). This section records household-level information on livestock farmer caretaker activities and costs.
+2963	70
+sect11k1_plantingw5.dta
+Data collected through Post Planting Agriculture Questionnaire Section 11K1 (Animal Power and Dung Sales). This section records household-level information on earnings from animal power and animal dung.
+2963	19
+sect11k2_plantingw5.dta
+Data collected through Post Planting Agriculture Questionnaire Section 11K2 (Milk Production). This section records household-level information on the amount of production and commercial activity with milk.
+1738	31
+sect11k3_plantingw5.dta
+Data collected through Post Planting Agriculture Questionnaire Section 11K3 (Egg Production). This section records household-level information on the amount of production and commercial activity with eggs.
+1080	20
+sect11l1_plantingw5.dta
+Data collected through Post Planting Agriculture Questionnaire Section 11L1 (Extension Services). This section records household-level information on the main source (government and non-governmental) of agricultural advice.
+43908	11
+sect11l2_plantingw5.dta
+Data collected through Post Planting Agriculture Questionnaire Section 11L2 (Extension Sources). This section records household-level information on the services provided by main source of agricultural advice. Includes frequency of visits and usefulness of the information provided.
+51228	19
+sect12_plantingw5.dta
+Data collected through Post Planting Agriculture Questionnaire Section 12 (Digital Farming Information). This section records household-level information on the farmers access, use, and experience with digital farming services in the rainy season.
+4771	222
+sectc_plantingw5.dta
+Data collected through Post Planting Community Questionnaire Section Cover. This section records community identifier variables, enumerator and supervisor identifiers, date and time of interview.
+518	9
+sectc1_plantingw5.dta
+Data collected through Post Planting Community Questionnaire Section C1 (Respondents Characteristics). This section records respondent characteristics. Includes position in the community and education level.
+3218	15
+sectc2_plantingw5.dta
+Data collected through Post Planting Community Questionnaire Section C2 (Food Prices). This section records prices of food items in the community.
+56277	17
+sectc3a_plantingw5.dta
+Data collected through Post Planting Community Questionnaire Section C3 (Labour, questions 1-2b). This data records the activities for which individuals in this community hire labor.
+507	10
+sectc3b_plantingw5.dta
+Data collected through Post Planting Community Questionnaire Section C3 (Labour, questions 2-12a). This data records the labour hired for agricultural activities by famers in the community.
+4085	19
+sectc4a_plantingw5.dta
+Data collected through Post Planting Community Questionnaire Section C4 (Land Prices and Credit, questions 1-3). This data records how land is used in the community and how households acquire access to or rights to land.
+3549	11
+sectc4b_plantingw5.dta
+Data collected through Post Planting Community Questionnaire Section C4 (Land Prices and Credit, questions 4a-4d). This data records land prices.
+507	11
+sectc4c_plantingw5.dta
+Data collected through Post Planting Community Questionnaire Section C4 (Land Prices and Credit, questions 5-16). This data records how individuals in the community obtain credit.
+2028	17
+sectc5_plantingw5.dta
+Data collected through Post Planting Community Questionnaire Section C5 (Infrastructure and Transportation). This data records the availability of infrastructure and the means of transportation to access it within the community.
+12168	18
+sectc6_plantingw5.dta
+Data collected through Post Planting Community Questionnaire Section C6 (Community Organizations). This data records characteristics of organizations in the community.
+7605	16
+sectc7_plantingw5.dta
+Data collected through Post Planting Community Questionnaire Section C7 (Community Resource Management). This data records the availability and management of resources within the community.
+3549	20
+secta_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section Cover. This section captures household-level information. The dataset includes household identifiers, enumerator and supervisor identifiers, the date and time of the interview, questions to determine whether the household is engaged in agricultural activities, and observation notes recorded by the enumerator during the interview.
+4771	34
+sect1_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 1 (Household Roster). This section captures a roster of individuals living in the household, including their relationship to the household head, gender, year of birth, age, marital status, spouse identification, religion, parental status, and details for new members such as the date and reason for joining the household, as well as migration information.
+28256	121
+sect2_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 2 (Education). This section records individual-level information on educational attainment, school characteristics, expenditures, and repetition.
+25662	131
+sect2b_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 2B (Early Child Development). This section records child-level information on early literacy skills, early numeracy skills, executive functioning, and socioemotional development.
+25662	33
+sect2c_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 2C (Childcare). This section records child-level information on households’ uses and/or access to childcare services.
+4755	68
+sect3a_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 3A (Subjective Skills). individual’s goal-setting capacity. This section records individual-level information on goal-setting capacity, which is the process of establishing specific, time-based behaviors that are measurable, achievable, and realistic, enabling individuals to fulfill their goals.
+25662	41
+sect3b_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 3B (Migration Aspirations). This section records individual-level information on migration desires, plans, and unsuccessful attempts among household members aged 15 years and older.
+25662	119
+sect3c_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 3C (Time Use). This section records individual-level information on the amount of time household members spend doing various daily activities including paid work, caring for children, domestic chores, and so on in the last 24 hours prior to the visit.
+10241	112
+sect3d_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 3D (Women Dietary Diversity). This section records women-level information on women’s nutrition diet for the previous day.
+25662	40
+sect4a_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 4A (Labour). This section records individual-level information on labor market participation over the past 7 days, including temporary absences, job search activities, and wage work (covering benefits, work hours, and payment).
+25662	134
+sect4b_harvestw5.dta
+Data collected through Post Harvest Household Questionnaire Section 4B (Anthropometry). This section records child-level information on assessment of the nutritional status of children who are less than 60 months.
+2478	28
+sect5a_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 5A (Meals away from home). This section records household-meal level information on the value of food consumed outside the home during the past 7 days.
+9512	10
+sect5b_harvestw5.dta
+Data collected through Post- Harvest Household Questionnaire Section 5B (Food Consumption). This section records household-food item level information on the quantity and value of food consumed within the household during the past 7 days, as well as the quantity and value of food purchased during the past 30 days.
+509220	26
+sect5c_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 5C (Aggregate Food Consumption). This section records household-food item level information on the number of days the household consumed each food group item during the last 7 days.
+56580	11
+sect6a_harvestw5.dta
+Data collected through Post Harvest Household Questionnaire Section 6A (Non-Food Expenditure, questions 1-2). This section records household-nonfood item level information on non-food expenditure during the last week.
+23575	11
+sect6b_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 6B (Non-Food Expenditure, questions 3-4). This section records household-nonfood item level information on non-food expenditure during the last month.
+221605	10
+sect6c_harvestw5.dta
+Data collected through Post Harvest Household Questionnaire Section 6C (Non-Food Expenditure, questions 5-6). This section records household-nonfood item level information on non-food expenditure during the last 12 months.
+301760	10
+sect7_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 7 (Food Security). This section records household-level information on food security status of the household during the last 30 days/last 12 months.
+4715	50
+sect8a_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 8 (Non-Farm Enterprises, questions 0-1a). This section records household-level information on non-farm enterprises/activities (NFE) run by members of the household.
+4715	16
+sect8b_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 8 (Non-Farm Enterprises, questions 2a-12b, 13a-30). This section records household-NFE level information on enterprises/activities characteristics and operating status, loan, stock, costs and profits.
+3436	80
+sect8c_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 8 (Non-Farm Enterprises, questions 12b-12d). This section records individual-NFE level information on the number of months spent working in the nonfarm enterprise.
+3814	28
+sect8d_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 8D (Non-Farm Enterprises, questions 33-38). This section records household-level information on constraints to starting, operating, and growing a nonfarm enterprise (NFE).
+4715	20
+sect9_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 9 (Housing). This section records household-level information on homeownership and characteristics of home (type of roof, floor, outside wall, number of rooms, type of cookstove and cooking fuel, electricity connection, drinking water source, sanitation facility, refuse collection)
+4715	138
+sect10_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 10 (Food Consumption Shocks). This section records household-level information on the effects of external conditions on a household’s normal food consumption practices.
+4715	54
+sect11a_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 11 (Safety nets, questions 0-1a). This section records household-level information on assistance received from institutions.
+4715	11
+sect11b_harvestw5.dta
+Data collected through Post Harvest Household Questionnaire Section 11 (Safety nets, questions 2-9). This section records household-program level information on the characteristics of the assistance received from institutions.
+1720	44
+sect12_harvestw5.dta
+Data collected through Post-Harvest Household Questionnaire Section 12 (Economic Shocks). This section records household-shock level information on economic shocks affecting the household and coping mechanism adopted by the household.
+136735	20
+sectaa_harvestw5.dta
+Data collected through Post-Harvest Agriculture Questionnaire Section Cover. This section captures household-level information. The dataset includes household identifiers, enumerator and supervisor identifiers, the date and time of the interview, questions to determine whether the household is engaged in agricultural activities.
+4717	14
+secta1_harvestw5.dta
+Data collected through Post-Harvest Agriculture Questionnaire Section A1 (Plot Roster). This section follows up on the use of land listed in post- planting visit, farmer estimated area, GPS measured area, GPS measured location of the plot, decision maker of the new plots (i.e. added since post-planting visit)
+9176	112
+secta2a_harvestw5.dta
+Data collected through Post-Harvest Agriculture Questionnaire Section A2A (Household Labor). This section records individual-plot level information on household labour that worked on the plot. Includes information on amount of time spent by each person.
+33250	19
+secta2b_harvestw5.dta
+Data collected through Post-Harvest Agriculture Questionnaire Section A2B (Hired and Exchange Labor). This section records plot-level information on hired and free/exchange labour that worked on the plot. Includes information on amount of time spent by each person-type and payments made to hired labour.
+3434	70
+secta3i_harvestw5.dta
+Data collected through Post-Harvest Agriculture Questionnaire Section A3i (Field Crop Harvest). This section records household crop-level information on timing of harvest, quantity of harvested crops, estimated value, and expected harvest.
+10071	47
+secta3iii_harvestw5.dta
+Data collected through Post-Harvest Agriculture Questionnaire Section A3iii (Tree and Permanent Crop Harvest). This section records household crop-level information on timing of harvest, quantity of harvested crops, and estimated value.
+483	26
+secta3ii_harvestw5.dta
+Data collected through Post-Harvest Agriculture Questionnaire Section A3ii (Crop Disposition). This section records household crop-level information on sale of unprocessed crops, processing of crops, sale of processed crops, other crop disposition.
+7184	63
+sectaphl1_harvestw5.dta
+Data collected through Post-Harvest Agriculture Questionnaire Section PHL1 (Post-Harvest Labour - Household). This section records household crop-level information on Household labour that worked on post-harvest activities of the harvested crops. Includes information on amount of time spent by each person.
+40354	19
+sectaphl2_harvestw5.dta
+Data collected through Post-Harvest Agriculture Questionnaire Section PHL2 (Post-Harvest Labour – Hired and Exchange). This section records household crop-level information on hired and free/exchange labour that worked on post-harvest activities of the harvested crops. Includes information on amount of time spent by each person-type and payments made to hired labour.
+7002	70
+secta4_harvestw5.dta
+Data collected through Post-Harvest Agriculture Questionnaire Section A4 (Agricultural Capital). This section records household-level information on ownership and value of agricultural machinery and tools owned by the household.
+67592	17
+secta5b_harvestw5.dta
+Data collected through Post-Harvest Agriculture Questionnaire Section A5B (Extension Services). This section records household-level information on services provided by various source of agricultural advice (government and non-government). Includes frequency of visits and usefulness of the information provided.
+50745	29
+secta11c2_harvestw5.dta
+Data collected through Post-Harvest Agriculture Questionnaire Section 11C2 (Input use on plot). This section records plot-level information on pesticide use, herbicide use, inorganic fertilizer use, organic fertilizer use, animal traction, equipment and machinery use.
+6041	89
+secta11c3_harvestw5.dta
+Data collected through Post-Harvest Agriculture Questionnaire Section 11C3 (Input Acquisition, questions 2-11). This section records household input-level information on cost of purchased input, organic fertilizer from own production, cost of machinery.
+3940	24
+secta11c3q12_harvestw5.dta
+Data collected through Post-Harvest Agriculture Questionnaire Section 11C3 (Input Acquisition, question 12. This section records household-level information on the transportation costs of inputs.
+4717	7
+secta12_harvestw5.dta
+Data collected through Post-Harvest Agriculture Questionnaire Section 12 (Digital Farming Information). This section records household-level information on the farmers access, use, and experience with digital farming services in the rainy season.
+1860	219
+sectc_harvestw5.dta
+Data collected through Post Harvest Community Questionnaire Section Cover. This section records community identifier variables, enumerator and supervisor identifiers, date and time of interview.
+510	10
+sectc1_harvestw5.dta
+Data collected through Post Harvest Community Questionnaire Section C1 (Respondents Characteristics). This data records This section records respondent characteristics. Includes position in the community and education level.
+3202	17
+sectc2a_harvestw5.dta
+Data collected through Post Harvest Community Questionnaire Section C2 (Labour, questions 1-2b). This data records the activities for which individuals in this community hire labor.
+508	10
+sectc2b_harvestw5.dta
+Data collected through Post Harvest Community Questionnaire Section C2 (Labour, questions 3-12b). This data records the labour hired for agricultural activities by famers in the community.
+4191	20
+sectc3_harvestw5.dta
+Data collected through Post Harvest Community Questionnaire Section C3 (Social Norms). This data records the appreciation of prevailing social norms.
+508	33
+sectc4_harvestw5.dta
+Data collected through Post Harvest Community Questionnaire Section C4 (Changes). This data records the changes in the community compared to 3 years ago.
+15240	9
+sectc5_harvestw5.dta
+Data collected through Post Harvest Community Questionnaire Section C5 (Key Events). This data records the key events in the community in the last 3 years.
+9652	16
+sectc6_harvestw5.dta
+Data collected through Post Harvest Community Questionnaire Section C6 (Needs, Actions, and Achievements). This data records the discussion on the needs in the community.
+7620	24
+sectc6b_harvestw5.dta
+Data collected through Post Harvest Community Questionnaire Section C6B (Expectations on Climate Extremes and Past Experience). This data records farmer's expectations, approaches to reducing impact and previous experiences.
+2032	57
+sectc8_harvestw5.dta
+Data collected through Post Harvest Community Questionnaire Section C8 (Food Prices). This section records prices of food items in the community.
+56388	15
+Help / Feedback
+The World Bank Working for a World Free of Poverty
+IBRD IDA IFC MIGA ICSID
+© 2026, The World Bank Group, All Rights Reserved.
+
+This site uses cookies to optimize functionality and give you the best possible experience. If you continue to navigate this website beyond this page, cookies will be placed on your browser. To learn more about cookies, click here.
+
+×

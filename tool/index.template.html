@@ -281,6 +281,7 @@ footer a{color:var(--indigo)}
       <div><dt>Price basis</dt><dd id="f-base"></dd></div>
       <div><dt>Pool</dt><dd id="f-pool"></dd></div>
       <div><dt>Horizon</dt><dd id="f-years"></dd></div>
+      <div><dt>Covered today</dt><dd id="f-cov"></dd></div>
     </dl>
   </div>
 </header>
@@ -1130,6 +1131,9 @@ document.getElementById("f-n").innerHTML =
   `${D.meta.n_individuals.toLocaleString()} people`;
 document.getElementById("f-base").innerHTML =
   D.meta.price_base.replace(" ", "<br>");
+document.getElementById("f-cov").innerHTML =
+  `${D.paper.covered_individuals_pct}% of people<br>` +
+  `${D.paper.covered_informal_hh_pct}% informal hh`;
 document.getElementById("f-gen").textContent =
   `Model payload generated ${D.meta.generated}` +
   (D.meta.git_rev ? ` from revision ${D.meta.git_rev}` : "") +

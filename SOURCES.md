@@ -98,6 +98,7 @@ scheme site [lashma.com](https://www.lashma.com/).
 | Same, 2015–2022 range | 71.5% – 77.4% | Same series |
 | Health-insurance enrolment, Nigeria | 22.03 million (July 2026); 21.73 million at end-2025 | NHIA, reported in [Nairametrics, 7 Mar 2026](https://nairametrics.com/2026/03/07/health-insurance-coverage-in-nigeria-rises-to-21-7m-in-2025-report/) |
 | Enrolment as a share of population | under 10% of about 220 million | Derived from the above |
+| Coverage measured in the survey year | 1.07% of individuals; 1.98% of households | **Computed from the microdata** (Section 5A, q16-17c) — Table 1b, not an external figure |
 | Informal employment rate | 93.0% (Q2 2024); 92.7% (Q1 2024) | NBS, *Nigeria Labour Force Survey Q2 2024*, [PDF](https://nigerianstat.gov.ng/pdfuploads/NLFS_Q2_2024.pdf) |
 | NHIA Act 2022 provisions | — | [Gazetted copy, nhia.gov.ng](https://www.nhia.gov.ng/wp-content/uploads/2024/03/NHIA-Act-2022-Gazetted-Copy.pdf) |
 
@@ -126,7 +127,23 @@ Re-verify at [search.crossref.org](https://search.crossref.org) before submissio
 
 ---
 
-## 5. Variable mapping still to confirm
+## 5. Variable mapping identified from the data
+
+### 5.1 Health-insurance type — confirmed empirically
+
+`sect5a2_plantingw5` (Section 5A, questions 16–17c) records insurance holding,
+type and covered members. The release carries no codebook, but the health type
+is identifiable without one: all ten households that reported paying a
+health-insurance premium in the consumption module (item 363) carry
+`s5aq17a__1`, and no other type shows that correspondence. `build_data.py`
+re-runs the check on every execution and prints the result, so a renumbering in
+a future release surfaces immediately rather than silently repricing the paper.
+
+The World Bank catalogue confirms the module's scope: *"Section 5A (Savings and
+Insurance, questions 16-17c). This section records household-level information
+on insurance coverage."*
+
+### 5.2 Health-module cost fields — still to confirm
 
 The wave-5 CSV release ships without a codebook, so the health-module cost
 fields were identified from their response patterns across facility types
@@ -140,6 +157,11 @@ medicine spending is near-universal among those who sought care).
 | `s3q17` | Spending on medicines and treatment | 4 weeks |
 | `s3q17a` | Other spending, e.g. tests | 4 weeks |
 | `s3q20` | Total paid for hospitalisation | 12 months |
+
+The catalogue describes Section 3 as recording *"individual-level information on
+general health status, healthcare utilization and costs, functioning and
+disability status, and the use of bed nets"*, which confirms the module's scope
+but not the field-by-field reading below.
 
 > **Confirm against the questionnaire before submission.** Sign in to the
 > [GHS-Panel wave 5 catalogue entry](https://microdata.worldbank.org/index.php/catalog/6410),

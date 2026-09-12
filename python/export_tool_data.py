@@ -106,6 +106,12 @@ def main():
 
     aff = ruin_mod.affordable_contribution(hh)
 
+    # Observed coverage today - the context the price should be read against.
+    cov_tbl = pd.read_csv(config.TABLES / "table1b_coverage.csv")
+    cov_row = cov_tbl[(cov_tbl["dimension"] == "Overall")].iloc[0]
+    cov_inf = cov_tbl[(cov_tbl["dimension"] == "Sector")
+                      & (cov_tbl["group"] == "Informal")].iloc[0]
+
     # ------------------------------------------------- headline paper values --
     t2 = pd.read_csv(config.TABLES / "table2_che.csv")
     overall = t2[t2["dimension"] == "Overall"].set_index("measure")
@@ -178,6 +184,9 @@ def main():
             "min_subsidy_strong": 52573.0,
             "impoverished_millions": 5.11,
             "informal_share_pct": 81.2,
+            "covered_individuals_pct": round(float(cov_row["individuals_covered_pct"]), 2),
+            "covered_hh_pct": round(float(cov_row["hh_with_cover_pct"]), 2),
+            "covered_informal_hh_pct": round(float(cov_inf["hh_with_cover_pct"]), 2),
         },
     }
 

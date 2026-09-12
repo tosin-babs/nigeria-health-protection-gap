@@ -41,7 +41,7 @@ size and take-up pattern the page offers.
 | Stage | Script | Output |
 |---|---|---|
 | Build household and individual analysis files from raw CSVs | `python/build_data.py` | `data/derived/*.csv`, Table A1 |
-| RQ1 CHE incidence, intensity, impoverishment, concentration | `python/che.py` | Tables 1, 2, 2b, 2c, 3, 3b |
+| RQ1 CHE incidence, intensity, impoverishment, concentration, observed coverage | `python/che.py` | Tables 1, 1b, 2, 2b, 2c, 3, 3b |
 | RQ2a Frequency, severity and Tweedie cost models | `python/costmodels.py` | Tables 4, 4b, A2, A3 |
 | RQ2b Benefit mapping and premium build-up | `python/premium.py` | Tables 5a-5f |
 | RQ3 Collective-risk model and minimum subsidy | `python/ruin.py` | Tables 6a-6d, A4 |
