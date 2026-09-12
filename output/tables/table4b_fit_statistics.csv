@@ -1,0 +1,12 @@
+statistic,value
+Outpatient contact rate per person-year (weighted),2.748786268909739
+Inpatient episodes per person-year (weighted),0.029963784637953274
+Mean cost per outpatient episode (N),6977.424786045344
+Mean cost per inpatient episode (N),43985.49190964079
+Mean annual cost per person (N),19674.59391804112
+Tweedie variance power p,1.6
+Tweedie dispersion phi,671.4757927640748
+"Pearson dispersion, frequency model",0.7747657874844922
+AIC gamma severity,98071.69013086759
+AIC lognormal severity,95273.87949118218
+Quantile-residual KS p-value,1.529635250978218e-64

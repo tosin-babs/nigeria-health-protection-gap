@@ -1,0 +1,903 @@
+<title>The Naira Gap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;0,800;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ink:#101C18; --ink-2:#33443D; --ink-3:#63756D;
+  --paper:#F4F6F1; --card:#FFFFFF; --rule:#DDE3DA; --rule-2:#EBEFE8;
+  --accent:#0A6A52; --accent-soft:#E4F0EA; --accent-ink:#064838;
+  --clay:#BE5228; --clay-soft:#FBEAE1;
+  --gold:#9A7212; --gold-soft:#FAF0D8;
+  --crit:#9E2B2B; --crit-soft:#FBE7E4;
+  --shadow:0 1px 2px rgba(16,28,24,.05),0 8px 24px -12px rgba(16,28,24,.18);
+  --maxw:1240px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#E8EFE9; --ink-2:#AFC0B7; --ink-3:#7E9086;
+    --paper:#0B1512; --card:#12201B; --rule:#243830; --rule-2:#1A2A24;
+    --accent:#4FBF9B; --accent-soft:#15302794; --accent-ink:#8FDCC3;
+    --clay:#E88A5D; --clay-soft:#33201598;
+    --gold:#D9B65C; --gold-soft:#2E260F98;
+    --crit:#E8756B; --crit-soft:#33191798;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E8EFE9; --ink-2:#AFC0B7; --ink-3:#7E9086;
+  --paper:#0B1512; --card:#12201B; --rule:#243830; --rule-2:#1A2A24;
+  --accent:#4FBF9B; --accent-soft:#15302794; --accent-ink:#8FDCC3;
+  --clay:#E88A5D; --clay-soft:#33201598;
+  --gold:#D9B65C; --gold-soft:#2E260F98;
+  --crit:#E8756B; --crit-soft:#33191798;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--maxw); margin:0 auto; padding-inline:20px; padding-block:0}
+h1,h2,h3{font-family:Spectral,Georgia,"Times New Roman",serif; text-wrap:balance; margin:0}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace; font-variant-numeric:tabular-nums}
+.num{font-variant-numeric:tabular-nums}
+.eyebrow{
+  font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-3);
+}
+
+/* ---------------------------------------------------------------- header */
+header{border-bottom:1px solid var(--rule); background:var(--card)}
+.head{display:flex; flex-wrap:wrap; gap:20px 32px; align-items:flex-end;
+      justify-content:space-between; padding-block:26px 22px}
+.head h1{font-size:clamp(30px,4.4vw,46px); font-weight:800; line-height:1.02;
+         letter-spacing:-.018em}
+.head h1 em{font-style:italic; font-weight:400; color:var(--accent)}
+.sub{margin:8px 0 0; max-width:56ch; color:var(--ink-2); font-size:15px}
+.provenance{font-size:12px; color:var(--ink-3); line-height:1.5; text-align:right}
+.provenance b{color:var(--ink-2); font-weight:600}
+
+/* ------------------------------------------------------------- verdict */
+.verdict{background:var(--card); border-bottom:1px solid var(--rule)}
+.verdict-in{padding-block:22px 26px; display:grid; gap:22px;
+            grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); align-items:center}
+.sentence{font-family:Spectral,Georgia,serif; font-size:clamp(19px,2.2vw,25px);
+          line-height:1.36; margin:0; letter-spacing:-.005em}
+.sentence .v{font-weight:700; color:var(--accent); white-space:nowrap}
+.sentence .g{font-weight:700; color:var(--clay); white-space:nowrap}
+.gapbars{display:grid; gap:9px}
+.gaprow{display:grid; grid-template-columns:112px 1fr; gap:12px; align-items:center}
+.gaplab{font-size:12px; color:var(--ink-2); text-align:right; line-height:1.25}
+.track{position:relative; height:34px; background:var(--rule-2); border-radius:3px}
+.fill{position:absolute; inset:0 auto 0 0; border-radius:3px;
+      display:flex; align-items:center; justify-content:flex-end; padding-right:9px}
+.fill span{font-size:12.5px; font-weight:600; color:#fff; white-space:nowrap}
+.fill.pale span{color:var(--ink)}
+
+/* -------------------------------------------------------------- layout */
+main{padding-block:26px 60px}
+.cols{display:grid; grid-template-columns:302px minmax(0,1fr); gap:26px; align-items:start}
+
+/* ------------------------------------------------------------ controls */
+.rail{position:sticky; top:16px; display:grid; gap:14px}
+.panel{background:var(--card); border:1px solid var(--rule); border-radius:8px;
+       box-shadow:var(--shadow)}
+.panel > h3{font-size:14px; font-weight:600; padding:13px 15px 0; letter-spacing:-.01em}
+.panel-body{padding:11px 15px 15px; display:grid; gap:15px}
+.presets{display:flex; flex-wrap:wrap; gap:6px; padding:11px 15px 15px}
+.preset{font:500 12px/1 "IBM Plex Sans",sans-serif; padding:7px 10px; cursor:pointer;
+        background:transparent; color:var(--ink-2); border:1px solid var(--rule);
+        border-radius:99px; transition:.14s}
+.preset:hover{border-color:var(--accent); color:var(--accent)}
+.preset[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:#fff}
+
+.ctl{display:grid; gap:5px}
+.ctl-top{display:flex; justify-content:space-between; align-items:baseline; gap:10px}
+.ctl-top label{font-size:12.5px; font-weight:500; color:var(--ink); line-height:1.25}
+.ctl-val{font-family:"IBM Plex Mono",monospace; font-size:12.5px; font-weight:600;
+         color:var(--accent); font-variant-numeric:tabular-nums; white-space:nowrap}
+.hint{font-size:11px; color:var(--ink-3); line-height:1.4; margin:-1px 0 0}
+input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:18px;
+                  background:transparent; cursor:pointer; margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:4px; border-radius:2px; background:var(--rule)}
+input[type=range]::-moz-range-track{height:4px; border-radius:2px; background:var(--rule)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:15px; height:15px;
+  border-radius:50%; background:var(--accent); border:2px solid var(--card); margin-top:-5.5px;
+  box-shadow:0 0 0 1px var(--accent)}
+input[type=range]::-moz-range-thumb{width:15px; height:15px; border:2px solid var(--card);
+  border-radius:50%; background:var(--accent); box-shadow:0 0 0 1px var(--accent)}
+input[type=range]:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px}
+.seg{display:flex; border:1px solid var(--rule); border-radius:6px; overflow:hidden}
+.seg button{flex:1; font:500 12px/1 "IBM Plex Sans",sans-serif; padding:8px 4px; cursor:pointer;
+            background:transparent; color:var(--ink-2); border:0; border-right:1px solid var(--rule);
+            transition:.14s}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:var(--rule-2)}
+.seg button[aria-pressed="true"]{background:var(--accent); color:#fff}
+.reset{font:500 12px/1 "IBM Plex Sans",sans-serif; background:transparent; cursor:pointer;
+       color:var(--ink-3); border:1px dashed var(--rule); border-radius:6px; padding:9px;
+       width:100%; transition:.14s}
+.reset:hover{color:var(--clay); border-color:var(--clay)}
+
+/* ------------------------------------------------------------- results */
+.results{display:grid; gap:20px; min-width:0}
+.card{background:var(--card); border:1px solid var(--rule); border-radius:8px;
+      box-shadow:var(--shadow); padding:18px 20px 20px; min-width:0}
+.card > h2{font-size:19px; font-weight:600; letter-spacing:-.012em}
+.card > .lede{margin:5px 0 0; color:var(--ink-2); font-size:13.5px; max-width:74ch}
+.card-head{display:flex; gap:14px; justify-content:space-between; align-items:flex-start;
+           flex-wrap:wrap}
+
+.stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(146px,1fr)); gap:1px;
+       background:var(--rule); border:1px solid var(--rule); border-radius:7px;
+       overflow:hidden; margin-top:16px}
+.stat{background:var(--card); padding:12px 14px}
+.stat .k{font-size:11px; color:var(--ink-3); font-weight:500; line-height:1.3}
+.stat .v{font-family:"IBM Plex Mono",monospace; font-size:20px; font-weight:600;
+         font-variant-numeric:tabular-nums; letter-spacing:-.02em; margin-top:3px; line-height:1.1}
+.stat .d{font-size:11px; color:var(--ink-3); margin-top:2px}
+.stat.good .v{color:var(--accent)} .stat.bad .v{color:var(--clay)}
+.stat.warn .v{color:var(--gold)} .stat.crit .v{color:var(--crit)}
+
+.chartbox{margin-top:16px; overflow-x:auto}
+svg{display:block; max-width:100%; height:auto}
+.axis{stroke:var(--rule); stroke-width:1}
+.grid{stroke:var(--rule-2); stroke-width:1}
+.tick{fill:var(--ink-3); font-family:"IBM Plex Mono",monospace; font-size:10px}
+.slab{fill:var(--ink-2); font-family:"IBM Plex Sans",sans-serif; font-size:11px}
+.sval{fill:var(--ink); font-family:"IBM Plex Mono",monospace; font-size:10.5px; font-weight:600}
+
+.legend{display:flex; flex-wrap:wrap; gap:6px 16px; margin-top:12px; font-size:11.5px;
+        color:var(--ink-2)}
+.legend i{display:inline-block; width:11px; height:11px; border-radius:2px; margin-right:5px;
+          vertical-align:-1px}
+
+table{width:100%; border-collapse:collapse; margin-top:14px; font-size:13px}
+th,td{padding:8px 10px; text-align:right; border-bottom:1px solid var(--rule-2)}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-3);
+         font-weight:600; border-bottom:1px solid var(--rule)}
+tbody td{font-variant-numeric:tabular-nums; font-family:"IBM Plex Mono",monospace}
+tbody td:first-child{font-family:"IBM Plex Sans",sans-serif}
+tbody tr:last-child td{border-bottom:0}
+.pill{display:inline-block; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:600;
+      font-family:"IBM Plex Sans",sans-serif}
+.pill.ok{background:var(--accent-soft); color:var(--accent-ink)}
+.pill.no{background:var(--clay-soft); color:var(--clay)}
+.pill.warn{background:var(--gold-soft); color:var(--gold)}
+.pill.crit{background:var(--crit-soft); color:var(--crit)}
+
+.readout{margin-top:16px; padding:14px 16px; border-left:3px solid var(--accent);
+         background:var(--accent-soft); border-radius:0 6px 6px 0; font-size:13.5px;
+         line-height:1.6; color:var(--ink)}
+.readout.alarm{border-left-color:var(--clay); background:var(--clay-soft)}
+.readout b{font-weight:600}
+
+details{margin-top:14px; border-top:1px solid var(--rule-2); padding-top:12px}
+summary{cursor:pointer; font-size:12.5px; font-weight:600; color:var(--ink-2); list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+ "; color:var(--accent); font-weight:700}
+details[open] summary::before{content:"– "}
+details p{font-size:12.5px; color:var(--ink-2); line-height:1.65; max-width:78ch}
+details code{font-family:"IBM Plex Mono",monospace; font-size:11.5px;
+             background:var(--rule-2); padding:1px 4px; border-radius:3px}
+
+footer{border-top:1px solid var(--rule); margin-top:34px; padding-block:22px 40px;
+       font-size:12px; color:var(--ink-3); line-height:1.65}
+footer a{color:var(--accent)}
+footer p{margin:0 0 8px; max-width:88ch}
+
+@media (max-width:980px){
+  .cols{grid-template-columns:1fr}
+  .rail{position:static}
+  .verdict-in{grid-template-columns:1fr; gap:18px}
+  .provenance{text-align:left}
+}
+@media (max-width:520px){
+  .gaprow{grid-template-columns:84px 1fr}
+  .stat .v{font-size:18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+</style>
+
+<header>
+  <div class="wrap head">
+    <div>
+      <p class="eyebrow">Nigeria &middot; NHIA Act 2022 &middot; informal sector</p>
+      <h1>What health cover costs,<br>and what people <em>can pay</em></h1>
+      <p class="sub">Move the levers and watch the price of the NHIA basic package, the
+        gap against what households can afford, and whether a state pool stays solvent.
+        Every figure is recomputed from the 2023/24 national household survey.</p>
+    </div>
+    <div class="provenance">
+      <b>Nigeria General Household Survey&#8209;Panel, wave&nbsp;5 (2023/24)</b><br>
+      <span id="prov-n"></span><br>
+      Naira in <span id="prov-base"></span> prices
+    </div>
+  </div>
+</header>
+
+<section class="verdict">
+  <div class="wrap verdict-in">
+    <p class="sentence" id="sentence"></p>
+    <div class="gapbars" id="gapbars"></div>
+  </div>
+</section>
+
+<main class="wrap">
+<div class="cols">
+
+  <!-- ------------------------------------------------------------ rail -->
+  <aside class="rail">
+    <div class="panel">
+      <h3>Start from</h3>
+      <div class="presets" id="presets"></div>
+    </div>
+
+    <div class="panel">
+      <h3>What the package covers</h3>
+      <div class="panel-body" id="ctl-benefit"></div>
+    </div>
+
+    <div class="panel">
+      <h3>What running it costs</h3>
+      <div class="panel-body" id="ctl-load"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Who joins the pool</h3>
+      <div class="panel-body" id="ctl-pool"></div>
+    </div>
+
+    <button class="reset" id="reset" type="button">Reset to the paper's settings</button>
+  </aside>
+
+  <!-- --------------------------------------------------------- results -->
+  <div class="results">
+
+    <section class="card">
+      <div class="card-head">
+        <div>
+          <h2>How the price is built</h2>
+          <p class="lede">Start from what people already spend out of pocket, take out
+            what the package will not cover, add the extra care people use once it is
+            nearly free, then add the cost of running the scheme.</p>
+        </div>
+      </div>
+      <div class="chartbox"><svg id="waterfall" role="img"
+        aria-label="Premium build-up from observed spending to gross premium"></svg></div>
+      <div class="legend">
+        <span><i style="background:var(--accent)"></i>Subtotal</span>
+        <span><i style="background:var(--clay)"></i>Reduces the price</span>
+        <span><i style="background:var(--gold)"></i>Adds to the price</span>
+      </div>
+      <div class="stats" id="premium-stats"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <div>
+          <h2>Can households afford it?</h2>
+          <p class="lede">A premium is usually called affordable when it stays under 5% of
+            what a person consumes in a year. Bars above the line are households for whom
+            this package costs more than that.</p>
+        </div>
+      </div>
+      <div class="chartbox"><svg id="afford" role="img"
+        aria-label="Premium as a share of per-capita consumption by quintile"></svg></div>
+      <table id="afford-table">
+        <thead><tr><th>Household group</th><th>Consumption<br>per person</th>
+          <th>Premium as<br>share of that</th><th>Cost for the<br>whole household</th>
+          <th>Affordable?</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <div>
+          <h2>Would the pool survive?</h2>
+          <p class="lede">Members pay what they can afford; the state subsidy makes up the
+            rest. Too little subsidy and the scheme runs out of money — the chance of that
+            is its <em>probability of ruin</em>.</p>
+        </div>
+      </div>
+      <div class="stats" id="ruin-stats"></div>
+      <div class="chartbox"><svg id="ruincurve" role="img"
+        aria-label="Probability of ruin against subsidy per enrollee"></svg></div>
+      <div class="legend" id="ruin-legend"></div>
+      <div class="readout" id="readout"></div>
+      <details>
+        <summary>How the solvency number is worked out</summary>
+        <p>The pool's surplus each year is
+          <code>U&#8348; = U&#8348;&#8331;&#8321; + n(C + s)(1 &minus; e) &minus; S&#8348;</code>:
+          opening funds, plus contributions <code>C</code> and subsidy <code>s</code> from
+          every one of <code>n</code> members net of an expense ratio <code>e</code>, less
+          the year's claims <code>S&#8348;</code>. Ruin means the surplus goes below zero in
+          any year of the horizon.</p>
+        <p>Claims are drawn from the cost distribution of informal-sector individuals in
+          the survey. The paper draws each pool-year as a multinomial over the 750 distinct
+          cost values; that is too slow for a browser, so this page matches the first three
+          moments of the same distribution with a translated gamma and draws 4,000 paths.
+          Checked against the paper's own simulation, the two agree to within 0.35% at the
+          99.9th percentile of annual claims for every pool size and take-up pattern shown
+          here. The minimum subsidy is found by bisection on a fixed set of draws, so
+          moving a lever never changes the answer through simulation noise alone.</p>
+      </details>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <div>
+          <h2>What this is, and what it is not</h2>
+        </div>
+      </div>
+      <details open>
+        <summary>Read this before quoting a number</summary>
+        <p>This calculator accompanies a working paper that measures Nigeria's
+          health-protection gap and prices insurance for the informal sector. It runs the
+          paper's own model on the paper's own data, in your browser. Set the levers back
+          to the paper's settings and you get the paper's published figures.</p>
+        <p>The benefit package is <b>defined by the parameters on the left, not by the
+          NHIA's published tariff schedule</b>, which is not available in machine-readable
+          form. The share of spending inside the package, the drug co-payment and the
+          demand response are assumptions — that is precisely why they are levers rather
+          than constants. Costs come from a four-week recall window scaled to a year, the
+          single largest source of uncertainty in the underlying estimates.</p>
+        <p>Figures are per person per year in <span id="foot-base"></span> naira. Nothing
+          here is advice on which premium a scheme should charge.</p>
+      </details>
+    </section>
+
+  </div>
+</div>
+</main>
+
+<footer class="wrap">
+  <p><b>Source.</b> Nigeria General Household Survey-Panel wave 5 (2023/24), National
+    Bureau of Statistics with the World Bank LSMS-ISA programme. Survey microdata are not
+    redistributed; this page ships only the aggregated cost distribution the model needs.</p>
+  <p><b>Paper.</b> Babalola, O. D. (2026). <i>Measuring the Health-Protection Gap and
+    Actuarially Pricing Informal-Sector Health Insurance under Nigeria's NHIA Act 2022: A
+    Frequency&ndash;Severity and Ruin-Probability Approach.</i> Working paper.</p>
+  <p><span id="foot-gen"></span></p>
+</footer>
+
+<script id="model-data" type="application/json">__MODEL_DATA__</script>
+<script>
+"use strict";
+const D = JSON.parse(document.getElementById("model-data").textContent);
+const F = D.defaults;
+
+/* ------------------------------------------------------------ formatting */
+const naira = n => "₦" + Math.round(n).toLocaleString("en-NG");
+const nairaK = n => Math.abs(n) >= 1e9 ? "₦" + (n/1e9).toFixed(2) + "bn"
+                  : Math.abs(n) >= 1e6 ? "₦" + (n/1e6).toFixed(1) + "m"
+                  : naira(n);
+const pct = (x, d=1) => x.toFixed(d) + "%";
+
+/* --------------------------------------------------------------- state */
+const PRESETS = {
+  paper:  {label:"The paper's settings", v:{}},
+  lean:   {label:"Leaner package", v:{coveredOp:.70, coveredIp:.80, coins:.20}},
+  generous:{label:"Generous package", v:{coveredOp:1, coveredIp:1, coins:0}},
+  big:    {label:"Big state pool", v:{pool:100000}},
+  adverse:{label:"Only the sick join", v:{takeup:"strong"}},
+};
+const BASE = {
+  coveredOp:F.covered_op, coveredIp:F.covered_ip, coins:F.coinsurance,
+  drugShare:F.drug_share, elast:F.elasticity, admin:F.admin, asLoad:F.as_load,
+  expense:F.expense, pool:F.pool_size, years:F.years, takeup:"random",
+  contribution:F.contribution, capital:0,
+};
+let S = {...BASE};
+
+/* ------------------------------------------------ the model, as in Python */
+function inducedFactor(pBefore, pAfter, e){
+  const pbar = (pBefore + pAfter) / 2;
+  if (pbar === 0) return 1;
+  return 1 + e * ((pAfter - pBefore) / pbar);
+}
+
+// Insurer cost per person for one (outpatient, inpatient, traditional) triple.
+function insurerCosts(op, ip, trad, s){
+  const fd = inducedFactor(1, s.coins, s.elast);
+  const fs = inducedFactor(1, 0, s.elast);
+  const n = op.length, out = new Float64Array(n);
+  const stage = {eligible:0, covered:0, induced:0};
+  for (let i = 0; i < n; i++){
+    const covOp = op[i] * (1 - trad[i]) * s.coveredOp;
+    const covIp = ip[i] * s.coveredIp;
+    const drugs = covOp * s.drugShare;
+    const svcs  = covOp * (1 - s.drugShare) + covIp;
+    out[i] = drugs * fd * (1 - s.coins) + svcs * fs;
+  }
+  return out;
+}
+
+function buildUp(s){
+  const P = D.population, w = P.w, op = P.op, ip = P.ip, tr = P.trad;
+  const fd = inducedFactor(1, s.coins, s.elast);
+  const fs = inducedFactor(1, 0, s.elast);
+  let observed=0, eligible=0, covered=0, induced=0, pure=0;
+  for (let i = 0; i < w.length; i++){
+    const wi = w[i];
+    observed += wi * (op[i] + ip[i]);
+    const elOp = op[i] * (1 - tr[i]);
+    eligible += wi * (elOp + ip[i]);
+    const covOp = elOp * s.coveredOp, covIp = ip[i] * s.coveredIp;
+    covered += wi * (covOp + covIp);
+    const drugs = covOp * s.drugShare;
+    const svcs  = covOp * (1 - s.drugShare) + covIp;
+    induced += wi * (drugs * fd + svcs * fs);
+    pure    += wi * (drugs * fd * (1 - s.coins) + svcs * fs);
+  }
+  // standard deviation of insurer cost, for the risk margin
+  const cost = insurerCosts(op, ip, tr, s);
+  let v = 0;
+  for (let i = 0; i < w.length; i++) v += w[i] * (cost[i] - pure) ** 2;
+  const sigma = Math.sqrt(v);
+  const riskMargin = F.sd_mult * sigma / Math.sqrt(s.pool);
+  const adminAmt = (pure + riskMargin) * s.admin;
+  const asAmt = (pure + riskMargin) * (1 + s.admin) * s.asLoad;
+  const gross = (pure + riskMargin) * (1 + s.admin) * (1 + s.asLoad);
+  return {observed, eligible, covered, induced, pure, sigma, riskMargin,
+          adminAmt, asAmt, gross,
+          inducedUplift: covered ? 100 * (induced / covered - 1) : 0};
+}
+
+/* ------------------------------------------------ seeded RNG + gamma draws */
+function mulberry32(a){
+  return function(){
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function makeNormals(n, seed){
+  const r = mulberry32(seed), out = new Float64Array(n);
+  for (let i = 0; i < n; i += 2){
+    const u = Math.max(r(), 1e-12), v = r();
+    const m = Math.sqrt(-2 * Math.log(u));
+    out[i] = m * Math.cos(2 * Math.PI * v);
+    if (i + 1 < n) out[i+1] = m * Math.sin(2 * Math.PI * v);
+  }
+  return out;
+}
+// Marsaglia-Tsang, driven by pre-drawn normals and uniforms so that the same
+// draw index always means the same shock however the levers move.
+function gammaDraw(shape, z, u){
+  const d = shape - 1/3, c = 1 / Math.sqrt(9 * d);
+  const x = z, vv = (1 + c * x) ** 3;
+  if (vv <= 0) return d;                       // rare; falls back to the mean
+  const acc = Math.log(u) < 0.5 * x * x + d - d * vv + d * Math.log(vv);
+  return acc ? d * vv : d;                     // rejections keep the mean
+}
+
+const NSIM = 4000, MAXY = 3;
+const Z = makeNormals(NSIM * MAXY, 20260912);
+const U = (() => { const r = mulberry32(777), a = new Float64Array(NSIM * MAXY);
+                   for (let i = 0; i < a.length; i++) a[i] = r(); return a; })();
+
+/* Claims paths for the current levers, via a moment-matched translated gamma. */
+function claimsPaths(s){
+  const P = D.pool, p = P.p[s.takeup];
+  const cost = insurerCosts(P.op, P.ip, P.trad, s);
+  let mu = 0;
+  for (let i = 0; i < p.length; i++) mu += p[i] * cost[i];
+  let m2 = 0, m3 = 0;
+  for (let i = 0; i < p.length; i++){
+    const dv = cost[i] - mu;
+    m2 += p[i] * dv * dv; m3 += p[i] * dv * dv * dv;
+  }
+  const skew = m2 > 0 ? m3 / Math.pow(m2, 1.5) : 0;
+  const n = s.pool, M = n * mu, V = n * m2, G = skew / Math.sqrt(n);
+  const alpha = G > 0 ? 4 / (G * G) : 1e6;
+  const beta = Math.sqrt(alpha / V);
+  const x0 = M - alpha / beta;
+  const paths = new Float64Array(NSIM * s.years);
+  for (let k = 0; k < NSIM; k++)
+    for (let t = 0; t < s.years; t++){
+      const idx = k * MAXY + t;
+      paths[k * s.years + t] = x0 + gammaDraw(alpha, Z[idx], U[idx]) / beta;
+    }
+  return {paths, mu, years:s.years};
+}
+
+function ruinProb(cp, s, subsidy){
+  const {paths, years} = cp;
+  const income = s.pool * (s.contribution + subsidy) * (1 - s.expense);
+  const u0 = s.capital * s.pool * (s.contribution + subsidy);
+  let ruined = 0;
+  for (let k = 0; k < NSIM; k++){
+    let surplus = u0, dead = false;
+    for (let t = 0; t < years; t++){
+      surplus += income - paths[k * years + t];
+      if (surplus < 0){ dead = true; break; }
+    }
+    if (dead) ruined++;
+  }
+  return ruined / NSIM;
+}
+
+function minSubsidy(cp, s, target, hiCap){
+  let lo = 0, hi = hiCap;
+  if (ruinProb(cp, s, lo) <= target) return 0;
+  if (ruinProb(cp, s, hi) > target) return NaN;
+  for (let i = 0; i < 28; i++){
+    const mid = (lo + hi) / 2;
+    if (ruinProb(cp, s, mid) > target) lo = mid; else hi = mid;
+  }
+  return hi;
+}
+
+/* ------------------------------------------------------------- controls */
+const CONTROLS = [
+  {group:"ctl-benefit", key:"coveredOp", label:"Outpatient care inside the package",
+   hint:"Share of clinic, chemist and pharmacy spending the scheme pays for.",
+   min:.5, max:1, step:.05, fmt:v => pct(v*100,0)},
+  {group:"ctl-benefit", key:"coveredIp", label:"Hospital care inside the package",
+   hint:"Share of admission costs the scheme pays for.",
+   min:.5, max:1, step:.05, fmt:v => pct(v*100,0)},
+  {group:"ctl-benefit", key:"coins", label:"What the member still pays for drugs",
+   hint:"The NHIA reference rule is a 10% co-payment on medicines.",
+   min:0, max:.4, step:.05, fmt:v => pct(v*100,0)},
+  {group:"ctl-benefit", key:"elast", label:"Extra care used once it is nearly free",
+   hint:"Price elasticity of demand. The RAND experiment gives about −0.20; a bigger number means people use much more care once insured.",
+   min:-.5, max:-.05, step:.05, fmt:v => v.toFixed(2)},
+  {group:"ctl-load", key:"admin", label:"Running costs",
+   hint:"Administration as a share of claims.",
+   min:0, max:.35, step:.01, fmt:v => pct(v*100,0)},
+  {group:"ctl-load", key:"asLoad", label:"Cushion for sicker-than-average members",
+   hint:"An explicit loading in the quoted premium.",
+   min:0, max:.35, step:.01, fmt:v => pct(v*100,0)},
+  {group:"ctl-load", key:"expense", label:"Expenses taken from contributions",
+   hint:"Deducted from contribution income before claims are paid.",
+   min:0, max:.25, step:.01, fmt:v => pct(v*100,0)},
+  {group:"ctl-pool", key:"contribution", label:"What each member pays a year",
+   hint:"The paper sets this at 5% of consumption for informal households in the bottom three quintiles — what the target population can actually afford.",
+   min:0, max:30000, step:250, fmt:v => naira(v)},
+  {group:"ctl-pool", key:"capital", label:"Opening reserve",
+   hint:"Money in the fund on day one, as a share of a year's income.",
+   min:0, max:.5, step:.05, fmt:v => pct(v*100,0)},
+];
+const SEGMENTS = [
+  {group:"ctl-pool", key:"pool", label:"How many people join",
+   options:[[5000,"5,000"],[20000,"20,000"],[100000,"100,000"]]},
+  {group:"ctl-pool", key:"takeup", label:"Who joins",
+   hint:"If joining is voluntary, the people who expect to claim sign up first.",
+   options:[["random","Everyone alike"],["moderate","Sicker lean in"],["strong","Only the sick"]]},
+  {group:"ctl-pool", key:"years", label:"Judged over",
+   options:[[1,"1 year"],[3,"3 years"]]},
+];
+
+function buildControls(){
+  for (const c of CONTROLS){
+    const el = document.createElement("div");
+    el.className = "ctl";
+    el.innerHTML =
+      `<div class="ctl-top"><label for="r-${c.key}">${c.label}</label>
+         <span class="ctl-val" id="v-${c.key}"></span></div>
+       <input type="range" id="r-${c.key}" min="${c.min}" max="${c.max}"
+              step="${c.step}" value="${S[c.key]}">
+       <p class="hint">${c.hint}</p>`;
+    document.getElementById(c.group).appendChild(el);
+    el.querySelector("input").addEventListener("input", e => {
+      S[c.key] = parseFloat(e.target.value);
+      markPreset(null); render();
+    });
+  }
+  for (const g of SEGMENTS){
+    const el = document.createElement("div");
+    el.className = "ctl";
+    el.innerHTML =
+      `<div class="ctl-top"><label>${g.label}</label></div>
+       <div class="seg" id="s-${g.key}" role="group" aria-label="${g.label}"></div>
+       ${g.hint ? `<p class="hint">${g.hint}</p>` : ""}`;
+    document.getElementById(g.group).appendChild(el);
+    const seg = el.querySelector(".seg");
+    for (const [val, lab] of g.options){
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = lab; b.dataset.val = val;
+      b.addEventListener("click", () => { S[g.key] = val; markPreset(null); render(); });
+      seg.appendChild(b);
+    }
+  }
+  const pres = document.getElementById("presets");
+  for (const [id, p] of Object.entries(PRESETS)){
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "preset"; b.textContent = p.label; b.dataset.preset = id;
+    b.addEventListener("click", () => { S = {...BASE, ...p.v}; markPreset(id); syncInputs(); render(); });
+    pres.appendChild(b);
+  }
+}
+function markPreset(id){
+  document.querySelectorAll(".preset").forEach(b =>
+    b.setAttribute("aria-pressed", String(b.dataset.preset === id)));
+}
+function syncInputs(){
+  for (const c of CONTROLS){
+    const el = document.getElementById("r-" + c.key);
+    if (el) el.value = S[c.key];
+  }
+}
+function paintControls(){
+  for (const c of CONTROLS)
+    document.getElementById("v-" + c.key).textContent = c.fmt(S[c.key]);
+  for (const g of SEGMENTS)
+    document.querySelectorAll(`#s-${g.key} button`).forEach(b =>
+      b.setAttribute("aria-pressed", String(String(S[g.key]) === b.dataset.val)));
+}
+
+/* --------------------------------------------------------------- charts */
+const SVGNS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs, text){
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text != null) e.textContent = text;
+  return e;
+}
+function clear(el){ while (el.firstChild) el.removeChild(el.firstChild); }
+
+function drawWaterfall(b){
+  const svg = document.getElementById("waterfall");
+  clear(svg);
+  const steps = [
+    {l:"Spent\nnow", v:b.observed, type:"total"},
+    {l:"less\ntraditional", v:b.eligible - b.observed, type:"down"},
+    {l:"less outside\npackage", v:b.covered - b.eligible, type:"down"},
+    {l:"plus extra\nuse", v:b.induced - b.covered, type:"up"},
+    {l:"less drug\nco-pay", v:b.pure - b.induced, type:"down"},
+    {l:"Claims\ncost", v:b.pure, type:"total"},
+    {l:"plus risk\nmargin", v:b.riskMargin, type:"up"},
+    {l:"plus admin", v:b.adminAmt, type:"up"},
+    {l:"plus\nselection", v:b.asAmt, type:"up"},
+    {l:"Price per\nperson", v:b.gross, type:"total"},
+  ];
+  const W = 780, H = 300, ml = 52, mr = 12, mt = 26, mb = 62;
+  const iw = W - ml - mr, ih = H - mt - mb;
+  const peak = Math.max(b.observed, b.induced, b.gross) * 1.14;
+  const y = v => mt + ih - (v / peak) * ih;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+
+  const tickStep = Math.pow(10, Math.floor(Math.log10(peak))) / 2;
+  for (let t = 0; t <= peak; t += tickStep){
+    svg.appendChild(svgEl("line", {x1:ml, x2:W-mr, y1:y(t), y2:y(t), class:"grid"}));
+    svg.appendChild(svgEl("text", {x:ml-7, y:y(t)+3.5, class:"tick", "text-anchor":"end"},
+                          Math.round(t/1000) + "k"));
+  }
+  const bw = iw / steps.length, bar = Math.min(46, bw * .62);
+  let run = 0;
+  steps.forEach((s, i) => {
+    const cx = ml + bw * (i + .5);
+    let top, h, fill;
+    if (s.type === "total"){
+      top = y(s.v); h = ih + mt - top; run = s.v; fill = "var(--accent)";
+    } else {
+      const from = run, to = run + s.v;
+      top = y(Math.max(from, to)); h = Math.abs(y(from) - y(to));
+      run = to; fill = s.v < 0 ? "var(--clay)" : "var(--gold)";
+    }
+    if (h < 2.2){                                  // a sliver would vanish
+      svg.appendChild(svgEl("rect", {x:cx-bar/2, y:top-1.1, width:bar, height:2.2, fill}));
+    } else {
+      svg.appendChild(svgEl("rect", {x:cx-bar/2, y:top, width:bar, height:h, fill, rx:1.5}));
+    }
+    svg.appendChild(svgEl("text",
+      {x:cx, y:top-6, class:"sval", "text-anchor":"middle",
+       fill:s.type==="total" ? "var(--ink)" : (s.v<0 ? "var(--clay)" : "var(--gold)")},
+      (s.type === "total" ? "" : (s.v < 0 ? "−" : "+")) +
+      naira(Math.abs(s.v)).replace("₦", s.type === "total" ? "₦" : "")));
+    if (i < steps.length - 1)
+      svg.appendChild(svgEl("line", {x1:cx+bar/2, x2:ml+bw*(i+1.5)-bar/2,
+        y1:y(run), y2:y(run), class:"grid", "stroke-dasharray":"3 3"}));
+    s.l.split("\n").forEach((line, k) =>
+      svg.appendChild(svgEl("text", {x:cx, y:H-mb+18+k*12, class:"slab",
+                                     "text-anchor":"middle"}, line)));
+  });
+  // the affordability line, so the gap is visible in the same frame
+  svg.appendChild(svgEl("line", {x1:ml, x2:W-mr, y1:y(S.contribution), y2:y(S.contribution),
+    stroke:"var(--clay)", "stroke-width":1.5}));
+  svg.appendChild(svgEl("text", {x:W-mr-3, y:y(S.contribution)-6, class:"slab",
+    "text-anchor":"end", fill:"var(--clay)"},
+    `what a member can pay  ${naira(S.contribution)}`));
+}
+
+function drawAfford(rows){
+  const svg = document.getElementById("afford");
+  clear(svg);
+  const W = 780, H = 210, ml = 44, mr = 14, mt = 16, mb = 46;
+  const iw = W - ml - mr, ih = H - mt - mb;
+  const peak = Math.max(30, ...rows.map(r => r.share)) * 1.1;
+  const y = v => mt + ih - (v / peak) * ih;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+  const step = peak > 60 ? 20 : 10;
+  for (let t = 0; t <= peak; t += step){
+    svg.appendChild(svgEl("line", {x1:ml, x2:W-mr, y1:y(t), y2:y(t), class:"grid"}));
+    svg.appendChild(svgEl("text", {x:ml-7, y:y(t)+3.5, class:"tick", "text-anchor":"end"}, t + "%"));
+  }
+  const bw = iw / rows.length, bar = Math.min(84, bw * .56);
+  rows.forEach((r, i) => {
+    const cx = ml + bw * (i + .5);
+    const over = r.share > 5;
+    svg.appendChild(svgEl("rect", {x:cx-bar/2, y:y(r.share), width:bar,
+      height:ih + mt - y(r.share), rx:2, fill:over ? "var(--clay)" : "var(--accent)"}));
+    svg.appendChild(svgEl("text", {x:cx, y:y(r.share)-6, class:"sval", "text-anchor":"middle",
+      fill:over ? "var(--clay)" : "var(--accent)"}, pct(r.share, r.share < 10 ? 1 : 0)));
+    svg.appendChild(svgEl("text", {x:cx, y:H-mb+18, class:"slab", "text-anchor":"middle"}, r.short));
+    svg.appendChild(svgEl("text", {x:cx, y:H-mb+31, class:"tick", "text-anchor":"middle"},
+      naira(r.consPc)));
+  });
+  svg.appendChild(svgEl("line", {x1:ml, x2:W-mr, y1:y(5), y2:y(5),
+    stroke:"var(--ink-2)", "stroke-width":1.5, "stroke-dasharray":"5 3"}));
+  svg.appendChild(svgEl("text", {x:ml+4, y:y(5)-6, class:"slab", "text-anchor":"start",
+    fill:"var(--ink-2)"}, "5% affordability line"));
+}
+
+function drawRuin(cp, gross){
+  const svg = document.getElementById("ruincurve");
+  clear(svg);
+  const W = 780, H = 250, ml = 46, mr = 16, mt = 16, mb = 48;
+  const iw = W - ml - mr, ih = H - mt - mb;
+  const maxS = Math.max(gross * 2.6, 1000);
+  const x = v => ml + (v / maxS) * iw;
+  const y = p => mt + ih - Math.min(p, 1) * ih;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("width", W); svg.setAttribute("height", H);
+
+  for (let p = 0; p <= 1.0001; p += .25){
+    svg.appendChild(svgEl("line", {x1:ml, x2:W-mr, y1:y(p), y2:y(p), class:"grid"}));
+    svg.appendChild(svgEl("text", {x:ml-7, y:y(p)+3.5, class:"tick", "text-anchor":"end"},
+                          Math.round(p*100) + "%"));
+  }
+  const xstep = maxS > 60000 ? 20000 : 10000;
+  for (let v = 0; v <= maxS; v += xstep){
+    svg.appendChild(svgEl("line", {x1:x(v), x2:x(v), y1:mt, y2:mt+ih, class:"grid"}));
+    svg.appendChild(svgEl("text", {x:x(v), y:H-mb+16, class:"tick", "text-anchor":"middle"},
+                          "₦" + (v/1000) + "k"));
+  }
+  const takeLabels = {random:"Everyone alike", moderate:"Sicker lean in", strong:"Only the sick"};
+  const colours = {random:"var(--accent)", moderate:"var(--gold)", strong:"var(--crit)"};
+  const legend = document.getElementById("ruin-legend");
+  legend.innerHTML = "";
+  for (const tk of ["random","moderate","strong"]){
+    const cpk = claimsPaths({...S, takeup:tk});
+    let d = "";
+    for (let i = 0; i <= 60; i++){
+      const s = maxS * i / 60;
+      const p = ruinProb(cpk, {...S, takeup:tk}, s);
+      d += (i ? "L" : "M") + x(s).toFixed(1) + " " + y(p).toFixed(1);
+    }
+    svg.appendChild(svgEl("path", {d, fill:"none", stroke:colours[tk],
+      "stroke-width":tk === S.takeup ? 2.6 : 1.3,
+      "stroke-opacity":tk === S.takeup ? 1 : .5}));
+    const sp = document.createElement("span");
+    sp.innerHTML = `<i style="background:${colours[tk]}"></i>${takeLabels[tk]}` +
+                   (tk === S.takeup ? " <b>(shown)</b>" : "");
+    legend.appendChild(sp);
+  }
+  for (const [t, lab, anchorX, anchor] of
+       [[.05, "5% risk of running out", ml + 6, "start"],
+        [.01, "1%", W - mr - 3, "end"]]){
+    svg.appendChild(svgEl("line", {x1:ml, x2:W-mr, y1:y(t), y2:y(t),
+      stroke:"var(--ink-3)", "stroke-width":1, "stroke-dasharray":"4 3"}));
+    svg.appendChild(svgEl("text", {x:anchorX, y:y(t)-4, class:"tick",
+                                   "text-anchor":anchor}, lab));
+  }
+  svg.appendChild(svgEl("text", {x:ml+iw/2, y:H-6, class:"slab", "text-anchor":"middle"},
+                        "Government subsidy per member per year"));
+}
+
+/* --------------------------------------------------------------- render */
+function render(){
+  paintControls();
+  const b = buildUp(S);
+  const cp = claimsPaths(S);
+  const need5 = minSubsidy(cp, S, .05, b.gross * 4);
+  const need1 = minSubsidy(cp, S, .01, b.gross * 4);
+  const psi0 = ruinProb(cp, S, 0);
+  const gap = b.gross - S.contribution;
+
+  /* verdict */
+  document.getElementById("sentence").innerHTML =
+    `Covering one informal-sector Nigerian for a year costs <span class="v">${naira(b.gross)}</span>. ` +
+    `The people this is meant to reach can pay about <span class="g">${naira(S.contribution)}</span>. ` +
+    (gap > 0
+      ? `Someone has to find the <span class="g">${naira(gap)}</span> in between.`
+      : `At these settings the contribution covers the price.`);
+
+  const maxBar = Math.max(b.gross, S.contribution, 1);
+  document.getElementById("gapbars").innerHTML = [
+    ["What cover costs", b.gross, "var(--accent)", false],
+    ["What people can pay", S.contribution, "var(--clay)", false],
+    ["The subsidy needed", Math.max(gap, 0), "var(--rule)", true],
+  ].map(([l, v, c, pale]) => `
+    <div class="gaprow"><div class="gaplab">${l}</div>
+      <div class="track"><div class="fill${pale ? " pale" : ""}"
+        style="width:${Math.max(2, 100*v/maxBar)}%;background:${c}">
+        <span>${naira(v)}</span></div></div></div>`).join("");
+
+  /* premium */
+  drawWaterfall(b);
+  document.getElementById("premium-stats").innerHTML = [
+    ["Claims cost per person", naira(b.pure), "the pure premium", ""],
+    ["Price per person", naira(b.gross), "with running costs and margins", "good"],
+    ["Extra care once insured", "+" + pct(b.inducedUplift), "more use at a lower price", ""],
+    ["Cost for a family of five", naira(b.gross * 5), "at the price above", ""],
+  ].map(([k, v, d, cls]) =>
+    `<div class="stat ${cls}"><div class="k">${k}</div><div class="v">${v}</div>
+     <div class="d">${d}</div></div>`).join("");
+
+  /* affordability */
+  const rows = D.quintiles.map((q, i) => ({
+    label:q.label, short:["Poorest","2nd","Middle","4th","Richest"][i],
+    consPc:q.cons_pc, hhsize:q.hhsize,
+    share:100 * b.gross / q.cons_pc, hh:b.gross * q.hhsize,
+  }));
+  drawAfford(rows);
+  document.querySelector("#afford-table tbody").innerHTML = rows.map(r => `
+    <tr><td>${r.label}</td><td>${naira(r.consPc)}</td><td>${pct(r.share)}</td>
+    <td>${naira(r.hh)}</td>
+    <td>${r.share <= 5 ? '<span class="pill ok">Yes</span>'
+                       : '<span class="pill no">No</span>'}</td></tr>`).join("");
+
+  /* solvency */
+  drawRuin(cp, b.gross);
+  const stateCost = isNaN(need5) ? null : need5 * 100000;
+  const psiPill = psi0 > .5 ? "crit" : psi0 > .05 ? "warn" : "ok";
+  document.getElementById("ruin-stats").innerHTML = [
+    ["Chance of running out with no subsidy", pct(psi0 * 100, 1),
+     `over ${S.years} year${S.years > 1 ? "s" : ""}`, psi0 > .05 ? "crit" : "good"],
+    ["Subsidy to get that under 5%", isNaN(need5) ? "beyond the grid" : naira(need5),
+     "per member per year", "bad"],
+    ["Subsidy to get it under 1%", isNaN(need1) ? "beyond the grid" : naira(need1),
+     "per member per year", "bad"],
+    ["Bill for 100,000 members", stateCost == null ? "—" : nairaK(stateCost),
+     "a year, at the 5% target", "warn"],
+  ].map(([k, v, d, cls]) =>
+    `<div class="stat ${cls}"><div class="k">${k}</div><div class="v">${v}</div>
+     <div class="d">${d}</div></div>`).join("");
+
+  const ro = document.getElementById("readout");
+  const shareOfPrice = isNaN(need5) ? null : 100 * need5 / b.gross;
+  ro.className = "readout" + (psi0 > .05 ? " alarm" : "");
+  ro.innerHTML = isNaN(need5)
+    ? `<b>At these settings the pool cannot be made safe by subsidy alone</b> within four
+       times the premium. Claims per member have outrun what any plausible transfer covers
+       — usually a sign that the package is too generous or that only the sick have joined.`
+    : `A pool of <b>${S.pool.toLocaleString()}</b> members paying
+       <b>${naira(S.contribution)}</b> each needs <b>${naira(need5)}</b> per member from
+       government — <b>${pct(shareOfPrice, 0)}</b> of the full price — to keep the chance of
+       running out below 5% over ${S.years} year${S.years > 1 ? "s" : ""}.
+       ${psi0 > .5
+         ? "Without that subsidy the scheme fails almost certainly."
+         : `Without it the chance of failure is ${pct(psi0 * 100, 1)}.`}
+       Tightening the target from 5% to 1% costs only
+       <b>${naira(Math.max(0, need1 - need5))}</b> more per member; switching from everyone
+       joining alike to only the sick joining costs far more. <b>Who enrols matters more
+       than how many.</b>`;
+}
+
+/* ----------------------------------------------------------------- boot */
+document.getElementById("prov-n").textContent =
+  `${D.meta.n_households.toLocaleString()} households, ` +
+  `${D.meta.n_individuals.toLocaleString()} people`;
+document.getElementById("prov-base").textContent = D.meta.price_base;
+document.getElementById("foot-base").textContent = D.meta.price_base;
+document.getElementById("foot-gen").textContent =
+  `Model payload generated ${D.meta.generated}` +
+  (D.meta.git_rev ? ` from revision ${D.meta.git_rev}` : "") + ".";
+document.getElementById("reset").addEventListener("click", () => {
+  S = {...BASE}; markPreset("paper"); syncInputs(); render();
+});
+buildControls();
+markPreset("paper");
+render();
+</script>
