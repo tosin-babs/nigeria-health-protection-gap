@@ -50,7 +50,20 @@ POVERTY_LINE_2019 = 137_430.0
 # in the pipeline; both are set in one place so they can be re-verified.
 # [VERIFY] against NBS CPI releases before the manuscript goes out.
 CPI_BASE_LABEL = "August 2023"
-CPI_W4_TO_W5 = 3.05   # composite CPI Aug-2023 / Sep-2018, NBS  [VERIFY]
+
+# Derivation, so this can be re-checked rather than taken on trust:
+#   Target   NBS all-items CPI, August 2023          = 593.6  (Nov 2009 = 100)
+#   Base     the 2018/19 survey period. GHS-W4 was fielded Jul-Sep 2018 and
+#            Jan-Feb 2019; the NLSS that sets the poverty line ran Sep 2018 to
+#            Oct 2019. Annual-average all-items CPI was 240.1 in 2018 and 267.5
+#            in 2019, so a fieldwork-weighted base is about 257.5.
+#   Ratio    593.6 / 257.5 = 2.31
+# Anchoring instead on September 2018 alone (about 247.4) gives 2.40, so the
+# plausible range is roughly 2.3-2.4. The poverty-line sensitivity in Table 8c
+# spans 0.5x to 1.5x the resulting line and comfortably covers that range.
+# [VERIFY] against the NBS monthly CPI series before submission - replace the
+# interpolated base with the published index for the exact month.
+CPI_W4_TO_W5 = 2.31
 
 # ------------------------------------------------- health module recalls ----
 OUTPATIENT_RECALL_WEEKS = 4.0     # s3q5-s3q17a: illness and care in the last 4 weeks

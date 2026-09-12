@@ -126,6 +126,17 @@ the latter because section 14 of the NHIA Act 2022 obliges employers with five
 or more staff to enrol their workers. Three alternative rules are tested in
 Table 8.
 
+## Provenance
+
+`SOURCES.md` lists every number in this project that did not come out of the
+survey: the CPI deflator and its derivation, the poverty line, each
+benefit-package assumption, the published state-scheme premiums, and every
+contextual statistic quoted in the paper — each with its issuing agency and a
+URL. Every DOI in the manuscript was checked against the Crossref REST API
+rather than from memory. Two items remain open and are flagged both there and in
+the paper: the five health-module cost variables, and the exact NBS monthly
+index behind the deflator.
+
 ## Citation
 
 Babalola, O. D. (2026). *Measuring the Health-Protection Gap and Actuarially

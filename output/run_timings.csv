@@ -1,9 +1,9 @@
 stage,seconds
-Build analysis files,4.3
+Build analysis files,4.1
 RQ1  Catastrophic expenditure,0.2
-RQ2a Cost models,2.6
+RQ2a Cost models,2.7
 RQ2b Premium build-up,18.3
-RQ3  Pool solvency,8.9
+RQ3  Pool solvency,8.6
 RQ4  Coverage counterfactual,0.1
-Robustness,433.5
-Figures,1.1
+Robustness,439.1
+Figures,1.3

@@ -218,13 +218,22 @@ def state_scheme_comparison(gross_per_person):
     own published schedule before the manuscript is submitted. They are context
     for the modelled premium, not an input to it.
     """
+    # Verified against the Lagos State announcement of 17 July 2024 launching
+    # the Ilera Eko "Standard Jaara" plan. These are nominal July-2024 naira
+    # against a premium in August-2023 naira, so the real gap is wider than the
+    # nominal ratio below: Nigerian headline inflation over that year was around
+    # a third. Ilera Eko's benefit package is also not the NHIA basic package
+    # priced here, so this is a plausibility check, not a like-for-like test.
     rows = [
-        {"scheme": "Lagos LASHMA 'Ilera Eko', individual informal-sector plan",
-         "annual_premium_naira": 40_000, "year": 2024, "source": "[VERIFY]"},
-        {"scheme": "Lagos LASHMA 'Ilera Eko', family of six",
-         "annual_premium_naira": 100_000, "year": 2024, "source": "[VERIFY]"},
-        {"scheme": "NHIA formal-sector equivalent capitation (indicative)",
-         "annual_premium_naira": 30_000, "year": 2024, "source": "[VERIFY]"},
+        {"scheme": "Lagos LASHMA 'Ilera Eko' Standard, individual",
+         "annual_premium_naira": 15_000, "year": 2024,
+         "source": "Lagos State launch announcement, 17 Jul 2024"},
+        {"scheme": "Lagos LASHMA 'Ilera Eko' Standard, family of four",
+         "annual_premium_naira": 55_000, "year": 2024,
+         "source": "Lagos State launch announcement, 17 Jul 2024"},
+        {"scheme": "Lagos LASHMA 'Ilera Eko' Standard, family of six",
+         "annual_premium_naira": 80_000, "year": 2024,
+         "source": "Lagos State launch announcement, 17 Jul 2024"},
     ]
     out = pd.DataFrame(rows)
     out["modelled_premium_per_person"] = gross_per_person
