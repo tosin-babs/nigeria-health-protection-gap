@@ -13,12 +13,28 @@ loading and pool levers and watch the premium, the affordability gap and the poo
 probability of ruin recompute. It ships the aggregated cost distribution the model
 needs, never the microdata.
 
-**https://claude.ai/code/artifact/fbb10135-4031-4cc9-9697-046927ddc746**
+**https://nigeria-health-protection-gap.vercel.app**
 
-Build it with `python/export_tool_data.py` (writes `tool/model_data.json`, and checks
-that the compressed payload reproduces the paper's pure premium) then
-`python/build_tool.py` (inlines that payload into `tool/index.template.html` to give
-`tool/index.html`).
+It is a single self-contained HTML file with no build step, no framework and no
+runtime data fetch, deployed as a static site.
+
+```bash
+.venv/bin/python python/export_tool_data.py   # -> tool/model_data.json
+.venv/bin/python python/build_tool.py         # -> tool/index.html
+cd tool && vercel deploy --prod
+```
+
+`export_tool_data.py` collapses the individual file to the 875 distinct
+(outpatient, inpatient, traditional) cost triples the model is a function of, and
+asserts that the collapsed payload reproduces the paper's pure premium to within
+1e-4 before writing it. `build_tool.py` inlines that payload into
+`tool/index.template.html` and wraps the result in a complete HTML document.
+
+The browser cannot run the paper's ruin simulation - 10,000 multinomial draws over
+750 cost values per pool-year - so the page matches the first three moments of the
+same distribution with a translated gamma. Against the paper's own simulation the
+two agree to within 0.35% at the 99.9th percentile of annual claims for every pool
+size and take-up pattern the page offers.
 
 ## What the code does
 

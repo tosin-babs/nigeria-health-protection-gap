@@ -704,9 +704,14 @@ function drawWaterfall(b){
   // the affordability line, so the gap is visible in the same frame
   svg.appendChild(svgEl("line", {x1:ml, x2:W-mr, y1:y(S.contribution), y2:y(S.contribution),
     stroke:"var(--clay)", "stroke-width":1.5}));
-  svg.appendChild(svgEl("text", {x:W-mr-3, y:y(S.contribution)-6, class:"slab",
-    "text-anchor":"end", fill:"var(--clay)"},
-    `what a member can pay  ${naira(S.contribution)}`));
+  // Every subtotal bar runs down to zero, so this label sits over one of them
+  // wherever it is put. Give it a plate in the card colour so it stays legible.
+  const capLabel = `what a member can pay  ${naira(S.contribution)}`;
+  const capW = capLabel.length * 5.5 + 10;
+  svg.appendChild(svgEl("rect", {x:W-mr-capW, y:y(S.contribution)-17, width:capW,
+    height:14, fill:"var(--card)", rx:2}));
+  svg.appendChild(svgEl("text", {x:W-mr-5, y:y(S.contribution)-6, class:"slab",
+    "text-anchor":"end", fill:"var(--clay)"}, capLabel));
 }
 
 function drawAfford(rows){

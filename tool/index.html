@@ -1,3 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="An interactive calculator for the price, affordability and solvency of informal-sector health cover in Nigeria under the NHIA Act 2022, built on the 2023/24 General Household Survey-Panel.">
+<meta name="author" content="Oluwatosin Dorcas Babalola">
+<meta property="og:title" content="The Naira Gap">
+<meta property="og:description" content="What health cover costs in Nigeria, and what people can pay.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A9%BA%3C/text%3E%3C/svg%3E">
+<style>
+  :root{color-scheme:light dark}
+  html{-webkit-text-size-adjust:100%}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+</style>
 <title>The Naira Gap</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -203,7 +220,8 @@ footer p{margin:0 0 8px; max-width:88ch}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
 </style>
-
+</head>
+<body>
 <header>
   <div class="wrap head">
     <div>
@@ -704,9 +722,14 @@ function drawWaterfall(b){
   // the affordability line, so the gap is visible in the same frame
   svg.appendChild(svgEl("line", {x1:ml, x2:W-mr, y1:y(S.contribution), y2:y(S.contribution),
     stroke:"var(--clay)", "stroke-width":1.5}));
-  svg.appendChild(svgEl("text", {x:W-mr-3, y:y(S.contribution)-6, class:"slab",
-    "text-anchor":"end", fill:"var(--clay)"},
-    `what a member can pay  ${naira(S.contribution)}`));
+  // Every subtotal bar runs down to zero, so this label sits over one of them
+  // wherever it is put. Give it a plate in the card colour so it stays legible.
+  const capLabel = `what a member can pay  ${naira(S.contribution)}`;
+  const capW = capLabel.length * 5.5 + 10;
+  svg.appendChild(svgEl("rect", {x:W-mr-capW, y:y(S.contribution)-17, width:capW,
+    height:14, fill:"var(--card)", rx:2}));
+  svg.appendChild(svgEl("text", {x:W-mr-5, y:y(S.contribution)-6, class:"slab",
+    "text-anchor":"end", fill:"var(--clay)"}, capLabel));
 }
 
 function drawAfford(rows){
@@ -901,3 +924,5 @@ buildControls();
 markPreset("paper");
 render();
 </script>
+</body>
+</html>

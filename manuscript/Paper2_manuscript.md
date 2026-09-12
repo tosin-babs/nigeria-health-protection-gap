@@ -246,7 +246,7 @@ Closing Nigeria's health-protection gap is affordable only as public expenditure
 
 ## Declarations
 
-**Data availability.** The GHS-Panel microdata are publicly available from the World Bank Microdata Library subject to registration and are not redistributed. All analysis code is available at https://github.com/tosin-babs/nigeria-health-protection-gap and will be archived with a Zenodo DOI on submission. An interactive calculator that reruns the pricing and solvency model in the browser is linked from the repository README.
+**Data availability.** The GHS-Panel microdata are publicly available from the World Bank Microdata Library subject to registration and are not redistributed. All analysis code is available at https://github.com/tosin-babs/nigeria-health-protection-gap and will be archived with a Zenodo DOI on submission. An interactive calculator that reruns the pricing and solvency model in the browser is available at https://nigeria-health-protection-gap.vercel.app.
 
 **Code availability.** Complete, seeded reproduction code in Python at https://github.com/tosin-babs/nigeria-health-protection-gap; see the repository README for the script order and environment.
 
