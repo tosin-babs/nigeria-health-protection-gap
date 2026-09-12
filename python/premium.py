@@ -172,21 +172,34 @@ def premium_buildup(d, weight_col="ind_weight", pool_sizes=None,
 # ---------------------------------------------------------------------------
 def affordability(hh, gross_per_person, pool_size=20_000,
                   basis="Standard deviation"):
-    """Premium as a share of consumption, by quintile, per person and per household."""
+    """Premium as a share of consumption, by quintile, per person and per household.
+
+    Two household sizes are reported, because they answer different questions and
+    the quintiles here are quintiles of *people* ranked on per-capita consumption.
+    The population-weighted mean is the size of the household the average person
+    in the quintile lives in; the household-weighted mean is the size of the
+    average household in it. In the poorest quintile these are 10.0 and 8.1 -
+    poor households are large, which is much of why their per-capita consumption
+    is low. A premium billed to a household is charged once per household, so
+    `premium_per_household` uses the household-weighted size; the per-capita
+    share, which is the affordability test, is unaffected by the choice.
+    """
     d = Design(hh, "popwt", config.STRATA, "cluster")
+    dh = Design(hh, config.HH_WEIGHT, config.STRATA, "cluster")
     rows = []
     for q in sorted(hh["quintile"].unique()):
         mask = (hh["quintile"] == q).to_numpy()
         sub = d.subset(mask)
         cons_pc, _ = sub.mean(hh["cons_pc"].to_numpy(float))
-        size, _ = sub.mean(hh["hhsize"].to_numpy(float))
-        hh_premium = gross_per_person * size
+        size_pop, _ = sub.mean(hh["hhsize"].to_numpy(float))
+        size_hh, _ = dh.subset(mask).mean(hh["hhsize"].to_numpy(float))
         rows.append({
             "quintile": hh.loc[mask, "quintile_label"].iloc[0],
             "mean_consumption_per_capita": cons_pc,
-            "mean_household_size": size,
+            "mean_household_size": size_hh,
+            "mean_household_size_pop_weighted": size_pop,
             "premium_per_person": gross_per_person,
-            "premium_per_household": hh_premium,
+            "premium_per_household": gross_per_person * size_hh,
             "premium_pct_of_per_capita_consumption": 100 * gross_per_person / cons_pc,
             "exceeds_5pct_threshold":
                 gross_per_person / cons_pc > config.AFFORDABILITY_THRESHOLD,

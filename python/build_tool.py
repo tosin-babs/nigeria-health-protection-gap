@@ -19,6 +19,7 @@ Writes tool/index.html.
 from __future__ import annotations
 
 import json
+import re
 
 import config
 
@@ -70,8 +71,12 @@ def main():
     page = template.replace(MARKER, data)
 
     # The fragment's <title>, <link> and <style> belong in <head>; everything
-    # from the first <header> element on is body content.
-    split = page.index("<header>")
+    # from the first <header> element on is body content. Match the tag name
+    # only, so adding attributes to it does not break the build.
+    match = re.search(r"<header[\s>]", page)
+    if match is None:
+        raise SystemExit("template has no <header> element to split on")
+    split = match.start()
     document = HEAD + page[:split].rstrip() + "\n</head>\n<body>\n" \
         + page[split:].rstrip() + TAIL
 

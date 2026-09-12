@@ -86,12 +86,15 @@ def main():
 
     # ------------------------------------------------------------ quintiles ----
     d = Design(hh, "popwt", config.STRATA, "cluster")
+    dh = Design(hh, config.HH_WEIGHT, config.STRATA, "cluster")
     quintiles = []
     for q in sorted(hh["quintile"].unique()):
         mask = (hh["quintile"] == q).to_numpy()
         sub = d.subset(mask)
         cons_pc, _ = sub.mean(hh["cons_pc"].to_numpy(float))
-        size, _ = sub.mean(hh["hhsize"].to_numpy(float))
+        # Household-weighted: a premium is billed once per household, so the
+        # average household is the right unit. See premium.affordability().
+        size, _ = dh.subset(mask).mean(hh["hhsize"].to_numpy(float))
         informal_mask = mask & (hh["informal"] == 1).to_numpy()
         icons, _ = d.subset(informal_mask).mean(hh["cons_pc"].to_numpy(float))
         quintiles.append({
