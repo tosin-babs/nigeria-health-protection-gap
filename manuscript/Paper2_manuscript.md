@@ -306,8 +306,6 @@ Closing Nigeria's health-protection gap is affordable only as public expenditure
 
 **Code availability.** Complete, seeded reproduction code in Python at https://github.com/tosin-babs/nigeria-health-protection-gap; see the repository README for the script order and environment. The full pipeline runs end to end from the raw survey files in about eight minutes.
 
-**Funding.** *[to be completed]*
-
 **Competing interests.** None declared.
 
 **Ethics.** The analysis uses de-identified secondary survey data and did not require ethical approval.
