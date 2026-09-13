@@ -1,5 +1,9 @@
 """
-Figures 1-7 in a plain journal style.
+The seven figures, in a plain journal style.
+
+The figures carry no "Figure N" label of their own: the manuscript numbers them
+in reading order, which is not the order they are generated in, and a number
+baked into the artwork would contradict its caption.
 
 Everything is drawn from the CSVs the analysis scripts wrote, so a figure can
 never disagree with the table it belongs to.
@@ -56,7 +60,7 @@ def figure1_che_by_quintile():
     ax.set_xticks(x)
     ax.set_xticklabels(order)
     ax.set_ylabel("Households affected (%)")
-    ax.set_title("Figure 1  Catastrophic health expenditure by consumption quintile")
+    ax.set_title("Catastrophic health expenditure by consumption quintile")
     ax.legend(loc="upper center", ncol=3, bbox_to_anchor=(0.5, -0.13))
     _save(fig, "figure1_che_by_quintile")
 
@@ -86,7 +90,7 @@ def figure2_ruin():
         ax.set_xlabel("Subsidy per enrollee (N '000/year)")
     axes[0].set_ylabel("Probability of ruin over 3 years (%)")
     axes[0].legend(loc="upper right")
-    fig.suptitle("Figure 2  Pool solvency against subsidy, by take-up and pool size",
+    fig.suptitle("Pool solvency against subsidy, by take-up and pool size",
                  fontsize=10, fontweight="bold", y=1.03)
     _save(fig, "figure2_ruin_vs_subsidy")
 
@@ -118,7 +122,7 @@ def figure3_counterfactual():
     ax.set_xticks(x)
     ax.set_xticklabels(order)
     ax.set_ylabel("Households above the 10% threshold (%)")
-    ax.set_title("Figure 3  Catastrophic spending under coverage scenarios")
+    ax.set_title("Catastrophic spending under coverage scenarios")
     ax.legend(loc="upper center", ncol=3, bbox_to_anchor=(0.5, -0.13), fontsize=8)
     _save(fig, "figure3_counterfactual")
 
@@ -151,7 +155,7 @@ def figure4_premium_vs_affordability():
     ax2.set_ylabel("Premium as % of per-capita consumption")
     ax2.set_title("Premium burden by quintile", fontsize=9, fontweight="normal")
     ax2.legend(fontsize=8)
-    fig.suptitle("Figure 4  Affordability of the actuarial premium",
+    fig.suptitle("Affordability of the actuarial premium",
                  fontsize=10, fontweight="bold", y=1.02)
     _save(fig, "figure4_affordability")
 
@@ -180,7 +184,7 @@ def figure5_model_fit():
     ax2.set_xlabel("Tweedie variance power p")
     ax2.set_ylabel("Profile log-likelihood")
     ax2.set_title("Profile likelihood for p", fontsize=9, fontweight="normal")
-    fig.suptitle("Figure 5  Cost-model diagnostics", fontsize=10,
+    fig.suptitle("Cost-model diagnostics", fontsize=10,
                  fontweight="bold", y=1.02)
     _save(fig, "figure5_model_fit")
 
@@ -223,7 +227,7 @@ def figure6_concentration_curves():
 
     ax.set_xlabel("Cumulative share of population,\npoorest to richest")
     ax.set_ylabel("Cumulative share of affected households")
-    ax.set_title("Figure 6  Who bears catastrophic\nhealth expenditure")
+    ax.set_title("Who bears catastrophic\nhealth expenditure")
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.set_aspect("equal")
@@ -291,7 +295,7 @@ def figure7_premium_waterfall():
     ax.set_xticklabels(labels, fontsize=7.5)
     ax.tick_params(axis="x", length=0, pad=3)
     ax.set_ylabel("Naira per person per year ('000)")
-    ax.set_title("Figure 7  From observed spending to the gross premium "
+    ax.set_title("From observed spending to the gross premium "
                  "(20,000-life pool)")
     ax.set_xlim(-0.6, len(labels) - 0.4)
     ax.set_ylim(0, 31)

@@ -85,9 +85,17 @@ def apply_scenario(ind, hh, scenario, contribution, rng):
     for c_ in ["oop_new", "contribution_paid", "n_covered"]:
         out[c_] = out[c_].fillna(0.0)
 
-    # Total consumption is held fixed except for the change in health payments:
-    # money no longer spent on care is spent on something else, and the
-    # contribution is a new call on the same budget.
+    # Non-health consumption is what is held fixed; the total moves with health
+    # payments. Baseline consumption already contains observed out-of-pocket
+    # spending, so that component is swapped out for the counterfactual one and
+    # any premium is added, exactly as the survey's own consumption module
+    # treats a health-insurance premium (non-food item 363).
+    #
+    # One consequence is worth flagging: on the out-of-pocket-only basis a
+    # contributory scheme scores *better* than the same scheme fully
+    # subsidised, because the premium enlarges the denominator while leaving
+    # the numerator alone. That is an artefact of the SDG 3.8.2 convention, not
+    # a real gain, and it is why the paper reports both payment bases.
     out["cons_new"] = (out["cons_annual"] - out["oop_annual"] + out["oop_new"]
                        + out["contribution_paid"]).clip(lower=1.0)
     out["health_payments_new"] = out["oop_new"] + out["contribution_paid"]

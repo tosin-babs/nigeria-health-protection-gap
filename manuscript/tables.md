@@ -346,7 +346,7 @@
 | Wagstaff & van Doorslaer (2003) | Vietnam 1993–98 | Budget-share CHE, overshoot | Separates incidence from intensity | No pricing |
 | Wagstaff et al. (2018) | 133 countries | Budget-share CHE, SDG 3.8.2 | Global monitoring baseline | Single definition |
 | Cylus et al. (2018) | Europe | Both definitions compared | Definitions give different pictures of who is affected | High-income setting |
-| Quintal (2019) | Portugal | Incidence vs concentration | Headcount and inequality can move oppositely | No pricing |
+| Quintal (2019) | Portugal, 3 HBS waves | CTP-based CHE, incidence and distribution | Distribution must be reported alongside incidence | No pricing |
 | Aregbeshola & Khan (2018) | Nigeria 2009/10 | Budget-share CHE, impoverishment | 16.4% at the 10% threshold | No pricing or solvency |
 | Edeh (2022) | Nigeria, multiple rounds | Decomposition over time | Traces CHE dynamics | No pricing or solvency |
 | Opeloyeru & Lawanson (2023) | Nigeria | Determinants regression | Identifies household correlates | No pricing or solvency |
@@ -354,11 +354,11 @@
 | Ipinnimo et al. (2022) | NHIA Act text | Policy analysis | Vulnerable-group financing is the open question | No quantification |
 | Ahmad & Lucero-Prisno (2022) | NHIA Act text | Commentary | Mandate does not create fiscal space | No quantification |
 | Adewole et al. (2021) | NHIS enrolee data | Geospatial analysis | Access shapes use even among the insured | Formal sector only |
-| Artignan & Bellanger (2021) | Sub-Saharan Africa | Rapid review of CBHI | Utilisation rises; population protection does not | No premium or ruin model |
+| Artignan & Bellanger (2021) | Sub-Saharan Africa, 16 studies | Rapid review of CBHI | Reviews effect on service use and equity in use | No premium or ruin model |
 | Onasanya (2020) | Informal economy | Conceptual | Enrolment mechanisms for informal workers | No quantification |
-| Jofre-Bonet & Kamara (2018) | Sierra Leone | Contingent valuation | WTP far below actuarial cost | No supply-side price, no solvency |
+| Jofre-Bonet & Kamara (2018) | Sierra Leone informal sector | Contingent valuation | Mean WTP ≈ USD 3.6/month, ≈5% of business income | Does not cost the package the premium must fund |
 | Smyth & Jørgensen (2002) | Insurance claims | Tweedie GLM | Compound Poisson–gamma for claims | Not health, not LMIC |
 | Wüthrich (2015) | Theory | Ruin theory to solvency capital | Links ruin probability to capital requirement | Not applied to health in an LMIC |
 | Manning et al. (1987) | RAND HIE, USA | Randomised experiment | Arc elasticity ≈ −0.2 | 1970s USA |
-| Boes & Gerfin (2015) | Switzerland | Quasi-experiment | Full insurance raises low-end utilisation | High-income setting |
+| Boes & Gerfin (2016) | Switzerland | Non-linear diff-in-diff | Elasticity ≈ −0.14; more people generate any cost | High-income setting |
 | **This paper** | **Nigeria GHS-Panel W5** | **CHE (both) + Tweedie + ruin + counterfactual** | **Price ₦25,864 vs ₦8,571 affordable; subsidy ₦15,523–₦50,210** | — |
