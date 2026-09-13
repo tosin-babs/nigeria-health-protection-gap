@@ -143,20 +143,37 @@ The World Bank catalogue confirms the module's scope: *"Section 5A (Savings and
 Insurance, questions 16-17c). This section records household-level information
 on insurance coverage."*
 
-### 5.2 Health-module cost fields — still to confirm
+### 5.2 Health-module cost fields — confirmed against the questionnaire
 
 The wave-5 CSV release ships without a codebook, so the health-module cost
 fields were identified from their response patterns across facility types
 (consultation fees are zero at most chemist shops but positive at hospitals;
 medicine spending is near-universal among those who sought care).
 
-| Variable | Read as | Recall |
+| Variable | Question wording | Recall |
 |---|---|---|
-| `s3q12` | Fee paid at the place of care | 4 weeks |
-| `s3q13` | Transport to the place of care (excluded by default) | 4 weeks |
-| `s3q17` | Spending on medicines and treatment | 4 weeks |
-| `s3q17a` | Other spending, e.g. tests | 4 weeks |
-| `s3q20` | Total paid for hospitalisation | 12 months |
+| `s3q12` | "How much did the household pay for [NAME]'s consultation with [Q9 1st choice], **excluding drugs**?" | 4 weeks |
+| `s3q13` | "How much did the household pay for [NAME]'s **transportation** to and from the [Q10]?" (excluded by default) | 4 weeks |
+| `s3q16` | "In the past 4 weeks, did the household spend any money for [NAME]'s drugs or medicines?" — gate for Q17/Q17a | 4 weeks |
+| `s3q17` | "How much did the household pay for [NAME]'s **prescription** drugs or medicines?" | 4 weeks |
+| `s3q17a` | "How much did the household pay for [NAME]'s **non-prescription** drugs or medicines?" | 4 weeks |
+| `s3q20` | "How much did the household pay for [NAME] to stay in the hospital or health facility in the last 12 months? **Include consultation costs, medical procedures and drugs/medicines**" | 12 months |
+
+Source: Post-Planting Household Questionnaire, Section 3 (Health), pages 48–49 —
+[catalogue 6410, document 180528](https://microdata.worldbank.org/catalog/6410/download/180528).
+
+Q16/Q17/Q17a explicitly *exclude* drugs related to hospital admissions and Q20
+explicitly *includes* them, so outpatient and inpatient spending do not overlap.
+
+**One earlier reading was wrong.** `s3q17a` was read as tests and other costs; it
+is non-prescription drugs. The out-of-pocket total is unaffected — the same three
+fields are summed either way — but the drug share of outpatient spending is not.
+It is now measured at **86.25%** (Q17+Q17a over Q12+Q17+Q17a) against an assumed
+60%, and because drugs carry the co-payment and respond less to a price fall than
+free-at-point-of-use services, the gross premium falls from ₦26,912 to ₦25,864.
+`build_data.py` recomputes the share on every run and prints it against the config
+value.
+
 
 The catalogue describes Section 3 as recording *"individual-level information on
 general health status, healthcare utilization and costs, functioning and

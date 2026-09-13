@@ -2,5 +2,5 @@ step,naira_per_person_year,change
 Observed out-of-pocket cost per person-year,19674.593918041122,
   less traditional and spiritual care,19320.153001507173,-354.44091653394935
   less services outside the basic package (outpatient 85% / inpatient 90% covered),16487.494087189494,-2832.658914317679
-  plus induced demand (arc elasticity -0.20),22414.3779137378,5926.883826548306
-  less member co-payment on drugs (10%),21195.07021354013,-1219.3077001976708
+  plus induced demand (arc elasticity -0.20),22122.078122594525,5634.584035405031
+  less member co-payment on drugs (10%),20369.323303560373,-1752.7548190341513

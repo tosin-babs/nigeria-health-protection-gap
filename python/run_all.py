@@ -29,6 +29,9 @@ STAGES = [
     ("RQ4  Coverage counterfactual", "counterfactual"),
     ("Robustness", "robustness"),
     ("Figures", "exhibits"),
+    ("Calculator payload", "export_tool_data"),
+    ("Manuscript number check", "check_manuscript"),
+    ("Submission documents", "make_manuscript"),
 ]
 
 

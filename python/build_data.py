@@ -305,13 +305,19 @@ def employment_w5():
 def health_w5():
     """Individual utilisation and out-of-pocket cost from the health module.
 
-    Cost fields (verified empirically against facility type; [VERIFY] against
+    Cost fields, confirmed against the Post-Planting Household Questionnaire
+    (World Bank Microdata catalogue 6410, document 180528), Section 3:
     the questionnaire before submission):
-      s3q12  fee paid at the place of care        (4-week recall)
-      s3q13  transport to the place of care       (4-week recall, excluded by default)
-      s3q17  spend on medicines and treatment     (4-week recall)
-      s3q17a other spend, e.g. tests              (4-week recall)
-      s3q20  total paid for hospitalisation       (12-month recall)
+      s3q12  consultation fee, explicitly excluding drugs   (4-week recall)
+      s3q13  transport to and from the facility             (4-week recall, excluded)
+      s3q17  prescription drugs and medicines               (4-week recall)
+      s3q17a non-prescription drugs and medicines           (4-week recall)
+      s3q20  hospital stay, including consultation,
+             procedures and drugs                           (12-month recall)
+
+    Q16/Q17/Q17a explicitly EXCLUDE drugs related to hospital admissions and
+    Q20 explicitly INCLUDES them, so outpatient and inpatient spending do not
+    overlap and can be summed.
     """
     h = read(config.W5_PP / "sect3_plantingw5.csv")
 
@@ -337,6 +343,16 @@ def health_w5():
     h["inpatient"] = yes(h["s3q18"]).fillna(0).astype(int)
     h["inpatient_nights"] = pd.to_numeric(h["s3q19"], errors="coerce").fillna(0)
     h["ip_cost_year"] = pd.to_numeric(h["s3q20"], errors="coerce").fillna(0)
+
+    # The questionnaire separates the consultation fee from the two drug
+    # fields, so the drug share of outpatient cost is measured rather than
+    # assumed. config.DRUG_SHARE_OF_OUTPATIENT should track this figure.
+    _op = fee + meds + other
+    _spend = _op > 0
+    if _spend.any():
+        share = float((meds + other)[_spend].sum() / _op[_spend].sum())
+        print(f"  drug share of outpatient spend: {share:.4f} "
+              f"(config has {config.DRUG_SHARE_OF_OUTPATIENT})")
 
     # Washington Group short set: severe functional difficulty in any domain.
     wg = [f"s3q{i}" for i in range(23, 29)]

@@ -26,7 +26,7 @@
   "COVERED_SHARE_INPATIENT": 0.9,
   "COVERED_SHARE_TRADITIONAL": 0.0,
   "COINSURANCE_DRUGS": 0.1,
-  "DRUG_SHARE_OF_OUTPATIENT": 0.6,
+  "DRUG_SHARE_OF_OUTPATIENT": 0.8625,
   "INDUCED_DEMAND_ELASTICITY": -0.2,
   "ELASTICITY_RANGE": [
     -0.1,
@@ -131,7 +131,7 @@
     "#f4b183",
     "#c0504d"
   ],
-  "_run_utc": "2026-09-12T21:34:00+00:00",
+  "_run_utc": "2026-09-13T00:17:21+00:00",
   "_numpy": "2.5.3",
   "_pandas": "3.0.5"
 }

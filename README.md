@@ -48,6 +48,9 @@ size and take-up pattern the page offers.
 | RQ4 Coverage counterfactual | `python/counterfactual.py` | Tables 7a-7c |
 | Section 5.6 robustness grid | `python/robustness.py` | Tables 8, 8b, 8c |
 | Figures | `python/exhibits.py` | `output/figures/*.png`, `*.pdf` |
+| Calculator payload | `python/export_tool_data.py` | `tool/model_data.json` |
+| Check the prose against the tables | `python/check_manuscript.py` | pass/fail |
+| Submission documents | `python/make_manuscript.py` | `manuscript/*.docx`, `*.pdf` |
 
 Two modules are shared infrastructure rather than analysis steps:
 `python/config.py` holds every analytic parameter in one place, and
@@ -66,7 +69,11 @@ python3 -m venv .venv
 ```
 
 Runs end to end in about ten minutes on a laptop; most of that is the
-robustness grid. Every random draw is seeded from `config.SEED`, and
+robustness grid. The last three steps rebuild the calculator payload, verify
+that every headline figure in the manuscript still matches the regenerated
+tables, and produce the submission `.docx` and `.pdf`. Building the documents
+needs pandoc (`brew install pandoc`); the PDF additionally uses headless Chrome
+rather than LaTeX. Every random draw is seeded from `config.SEED`, and
 `output/params_used.json` records the full parameter set and library versions
 used for the run that produced the current tables.
 

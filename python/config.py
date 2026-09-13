@@ -82,7 +82,13 @@ COVERED_SHARE_OUTPATIENT = 0.85   # share of outpatient spend falling inside the
 COVERED_SHARE_INPATIENT = 0.90    # share of inpatient spend inside the package
 COVERED_SHARE_TRADITIONAL = 0.0   # traditional / spiritual care is excluded
 COINSURANCE_DRUGS = 0.10          # NHIA 10% co-payment on drugs  [VERIFY current rule]
-DRUG_SHARE_OF_OUTPATIENT = 0.60   # drugs as a share of outpatient spend (from s3q17)
+# Measured, not assumed. The wave-5 questionnaire separates the consultation fee
+# (Q12, explicitly "excluding drugs") from prescription drugs (Q17) and
+# non-prescription drugs (Q17a). Summed over all outpatient episodes with any
+# spending, drugs are 86.25% of outpatient cost and the consultation fee 13.75%.
+# build_data.py recomputes and prints this on every run; it is kept here as a
+# lever so the robustness grid can move it.
+DRUG_SHARE_OF_OUTPATIENT = 0.8625  # drugs / (consultation + drugs), from Q12+Q17+Q17a
 INDUCED_DEMAND_ELASTICITY = -0.20  # RAND HIE arc elasticity (Manning et al. 1987)
 ELASTICITY_RANGE = (-0.10, -0.20, -0.35)
 
