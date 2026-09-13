@@ -253,6 +253,139 @@ def main():
     parts += [render(rob, cols, [None] + [auto(1) for _ in cols[1:]],
                      [c.replace("_", " ").capitalize() for c in cols])]
 
+
+    # ---- Table 3b ----------------------------------------------------------
+    d = pd.read_csv(T / "table3b_decomposition.csv")
+    parts += [caption("3b", "Decomposition of the concentration index.",
+                      "Descriptive, not causal: each row is a covariate's "
+                      "contribution to the measured concentration, not its "
+                      "effect."),
+              render(d, ["outcome", "variable", "beta", "mean_x", "CI_x",
+                         "contribution", "share_pct"],
+                     [None, None, auto(4), auto(3), auto(4), auto(4), auto(1)],
+                     ["Outcome", "Variable", "Beta", "Mean x", "CI of x",
+                      "Contribution", "Share %"])]
+
+    # ---- Table 4 -----------------------------------------------------------
+    d = pd.read_csv(T / "table4_cost_models.csv")
+    parts += [caption(4, "Frequency, severity and Tweedie model estimates.",
+                      "Survey-weighted, standard errors clustered on the "
+                      "enumeration area. exp(coef) is the multiplicative effect "
+                      "on the fitted mean."),
+              render(d, ["model", "term", "coef", "se", "z", "p", "exp_coef"],
+                     [None, None, auto(4), auto(4), auto(2), auto(3), auto(3)],
+                     ["Model", "Term", "Coef", "SE", "z", "p", "exp(coef)"])]
+
+    # ---- Table 5b ----------------------------------------------------------
+    d = pd.read_csv(T / "table5b_risk_margins.csv")
+    parts += [caption("5b", "Risk margin by pool size, on two conventions.",
+                      "Both shrink with scale, which is the actuarial argument "
+                      "for pooling."),
+              render(d, ["pool_size", "risk_margin_sd", "risk_margin_cvar",
+                         "sd_of_pool_mean"],
+                     [lambda x: f"{x:,.0f}", money, money, money],
+                     ["Pool size", "SD principle", "CVaR 95%",
+                      "SD of the pool mean"])]
+
+    # ---- Table 5e ----------------------------------------------------------
+    d = pd.read_csv(T / "table5e_risk_classes.csv")
+    parts += [caption("5e", "Risk relativities.",
+                      "Relative to the community average. The premium itself is "
+                      "community-rated, so these describe the risk structure "
+                      "rather than a rating table."),
+              render(d, ["dimension", "class", "n", "mean_insurer_cost",
+                         "relativity"],
+                     [None, None, lambda x: f"{x:,.0f}", money, auto(2)],
+                     ["Dimension", "Class", "n", "Mean insurer cost",
+                      "Relativity"])]
+
+    # ---- Table 5f ----------------------------------------------------------
+    d = pd.read_csv(T / "table5f_state_comparison.csv")
+    parts += [caption("5f", "The modelled premium against published state-scheme "
+                            "rates.",
+                      "A plausibility check, not a like-for-like test: the Ilera "
+                      "Eko package is not the NHIA basic package, and the "
+                      "published rates are nominal July-2024 naira."),
+              render(d, ["scheme", "annual_premium_naira",
+                         "modelled_premium_per_person",
+                         "ratio_modelled_to_published"],
+                     [None, money, money, auto(2)],
+                     ["Scheme", "Published premium", "Modelled premium",
+                      "Ratio"])]
+
+    # ---- Table 6b ----------------------------------------------------------
+    d = pd.read_csv(T / "table6b_ruin_scenarios.csv")
+    d = d[(d["years"] == 3) & (d["initial_capital_mult"] == 0.0)
+          & (d["subsidy_fraction_of_premium"].isin([0.0, 0.25, 0.50, 0.75,
+                                                    1.00, 1.50, 2.00]))]
+    parts += [caption("6b", "Probability of ruin over three years, no opening "
+                            "capital.",
+                      "The full grid, across every pool size, take-up pattern "
+                      "and capital level, is in output/tables."),
+              render(d, ["pool_size", "take_up", "subsidy_fraction_of_premium",
+                         "subsidy_per_enrollee", "psi", "mc_se"],
+                     [lambda x: f"{x:,.0f}", None, lambda x: f"{x:.0%}", money,
+                      auto(4), auto(4)],
+                     ["Pool size", "Take-up", "Subsidy", "Per enrollee",
+                      "Ruin probability", "MC SE"])]
+
+    # ---- Table 6d ----------------------------------------------------------
+    d = pd.read_csv(T / "table6d_inflation_stress.csv")
+    parts += [caption("6d", "Medical-inflation stress."),
+              render(d, ["medical_inflation_shock", "take_up", "pool_size",
+                         "ruin_target", "min_subsidy_per_enrollee"],
+                     [lambda x: f"{x:.0%}", None, lambda x: f"{x:,.0f}",
+                      lambda x: f"{x:.0%}", money],
+                     ["Shock", "Take-up", "Pool size", "Ruin target",
+                      "Minimum subsidy"])]
+
+    # ---- Table 7a ----------------------------------------------------------
+    d = pd.read_csv(T / "table7a_counterfactual.csv")
+    parts += [caption("7a", "Catastrophic spending under each coverage "
+                            "scenario, on both payment bases."),
+              render(d, ["scenario", "payment_basis",
+                         "share_of_population_covered", "che10_pct",
+                         "che25_pct", "che_ctp40_pct",
+                         "poverty_after_payments_pct",
+                         "mean_household_health_payments"],
+                     [None, None, lambda x: f"{x:.1%}", auto(2), auto(2),
+                      auto(2), auto(2), money],
+                     ["Scenario", "Payment basis", "Covered", "CHE10 %",
+                      "CHE25 %", "CTP40 %", "Poverty after %",
+                      "Mean payments"])]
+
+    # ---- Table 7c ----------------------------------------------------------
+    d = pd.read_csv(T / "table7c_by_quintile.csv")
+    parts += [caption("7c", "Counterfactual catastrophic spending by consumption "
+                            "quintile."),
+              render(d, ["scenario", "measure", "group", "estimate_pct",
+                         "ci_low_pct", "ci_high_pct", "n"],
+                     [None, None, None, auto(2), auto(2), auto(2),
+                      lambda x: f"{x:,.0f}"],
+                     ["Scenario", "Measure", "Quintile", "Estimate %",
+                      "95% low", "95% high", "n"])]
+
+    # ---- Table 8b / 8c -----------------------------------------------------
+    d = pd.read_csv(T / "table8b_wave4.csv")
+    parts += [caption("8b", "Wave 4 (2018/19) comparison.",
+                      "Read with care: the two waves use different instruments "
+                      "for out-of-pocket spending."),
+              render(d, ["wave", "measure", "estimate_pct", "se", "oop_source"],
+                     [None, None, auto(2), auto(2), None],
+                     ["Wave", "Measure", "Estimate %", "SE", "OOP source"])]
+
+    d = pd.read_csv(T / "table8c_poverty_lines.csv")
+    parts += [caption("8c", "Impoverishment across poverty lines.",
+                      "The headcount is a level and moves; the impoverishment "
+                      "effect is a difference and does not."),
+              render(d, ["poverty_line_naira", "multiple_of_national_line",
+                         "headcount_before_pct", "headcount_after_pct",
+                         "impoverishment_pp", "impoverished_millions"],
+                     [money, auto(2), auto(2), auto(2), auto(2), auto(2)],
+                     ["Poverty line", "x national line", "Headcount before %",
+                      "Headcount after %", "Impoverishment pp",
+                      "Millions"])]
+
     # ---- Appendix ----------------------------------------------------------
     parts += ["\n\n# Appendix tables\n"]
 
@@ -266,6 +399,12 @@ def main():
                       lambda x: num(x, 3), lambda x: num(x, 3)],
                      ["Component", "Official mean", "Rebuilt mean", "Ratio",
                       "Pearson r", "Spearman rho"])]
+
+    d = pd.read_csv(T / "tableA2_tweedie_profile.csv")
+    parts += [caption("A2", "Profile likelihood for the Tweedie variance power."),
+              render(d[d["converged"]], ["p", "loglik", "deviance"],
+                     [auto(2), auto(1), auto(1)],
+                     ["p", "Log-likelihood", "Deviance"])]
 
     a3 = pd.read_csv(T / "tableA3_lift.csv")
     parts += [caption("A3", "Observed against predicted annual cost, by decile of "

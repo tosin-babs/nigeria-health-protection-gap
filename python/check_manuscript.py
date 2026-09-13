@@ -77,6 +77,38 @@ def load():
     return checks
 
 
+
+def cross_reference():
+    """Every table cited in the prose is rendered, and vice versa.
+
+    Paper 2 shipped a draft citing twelve tables that make_tables.py never
+    rendered, so a reader of the submitted document was pointed at tables that
+    were not in it. This makes that failure impossible to repeat.
+    """
+    ms = list((config.ROOT / "manuscript").glob("Paper?_manuscript.md"))[0]
+    tb = config.ROOT / "manuscript" / "tables.md"
+    if not tb.exists():
+        print("  tables.md not built yet; skipping the cross-reference check")
+        return []
+    rendered = set(re.findall(r"\*\*Table ([0-9A-Za-z]+)\.\*\*", tb.read_text()))
+    cited = set()
+    for m in re.finditer(r"Tables? ([0-9]+[a-f]?|A[0-9]+)"
+                         r"(?:\s+and\s+([0-9]+[a-f]?|A[0-9]+))?", ms.read_text()):
+        cited.add(m.group(1))
+        if m.group(2):
+            cited.add(m.group(2))
+    problems = []
+    for t in sorted(cited - rendered):
+        problems.append(f"Table {t} is cited in the prose but not rendered")
+    for t in sorted(rendered - cited):
+        problems.append(f"Table {t} is rendered but never cited")
+    print(f"  {len(rendered)} tables rendered, {len(cited)} cited"
+          + ("" if not problems else f"  <-- {len(problems)} mismatch(es)"))
+    for p_ in problems:
+        print(f"      {p_}")
+    return problems
+
+
 def main():
     text = MS.read_text()
     # The manuscript writes minus as U+2212; normalise so both forms match.
@@ -94,9 +126,13 @@ def main():
         ok = (label, value) not in bad
         print(f"  {'ok ' if ok else 'MISSING'}  {label:<{width}}  {value}")
 
-    if bad:
-        print(f"\n{len(bad)} headline figure(s) in the tables do not appear in "
-              f"{MS.name}. Update the prose, then rebuild the documents.")
+    xref = cross_reference()
+    if bad or xref:
+        if bad:
+            print(f"\n{len(bad)} headline figure(s) do not appear in "
+                  f"{MS.name}. Update the prose, then rebuild.")
+        if xref:
+            print(f"{len(xref)} table cross-reference problem(s).")
         sys.exit(1)
     print(f"\nAll {len(checks)} headline figures match the current tables.")
 
