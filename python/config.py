@@ -72,6 +72,26 @@ WEEKS_PER_YEAR = 52.0
 # Annualising a 4-week window by 13 assumes the window is representative.
 # Section 5.6 tests 13x against a seasonally damped 10x.
 OUTPATIENT_ANNUALISER = WEEKS_PER_YEAR / OUTPATIENT_RECALL_WEEKS
+# Recall-treatment bounds (bounds.py). The headline scales each person's
+# observed 4-week spending to a year, which assumes the other twelve windows
+# repeat the observed one (full within-year persistence) and so maximises the
+# dispersion of annual cost. The lower case draws each person's annual cost as
+# a sum of independent 4-week windows from the fitted frequency and severity
+# models (no persistence). The truth lies between the two.
+RECALL_BOUND_REPLICATES = 20      # independent-window replicates averaged
+RECALL_ANNUALISER_CASES = (13.0, 12.0, 10.0)  # 12 = the monthly convention
+
+# --------------------------------------------- consumption calibration ----
+# Wave 5 publishes no consumption aggregate. The rebuilt aggregate recovers
+# only part of the official wave-4 level and omits imputed rent, and on wave 4
+# that shortfall raises CHE at the 10% threshold by about 3.5 points. The main
+# results therefore use a calibrated aggregate: each rebuilt component is
+# scaled by the ratio of its official to its rebuilt wave-4 mean, and imputed
+# rent is added at the official wave-4 rent-to-non-rent ratio. The factors are
+# estimated by build_data.calibration_factors() and written to
+# output/tables/tableA1b_calibration.csv; the uncalibrated aggregate is kept
+# as cons_annual_raw and reported alongside.
+CALIBRATE_CONSUMPTION = True
 
 # --------------------------------------------------- benefit-package rules ----
 # NHIA basic minimum package. The Authority's tariff schedule is not public in
@@ -110,8 +130,25 @@ INITIAL_CAPITAL_MULT = (0.0, 0.10, 0.25, 0.50)  # u0 as a multiple of annual pre
 # community-rated premium, so solvency needs more than the premium itself.
 SUBSIDY_GRID = tuple(round(x / 100, 2) for x in range(0, 255, 5))  # 0%..250%
 ADVERSE_SELECTION_STRENGTH = 2.0  # enrolment odds multiplier per SD of predicted cost
-MEDICAL_INFLATION_SHOCK = 0.25    # one-off claims shock tested in the stress scenario
+MEDICAL_INFLATION_SHOCK = 0.25    # permanent level shift in claims from year 2 (stress)
 RUIN_TARGETS = (0.01, 0.05)
+# Voluntary enrolment: take-up rates at which the selection tilt is evaluated.
+# At 100% take-up everyone is in and no selection is possible, which is the
+# mandatory case the Act envisages.
+TAKE_UP_GRID = (0.10, 0.25, 0.50, 0.75, 1.00)
+# Per-life excess-of-loss reinsurance: retentions (naira per person-year) and
+# the loading on the expected ceded cost.
+REINSURANCE_RETENTIONS = (250_000.0, 500_000.0, 1_000_000.0)
+REINSURANCE_LOADING = 0.30
+# Contribution schedules for the pool (ruin.py, counterfactual.py):
+#   flat    one contribution for everyone, the Q1-Q3 affordable average
+#   graded  each quintile pays the ceiling for its own quintile
+#   exempt  Q1 and Q2 pay nothing (the vulnerable group), Q3-Q5 graded
+CONTRIBUTION_SCHEDULES = ("flat", "graded", "exempt")
+EXEMPT_QUINTILES = (1, 2)
+# Design-based bootstrap for the premium and subsidy (bounds.py).
+BOOT_REPLICATES = 200
+BOOT_N_SIM = 2_000
 
 # --------------------------------------------------------------- plotting ----
 FIG_DPI = 300

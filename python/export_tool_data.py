@@ -116,6 +116,10 @@ def main():
     t2 = pd.read_csv(config.TABLES / "table2_che.csv")
     overall = t2[t2["dimension"] == "Overall"].set_index("measure")
     gross_t = pd.read_csv(config.TABLES / "table5c_gross_premium.csv")
+    sub_t = pd.read_csv(config.TABLES / "table6c_minimum_subsidy.csv")
+    sub_t = sub_t[(sub_t["pool_size"] == 20_000) & (sub_t["years"] == 3)
+                  & (sub_t["initial_capital_mult"] == 0.0)].set_index(
+                      ["take_up", "ruin_target"])["min_subsidy_per_enrollee"]
 
     def _headline(measure):
         r = overall.loc[measure]
@@ -174,16 +178,19 @@ def main():
             "che10": _headline("Budget share > 10%"),
             "che25": _headline("Budget share > 25%"),
             "ctp40": _headline("Capacity to pay >= 40%"),
-            "pure_premium": 21195.07,
+            "pure_premium": round(float(
+                pd.read_csv(config.TABLES / "table5a_premium_buildup.csv")
+                ["naira_per_person_year"].iloc[-1]), 2),
             "gross_premium": round(float(
                 gross_t[(gross_t["pool_size"] == 20_000)
                         & (gross_t["risk_margin_basis"] == "Standard deviation")]
                 ["gross_premium_per_person"].iloc[0]), 2),
             "contribution": round(float(aff.attrs["target_contribution"]), 0),
-            "min_subsidy_random": 16482.0,
-            "min_subsidy_strong": 52573.0,
-            "impoverished_millions": 5.11,
-            "informal_share_pct": 81.2,
+            "min_subsidy_random": round(float(sub_t.loc[("Random", 0.05)]), 0),
+            "min_subsidy_strong": round(float(
+                sub_t.loc[("Strong adverse selection", 0.05)]), 0),
+            "informal_share_pct": round(100 * float(
+                np.average(hh["informal"], weights=hh["hh_weight"])), 1),
             "covered_individuals_pct": round(float(cov_row["individuals_covered_pct"]), 2),
             "covered_hh_pct": round(float(cov_row["hh_with_cover_pct"]), 2),
             "covered_informal_hh_pct": round(float(cov_inf["hh_with_cover_pct"]), 2),

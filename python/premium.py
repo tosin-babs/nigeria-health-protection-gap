@@ -22,15 +22,20 @@ from svy import Design, weighted_quantile
 def induced_demand_factor(price_before, price_after, elasticity):
     """Utilisation response to a fall in the point-of-service price.
 
-    Arc (midpoint) elasticity, so the answer does not depend on which price is
-    called the base. Prices are expressed as the share of the full cost the
-    patient pays: 1.0 uninsured, `coinsurance` once covered.
+    Arc (midpoint) elasticity: e = [(q1 - q0)/((q0 + q1)/2)] / [(p1 - p0)/((p0 + p1)/2)].
+    Solving for the quantity ratio q1/q0 gives (1 + x)/(1 - x) with
+    x = e * (p1 - p0) / (p0 + p1). Prices are the share of the full cost the
+    patient pays: 1.0 uninsured, `coinsurance` once covered. With e = -0.20 a
+    price fall from 1.0 to 0 raises use by 50%, and to 0.10 by 39%. (An earlier
+    version applied the midpoint price change to the base quantity rather than
+    the midpoint quantity, which understated the response.)
     """
-    p_bar = (price_before + price_after) / 2.0
-    if p_bar == 0:
+    if price_before + price_after == 0:
         return 1.0
-    pct_change_price = (price_after - price_before) / p_bar
-    return 1.0 + elasticity * pct_change_price
+    x = elasticity * (price_after - price_before) / (price_before + price_after)
+    if x >= 1.0:
+        raise ValueError("elasticity too large for the arc formula")
+    return (1.0 + x) / (1.0 - x)
 
 
 def benefit_mapping(ind, coinsurance=None, elasticity=None,
@@ -129,12 +134,15 @@ def premium_buildup(d, weight_col="ind_weight", pool_sizes=None,
     # Risk margin. Both conventions price the uncertainty in the pool average,
     # so both shrink with pool size; that is the whole argument for scale.
     rng = np.random.default_rng(seed)
-    cost = d["insurer_cost"].to_numpy(float)
-    prob = w / w.sum()
+    # Collapse to distinct cost values and draw each pool as one multinomial:
+    # identical in distribution to resampling individuals, and far faster.
+    support = pd.Series(w).groupby(d["insurer_cost"].to_numpy(float)).sum()
+    values, prob = support.index.to_numpy(float), support.to_numpy(float)
+    prob = prob / prob.sum()
     margins = []
     for n in pool_sizes:
         sd_margin = sd_mult * sigma / np.sqrt(n)
-        draws = rng.choice(cost, size=(2000, n), replace=True, p=prob).mean(axis=1)
+        draws = (rng.multinomial(n, prob, size=2000) @ values) / n
         cvar = draws[draws >= np.quantile(draws, cvar_level)].mean()
         margins.append({
             "pool_size": n,

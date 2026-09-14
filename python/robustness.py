@@ -97,9 +97,9 @@ def variant_annualiser(hh, ind, weeks_multiplier):
     i["cost_annual"] = i["op_cost_annual"] + i["ip_cost_annual"]
     agg = i.groupby("hhid")[["op_cost_annual", "ip_cost_annual"]].sum()
     h = hh.copy().set_index("hhid")
-    h["oop_annual"] = agg["op_cost_annual"] + agg["ip_cost_annual"]
-    h["cons_annual"] = (h["food_annual"] + h["nonfood_excl_health"]
-                        + h["edu_annual"] + h["oop_annual"])
+    new_oop = (agg["op_cost_annual"] + agg["ip_cost_annual"]).reindex(h.index).fillna(0.0)
+    h["cons_annual"] = h["cons_annual"] - h["oop_annual"] + new_oop
+    h["oop_annual"] = new_oop
     return recompute_welfare(h.reset_index()), i
 
 
@@ -108,17 +108,25 @@ def variant_with_transport(hh, ind):
     i["op_cost_annual"] = i["op_cost_annual"] + i["op_transport_annual"]
     i["cost_annual"] = i["op_cost_annual"] + i["ip_cost_annual"]
     h = hh.copy()
+    h["cons_annual"] = h["cons_annual"] - h["oop_annual"] + h["oop_with_transport"]
     h["oop_annual"] = h["oop_with_transport"]
-    h["cons_annual"] = (h["food_annual"] + h["nonfood_excl_health"]
-                        + h["edu_annual"] + h["oop_annual"])
     return recompute_welfare(h), i
 
 
 def variant_consumption_module_oop(hh, ind):
     """Measure OOP from the consumption module instead of the health module."""
     h = hh.copy()
+    h["cons_annual"] = (h["cons_annual"] - h["oop_annual"]
+                        + h["oop_consumption_module"])
     h["oop_annual"] = h["oop_consumption_module"]
-    h["cons_annual"] = (h["food_annual"] + h["nonfood_annual"] + h["edu_annual"])
+    return recompute_welfare(h), ind
+
+
+def variant_uncalibrated(hh, ind):
+    """Use the rebuilt aggregate as it comes, without the wave-4 calibration."""
+    h = hh.copy()
+    h["cons_annual"] = h["cons_annual_raw"]
+    h["food_annual"] = h["food_annual_raw"]
     return recompute_welfare(h), ind
 
 
@@ -131,9 +139,9 @@ def variant_trim_top(hh, ind, pct=0.01):
     i["cost_annual"] = i["op_cost_annual"] + i["ip_cost_annual"]
     agg = i.groupby("hhid")[["op_cost_annual", "ip_cost_annual"]].sum()
     h = hh.copy().set_index("hhid")
-    h["oop_annual"] = agg.sum(axis=1)
-    h["cons_annual"] = (h["food_annual"] + h["nonfood_excl_health"]
-                        + h["edu_annual"] + h["oop_annual"])
+    new_oop = (agg["op_cost_annual"] + agg["ip_cost_annual"]).reindex(h.index).fillna(0.0)
+    h["cons_annual"] = h["cons_annual"] - h["oop_annual"] + new_oop
+    h["oop_annual"] = new_oop
     return recompute_welfare(h.reset_index()), i
 
 
@@ -201,16 +209,20 @@ def main():
     ind0 = pd.read_csv(config.DERIVED / "ind_w5_priced.csv")
 
     rows = [headline_numbers(hh0, ind0, "Main specification",
-                             "Health-module OOP; eq. scale 0.56; 13x annualiser; "
-                             "transport excluded; p profiled")]
+                             "Calibrated aggregate; health-module OOP; eq. scale "
+                             "0.56; 13x annualiser; transport excluded; p profiled")]
+
+    h, i = variant_uncalibrated(hh0, ind0)
+    rows.append(headline_numbers(h, i, "Uncalibrated consumption aggregate",
+                                 "Rebuilt modules only, no rent, no wave-4 scaling"))
 
     for power in (0.5, 0.75, 1.0):
         h, i = variant_equivalence_scale(hh0, ind0, power)
         rows.append(headline_numbers(h, i, f"Equivalence scale hhsize^{power}",
                                      "Xu et al. capacity to pay recomputed"))
 
-    for mult, note in [(10.0, "Seasonally damped"), (6.0, "Strongly damped"),
-                       (13.0, "Main: window scaled to a full year")]:
+    for mult, note in [(12.0, "Monthly convention"), (10.0, "Seasonally damped"),
+                       (6.0, "Strongly damped")]:
         h, i = variant_annualiser(hh0, ind0, mult)
         rows.append(headline_numbers(h, i, f"Outpatient annualiser x{mult:.0f}", note))
 

@@ -1,5 +1,5 @@
 """
-The seven figures, in a plain journal style.
+The six figures, in a plain journal style.
 
 The figures carry no "Figure N" label of their own: the manuscript numbers them
 in reading order, which is not the order they are generated in, and a number
@@ -92,101 +92,69 @@ def figure2_ruin():
     axes[0].legend(loc="upper right")
     fig.suptitle("Pool solvency against subsidy, by take-up and pool size",
                  fontsize=10, fontweight="bold", y=1.03)
-    _save(fig, "figure2_ruin_vs_subsidy")
+    _save(fig, "figure4_ruin_vs_subsidy")
 
 
 def figure3_counterfactual():
     """Baseline vs counterfactual CHE by quintile."""
     q = pd.read_csv(config.TABLES / "table7c_by_quintile.csv")
     q = q[q["measure"] == "CHE > 10%"]
+    aff = pd.read_csv(config.TABLES / "table6a_affordable_contribution.csv")
+    flat = aff[aff["group"].isin([f"Informal, quintile {q}" for q in (1, 2, 3)])]
+    flat = float(flat["affordable_contribution"].mean())
     keep = ["Baseline (no coverage)",
             "Informal sector, full coverage",
+            "Informal sector, full coverage, Q1-Q2 exempt",
             "Informal sector, full coverage, no contribution"]
     labels = {"Baseline (no coverage)": "No coverage",
-              "Informal sector, full coverage": "Coverage, member pays N8,571",
-              "Informal sector, full coverage, no contribution":
-                  "Coverage, fully subsidised"}
-    colours = [P["muted"], P["orange"], P["primary"]]
+              "Informal sector, full coverage": f"Flat contribution N{flat:,.0f}",
+              "Informal sector, full coverage, Q1-Q2 exempt": "Q1-Q2 exempt, Q3-Q5 graded",
+              "Informal sector, full coverage, no contribution": "Fully subsidized"}
+    colours = [P["muted"], P["orange"], P["accent"], P["primary"]]
     order = ["Q1 (poorest)", "Q2", "Q3", "Q4", "Q5 (richest)"]
 
-    fig, ax = plt.subplots(figsize=(6.6, 3.6))
-    width = 0.26
+    fig, ax = plt.subplots(figsize=(7.0, 3.7))
+    width = 0.2
     x = np.arange(len(order))
     for k, (scen, c) in enumerate(zip(keep, colours)):
         s = q[q["scenario"] == scen].set_index("group").reindex(order)
         err = [s["estimate_pct"] - s["ci_low_pct"], s["ci_high_pct"] - s["estimate_pct"]]
-        ax.bar(x + (k - 1) * width, s["estimate_pct"], width, label=labels[scen],
+        ax.bar(x + (k - 1.5) * width, s["estimate_pct"], width, label=labels[scen],
                color=c, edgecolor="white", linewidth=0.5)
-        ax.errorbar(x + (k - 1) * width, s["estimate_pct"], yerr=err, fmt="none",
+        ax.errorbar(x + (k - 1.5) * width, s["estimate_pct"], yerr=err, fmt="none",
                     ecolor="#444444", elinewidth=0.8, capsize=2)
     ax.set_xticks(x)
     ax.set_xticklabels(order)
-    ax.set_ylabel("Households above the 10% threshold (%)")
-    ax.set_title("Catastrophic spending under coverage scenarios")
-    ax.legend(loc="upper center", ncol=3, bbox_to_anchor=(0.5, -0.13), fontsize=8)
-    _save(fig, "figure3_counterfactual")
+    ax.set_ylabel("Share above the 10% threshold (%)")
+    ax.set_title("Catastrophic spending under coverage scenarios, "
+                 "out-of-pocket plus contribution")
+    ax.legend(loc="upper center", ncol=4, bbox_to_anchor=(0.5, -0.13), fontsize=7.5)
+    _save(fig, "figure6_counterfactual")
 
 
-def figure4_premium_vs_affordability():
-    """The gap the subsidy has to close."""
-    aff = pd.read_csv(config.TABLES / "table5d_affordability.csv")
-    gross = float(aff["premium_per_person"].iloc[0])
-    order = ["Q1 (poorest)", "Q2", "Q3", "Q4", "Q5 (richest)"]
-    a = aff.set_index("quintile").reindex(order)
-    ceiling = a["mean_consumption_per_capita"] * config.AFFORDABILITY_THRESHOLD
-
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9.2, 3.5))
-    x = np.arange(len(order))
-    ax1.bar(x, ceiling / 1000, 0.55, color=P["green"], label="5%-of-consumption ceiling")
-    ax1.axhline(gross / 1000, color=P["secondary"], linewidth=1.6,
-                label=f"Gross premium N{gross:,.0f}")
-    ax1.set_xticks(x)
-    ax1.set_xticklabels(order, rotation=20, ha="right")
-    ax1.set_ylabel("N '000 per person per year")
-    ax1.set_title("What households can pay vs what cover costs", fontsize=9,
+def figure6_take_up():
+    """Selection loading and required subsidy against the take-up rate."""
+    tk = pd.read_csv(config.TABLES / "table6f_take_up.csv")
+    colours = {"Moderate tilt": P["accent"], "Strong tilt": P["secondary"]}
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9.0, 3.4))
+    for tilt, grp in tk.groupby("tilt"):
+        grp = grp.sort_values("take_up")
+        ax1.plot(100 * grp["take_up"], grp["selection_loading_pct"], "o-",
+                 color=colours[tilt], linewidth=1.6, markersize=4, label=tilt)
+        ax2.plot(100 * grp["take_up"], grp["min_subsidy_per_enrollee"] / 1000, "o-",
+                 color=colours[tilt], linewidth=1.6, markersize=4, label=tilt)
+    ax1.set_xlabel("Take-up among informal-sector members (%)")
+    ax1.set_ylabel("Expected claim above the community mean (%)")
+    ax1.set_title("Selection loading", fontsize=9, fontweight="normal")
+    ax1.legend(fontsize=8)
+    ax2.set_xlabel("Take-up among informal-sector members (%)")
+    ax2.set_ylabel("Subsidy per enrollee (N '000/year)")
+    ax2.set_title("Minimum subsidy, 20,000 lives, ruin below 5%", fontsize=9,
                   fontweight="normal")
-    ax1.legend(fontsize=8)
-
-    ax2.bar(x, a["premium_pct_of_per_capita_consumption"], 0.55, color=P["primary"])
-    ax2.axhline(100 * config.AFFORDABILITY_THRESHOLD, color=P["secondary"],
-                linestyle="--", linewidth=1.2, label="5% affordability threshold")
-    ax2.set_xticks(x)
-    ax2.set_xticklabels(order, rotation=20, ha="right")
-    ax2.set_ylabel("Premium as % of per-capita consumption")
-    ax2.set_title("Premium burden by quintile", fontsize=9, fontweight="normal")
     ax2.legend(fontsize=8)
-    fig.suptitle("Affordability of the actuarial premium",
+    fig.suptitle("Voluntary enrollment: what take-up does to the subsidy",
                  fontsize=10, fontweight="bold", y=1.02)
-    _save(fig, "figure4_affordability")
-
-
-def figure5_model_fit():
-    """Observed vs predicted annual cost, and the Tweedie profile."""
-    lift = pd.read_csv(config.TABLES / "tableA3_lift.csv")
-    prof = pd.read_csv(config.TABLES / "tableA2_tweedie_profile.csv")
-
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9.2, 3.4))
-    ax1.plot(lift["decile"], lift["predicted_mean"] / 1000, "o-",
-             color=P["primary"], label="Predicted", linewidth=1.5, markersize=4)
-    ax1.plot(lift["decile"], lift["observed_mean"] / 1000, "s--",
-             color=P["secondary"], label="Observed", linewidth=1.5, markersize=4)
-    ax1.set_xlabel("Decile of predicted annual cost")
-    ax1.set_ylabel("Mean annual cost (N '000)")
-    ax1.set_title("Calibration of the Tweedie model", fontsize=9, fontweight="normal")
-    ax1.legend(fontsize=8)
-
-    ok = prof[prof["converged"]]
-    ax2.plot(ok["p"], ok["loglik"], "-", color=P["primary"], linewidth=1.5)
-    best = ok.loc[ok["loglik"].idxmax()]
-    ax2.axvline(best["p"], color=P["secondary"], linestyle="--", linewidth=1.0)
-    ax2.text(best["p"], ok["loglik"].min(), f"  p = {best['p']:.2f}",
-             fontsize=8, color=P["secondary"], va="bottom")
-    ax2.set_xlabel("Tweedie variance power p")
-    ax2.set_ylabel("Profile log-likelihood")
-    ax2.set_title("Profile likelihood for p", fontsize=9, fontweight="normal")
-    fig.suptitle("Cost-model diagnostics", fontsize=10,
-                 fontweight="bold", y=1.02)
-    _save(fig, "figure5_model_fit")
+    _save(fig, "figure5_take_up")
 
 
 def figure6_concentration_curves():
@@ -237,7 +205,7 @@ def figure6_concentration_curves():
                 color=P["secondary"], ha="left",
                 arrowprops=dict(arrowstyle="->", color=P["secondary"],
                                 linewidth=0.8))
-    _save(fig, "figure6_concentration_curves")
+    _save(fig, "figure2_concentration_curves")
 
 
 def figure7_premium_waterfall():
@@ -287,9 +255,12 @@ def figure7_premium_waterfall():
             ax.plot([i + 0.31, i + 0.69], [running / 1000] * 2,
                     color=P["muted"], linewidth=0.6, linestyle="--")
 
-    ax.axhline(8.571, color=P["secondary"], linewidth=1.2)
-    ax.text(0.05, 8.571 + 0.5, "affordability ceiling for the target "
-            "population  N8,571 per person per year",
+    aff = pd.read_csv(config.TABLES / "table6a_affordable_contribution.csv")
+    flat = aff[aff["group"].isin([f"Informal, quintile {q}" for q in (1, 2, 3)])]
+    flat = float(flat["affordable_contribution"].mean())
+    ax.axhline(flat / 1000, color=P["secondary"], linewidth=1.2)
+    ax.text(0.05, flat / 1000 + 0.5, "contribution ceiling for the target "
+            f"population, N{flat:,.0f} per person per year",
             fontsize=7.5, color=P["secondary"], va="bottom")
     ax.set_xticks(range(len(labels)))
     ax.set_xticklabels(labels, fontsize=7.5)
@@ -298,20 +269,25 @@ def figure7_premium_waterfall():
     ax.set_title("From observed spending to the gross premium "
                  "(20,000-life pool)")
     ax.set_xlim(-0.6, len(labels) - 0.4)
-    ax.set_ylim(0, 31)
-    _save(fig, "figure7_premium_waterfall")
+    ax.set_ylim(0, 33)
+    _save(fig, "figure3_premium_waterfall")
 
 
 # ---------------------------------------------------------------------------
 def main():
     print("Drawing figures ...")
+    for old in ("figure4_affordability", "figure5_model_fit", "figure5_counterfactual",
+                "figure6_take_up",
+                "figure6_concentration_curves", "figure7_premium_waterfall",
+                "figure2_ruin_vs_subsidy", "figure3_counterfactual"):
+        for ext in ("png", "pdf"):
+            (config.FIGURES / f"{old}.{ext}").unlink(missing_ok=True)
     figure1_che_by_quintile()
-    figure2_ruin()
-    figure3_counterfactual()
-    figure4_premium_vs_affordability()
-    figure5_model_fit()
     figure6_concentration_curves()
     figure7_premium_waterfall()
+    figure2_ruin()
+    figure3_counterfactual()
+    figure6_take_up()
 
 
 if __name__ == "__main__":

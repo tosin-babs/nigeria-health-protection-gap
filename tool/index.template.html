@@ -428,9 +428,9 @@ footer a{color:var(--indigo)}
       year's claims. Ruin is a surplus below zero in any year. The paper draws each
       pool-year as a multinomial over 750 distinct cost values; that is too slow for a
       browser, so this page matches the first three moments of the same distribution with
-      a translated gamma over 4,000 paths. The two agree to within 0.35% at the 99.9th
-      percentile of annual claims across every pool size and take-up pattern offered
-      here. The required subsidy is found by bisection on a fixed set of draws, so moving
+      a translated gamma over 4,000 paths. The two agree to within 0.7% at the 99th
+      percentile and 1.1% at the 99.9th percentile of annual claims across every pool
+      size and take-up pattern offered here. The required subsidy is found by bisection on a fixed set of draws, so moving
       an assumption never changes the answer through simulation noise alone.</p>
 
     <p class="note"><b>What it is not.</b> The benefit package is an assumption, not the
@@ -442,11 +442,11 @@ footer a{color:var(--indigo)}
 
   <footer>
     <p><b>Source.</b> Nigeria General Household Survey-Panel wave 5 (2023/24), National
-      Bureau of Statistics with the World Bank LSMS-ISA programme. Microdata are not
+      Bureau of Statistics with the World Bank LSMS-ISA program. Microdata are not
       redistributed.</p>
     <p><b>Paper.</b> Babalola, O. D. (2026). <i>Measuring the Health-Protection Gap and
-      Actuarially Pricing Informal-Sector Health Insurance under Nigeria's NHIA Act 2022:
-      A Frequency&ndash;Severity and Ruin-Probability Approach.</i> Working paper.
+      Actuarially Pricing Informal-Sector Health Insurance under Nigeria's NHIA Act 2022.</i>
+      Working paper.
       Code and data:
       <a href="https://github.com/tosin-babs/nigeria-health-protection-gap">github.com/tosin-babs/nigeria-health-protection-gap</a></p>
     <p id="f-gen"></p>
@@ -497,9 +497,10 @@ let S = {...BASE};
 
 /* ------------------------------------------------ the model, as in Python */
 function inducedFactor(pBefore, pAfter, e){
-  const pbar = (pBefore + pAfter) / 2;
-  if (pbar === 0) return 1;
-  return 1 + e * ((pAfter - pBefore) / pbar);
+  // Arc (midpoint) elasticity solved for the quantity ratio, as in premium.py.
+  if (pBefore + pAfter === 0) return 1;
+  const x = e * (pAfter - pBefore) / (pBefore + pAfter);
+  return (1 + x) / (1 - x);
 }
 
 // Insurer cost per person for one (outpatient, inpatient, traditional) triple.

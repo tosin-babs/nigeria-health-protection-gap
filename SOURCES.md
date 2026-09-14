@@ -62,12 +62,15 @@ in the robustness grid (Table 8).
 | Drug co-payment | 10% | NHIA states beneficiaries pay "a 10% co-payment for drugs" — [NHIA FAQ](https://www.nhia.gov.ng/faq/); [NHIA Operational Guidelines](https://www.nhia.gov.ng/operational-guideline/) |
 | Outpatient share inside package | 85% | Assumption; tested 70–100% |
 | Inpatient share inside package | 90% | Assumption; tested in Table 8 |
-| Drug share of outpatient spend | 60% | Assumption, informed by the survey's own itemisation |
-| Induced-demand elasticity | −0.20 | RAND Health Insurance Experiment, Manning et al. (1987); tested −0.10 to −0.35 |
+| Drug share of outpatient spend | 86.25% | Measured from Q12, Q17 and Q17a of the health module; recomputed on every build |
+| Induced-demand elasticity | −0.20 | RAND Health Insurance Experiment, Manning et al. (1987); tested −0.10 to −0.35. Applied with the arc (midpoint) formula q1/q0 = (1+x)/(1−x), x = e(p1−p0)/(p0+p1) |
 | Administrative load | 15% | Assumption |
 | Adverse-selection load | 10% | Assumption |
 | Expense ratio | 10% | Assumption |
-| Affordability ceiling | 5% of consumption | Common convention in the CHE literature |
+| Affordability ceiling | 5% of per-capita consumption | Assumption. Jofre-Bonet & Kamara (2018) find mean willingness to pay close to 5% of business income among informal workers in Sierra Leone |
+| Reinsurance loading | 30% of expected ceded cost | Assumption; retentions N250,000 to N1 million |
+| Take-up grid | 10% to 100% | Scenario levers for voluntary enrollment |
+| Consumption calibration | food 1.158, non-food 0.892, rent 0.069 | Estimated from the wave-4 published aggregate by `build_data.calibration_factors()` (Table A1) |
 
 ### 2.4 Published state-scheme premiums (external validation only)
 
@@ -170,21 +173,10 @@ is non-prescription drugs. The out-of-pocket total is unaffected — the same th
 fields are summed either way — but the drug share of outpatient spending is not.
 It is now measured at **86.25%** (Q17+Q17a over Q12+Q17+Q17a) against an assumed
 60%, and because drugs carry the co-payment and respond less to a price fall than
-free-at-point-of-use services, the gross premium falls from ₦26,912 to ₦25,864.
+free-at-point-of-use services, the gross premium fell from ₦26,912 to ₦25,864 in the version of the model current at the time.
 `build_data.py` recomputes the share on every run and prints it against the config
 value.
 
-
-The catalogue describes Section 3 as recording *"individual-level information on
-general health status, healthcare utilization and costs, functioning and
-disability status, and the use of bed nets"*, which confirms the module's scope
-but not the field-by-field reading below.
-
-> **Confirm against the questionnaire before submission.** Sign in to the
-> [GHS-Panel wave 5 catalogue entry](https://microdata.worldbank.org/index.php/catalog/6410),
-> open the **Documentation** tab, and read the Post-Planting Household
-> Questionnaire, Section 3 (Health). The Basic Information Document in the same
-> tab describes the sample design and the weights.
 
 If any of these five readings is wrong, the premium is wrong. Nothing else in
 the pipeline depends on them.

@@ -36,6 +36,10 @@ SCENARIOS = [
          contribution=None),
     dict(name="Informal sector, full coverage, no contribution",
          covered="informal", contribution=0.0),
+    dict(name="Informal sector, full coverage, graded contribution",
+         covered="informal", contribution=None, schedule="graded"),
+    dict(name="Informal sector, full coverage, Q1-Q2 exempt",
+         covered="informal", contribution=None, schedule="exempt"),
     dict(name="Universal coverage", covered="all", contribution=None),
 ]
 
@@ -61,7 +65,7 @@ def assign_coverage(ind, hh, scenario, rng):
     return covered
 
 
-def apply_scenario(ind, hh, scenario, contribution, rng):
+def apply_scenario(ind, hh, scenario, contribution, rng, aff=None):
     """Recompute household OOP, contributions and consumption under coverage."""
     covered = assign_coverage(ind, hh, scenario, rng)
     d = ind.copy()
@@ -73,7 +77,11 @@ def apply_scenario(ind, hh, scenario, contribution, rng):
     baseline_oop = d["op_cost_annual"] + d["ip_cost_annual"]
     d["oop_new"] = np.where(covered, d["member_cost_after"], baseline_oop)
 
-    c = scenario["contribution"] if scenario["contribution"] is not None else contribution
+    if scenario.get("schedule") and aff is not None:
+        from ruin import contribution_per_person
+        c = contribution_per_person(d, hh, scenario["schedule"], aff)
+    else:
+        c = scenario["contribution"] if scenario["contribution"] is not None else contribution
     d["contribution_paid"] = np.where(covered, c, 0.0)
 
     agg = d.groupby("hhid").agg(
@@ -118,18 +126,21 @@ def che_under(out, payments_col, cons_col, ctp_col):
     }
 
 
-def run(ind, hh, contribution):
+def run(ind, hh, contribution, aff=None):
     rng = np.random.default_rng(config.SEED)
     d = _design(hh)
 
     poverty_line = config.POVERTY_LINE_2019 * config.CPI_W4_TO_W5
     results, by_quintile = [], []
+    base_flags = {}
 
     for scen in SCENARIOS:
-        out = apply_scenario(ind, hh, scen, contribution, rng)
+        out = apply_scenario(ind, hh, scen, contribution, rng, aff)
         for basis, col in [("Out-of-pocket only", "oop_new"),
                            ("OOP plus member contribution", "health_payments_new")]:
             flags = che_under(out, col, "cons_new", "ctp_new")
+            if scen["name"] == "Baseline (no coverage)":
+                base_flags[basis] = flags
             row = {"scenario": scen["name"], "payment_basis": basis,
                    "share_of_population_covered":
                        float(np.average(out["n_covered"] / out["hhsize"],
@@ -138,6 +149,12 @@ def run(ind, hh, contribution):
                 e, se = d.mean(y)
                 row[f"{k}_pct"] = 100 * e
                 row[f"{k}_se"] = 100 * se
+                # Paired change: the same households under both regimes, so
+                # the test is on the household-level difference, not on two
+                # independent estimates.
+                diff_e, diff_se = d.mean(y - base_flags[basis][k])
+                row[f"{k}_change_pp"] = 100 * diff_e
+                row[f"{k}_change_se"] = 100 * diff_se
             net_pc = ((out["cons_new"] - out[col]) / out["hhsize"]).to_numpy()
             post = (net_pc < poverty_line).astype(float)
             e, se = d.mean(post)
@@ -163,19 +180,21 @@ def run(ind, hh, contribution):
     quint["ci_low_pct"] = 100 * quint["ci_low"]
     quint["ci_high_pct"] = 100 * quint["ci_high"]
 
-    # Reductions relative to baseline, with a test on the difference.
+    # Reductions relative to baseline, with a paired design-based test.
+    from scipy import stats
     base = res[res["scenario"] == "Baseline (no coverage)"].set_index("payment_basis")
     red = []
     for _, r in res[res["scenario"] != "Baseline (no coverage)"].iterrows():
         b = base.loc[r["payment_basis"]]
         for m in ["che10", "che25", "che_ctp40"]:
-            diff, z, p = diff_test(r[f"{m}_pct"], r[f"{m}_se"],
-                                   b[f"{m}_pct"], b[f"{m}_se"])
+            diff, se = r[f"{m}_change_pp"], r[f"{m}_change_se"]
+            z = diff / se if se > 0 else np.nan
+            p = 2 * (1 - stats.norm.cdf(abs(z))) if np.isfinite(z) else np.nan
             red.append({
                 "scenario": r["scenario"], "payment_basis": r["payment_basis"],
                 "measure": m, "baseline_pct": b[f"{m}_pct"],
                 "counterfactual_pct": r[f"{m}_pct"],
-                "reduction_pp": -diff,
+                "reduction_pp": -diff, "reduction_se": se,
                 "relative_reduction_pct": -100 * diff / b[f"{m}_pct"]
                 if b[f"{m}_pct"] else np.nan,
                 "z": z, "p_value": p,
@@ -192,7 +211,8 @@ def main():
         aff[aff["group"].isin(["Informal, quintile 1", "Informal, quintile 2",
                                "Informal, quintile 3"])]["affordable_contribution"].mean())
 
-    res, red, quint = run(ind, hh, contribution)
+    aff.attrs["target_contribution"] = contribution
+    res, red, quint = run(ind, hh, contribution, aff)
     res.to_csv(config.TABLES / "table7a_counterfactual.csv", index=False)
     red.to_csv(config.TABLES / "table7b_reductions.csv", index=False)
     quint.to_csv(config.TABLES / "table7c_by_quintile.csv", index=False)

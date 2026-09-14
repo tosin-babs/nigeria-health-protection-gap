@@ -86,9 +86,11 @@ def table1_sample(hh):
     add("OOP as share of consumption (%)", hh["oop_share"], 100, "pct")
     add("Any member sought care in past 4 weeks (%)",
         (hh["n_visits"] > 0).astype(float), 100, "pct")
-    add("Any member hospitalised in past 12 months (%)",
+    add("Any member hospitalized in past 12 months (%)",
         (hh["n_inpatient"] > 0).astype(float), 100, "pct")
-    add("Paid a health-insurance premium (%)", hh["insured_any"], 100, "pct")
+    add("Any member holds health insurance (%)", hh["insured_any"], 100, "pct")
+    add("Paid a health-insurance premium in past 12 months (%)",
+        hh["premium_paid"], 100, "pct")
 
     out = pd.DataFrame(rows)
     out["n_households"] = len(hh)
@@ -115,9 +117,22 @@ def table2_che(hh):
     ]
 
     rows = []
+    dh = Design(hh, config.HH_WEIGHT, config.STRATA, "cluster")
     for m_name, flag, over in measures:
         y = hh[flag].to_numpy(float)
         o = hh[over].to_numpy(float)
+        # Household-weighted overall rate: the share of households, as distinct
+        # from the share of people living in affected households.
+        inc_h, se_h = dh.mean(y)
+        ovr_h, _ = dh.mean(o)
+        lo_h, hi_h = ci(inc_h, se_h)
+        rows.append({
+            "measure": m_name, "dimension": "Overall (household-weighted)",
+            "group": "All households", "incidence_pct": 100 * inc_h,
+            "incidence_se": 100 * se_h, "ci_low": 100 * lo_h, "ci_high": 100 * hi_h,
+            "mean_overshoot_pct": 100 * ovr_h,
+            "mean_positive_overshoot_pct": 100 * ovr_h / inc_h if inc_h > 0 else np.nan,
+            "n": len(hh)})
         for s_name, s_vals in subgroups:
             inc = estimate_by(d, y, s_vals, "mean")
             ovr = estimate_by(d, o, s_vals, "mean")
@@ -134,6 +149,39 @@ def table2_che(hh):
                         100 * b["estimate"] / a["estimate"] if a["estimate"] > 0 else np.nan,
                     "n": a["n"],
                 })
+    return pd.DataFrame(rows)
+
+
+def table2d_calibration(hh):
+    """CHE on the calibrated and the uncalibrated consumption aggregate.
+
+    The uncalibrated figure is the one an analyst gets from the rebuilt
+    modules alone; it is kept visible so the effect of the calibration can be
+    read directly rather than inferred.
+    """
+    d = _design(hh)
+    raw = hh.copy()
+    raw["cons_annual"] = raw["cons_annual_raw"]
+    raw["food_annual"] = raw["food_annual_raw"]
+    from build_data import add_welfare_variables
+    raw = add_welfare_variables(raw.drop(columns=[
+        c for c in ["cons_pc", "quintile", "quintile_label", "eqsize", "popwt",
+                    "food_share", "food_eq", "subsistence", "ctp"] if c in raw]))
+    raw = add_che_flags(raw)
+    rows = []
+    for label, frame in [("Calibrated (main)", hh), ("Uncalibrated", raw)]:
+        for name, col in [("Budget share > 10%", "che10"),
+                          ("Budget share > 25%", "che25"),
+                          ("Capacity to pay >= 40%", "che_ctp40")]:
+            e, se = d.mean(frame[col].to_numpy(float))
+            lo, hi = ci(e, se)
+            rows.append({"aggregate": label, "measure": name,
+                         "incidence_pct": 100 * e, "se": 100 * se,
+                         "ci_low": 100 * lo, "ci_high": 100 * hi})
+        e, _ = d.mean(frame["cons_pc"].to_numpy(float))
+        rows.append({"aggregate": label, "measure": "Mean consumption per capita (N)",
+                     "incidence_pct": e, "se": np.nan, "ci_low": np.nan,
+                     "ci_high": np.nan})
     return pd.DataFrame(rows)
 
 
@@ -171,8 +219,8 @@ def impoverishment(hh, poverty_line_2023=None):
         ("Poverty headcount after OOP (%)", 100 * post_e, 100 * post_se),
         ("Impoverished by OOP (pp)", 100 * (post_e - pre_e), np.nan),
         ("Newly impoverished households (%)", 100 * new_e, 100 * new_se),
-        ("Normalised poverty gap before OOP (%)", 100 * gpre_e, 100 * gpre_se),
-        ("Normalised poverty gap after OOP (%)", 100 * gpost_e, 100 * gpost_se),
+        ("Normalized poverty gap before OOP (%)", 100 * gpre_e, 100 * gpre_se),
+        ("Normalized poverty gap after OOP (%)", 100 * gpost_e, 100 * gpost_se),
         ("Increase in poverty gap (pp)", 100 * (gpost_e - gpre_e), np.nan),
     ]
     out = pd.DataFrame(rows, columns=["indicator", "estimate", "se"])
@@ -216,11 +264,16 @@ def table3_concentration(hh):
         "Any member 60+": (hh["n_over60"] > 0).astype(float),
         "Severe functional difficulty": hh["any_chronic"].astype(float),
         "Informal sector": hh["informal"].astype(float),
-        "Hospitalisation in past year": (hh["n_inpatient"] > 0).astype(float),
+        "Hospitalization in past year": (hh["n_inpatient"] > 0).astype(float),
     })
-    dec = decompose_ci(d, hh["che10"].to_numpy(float), ls, covars)
-    dec.insert(0, "outcome", "CHE, budget share > 10%")
-    return indices, dec
+    decs = []
+    for name, col in [("CHE, budget share > 10%", "che10"),
+                      ("CHE, capacity to pay >= 40%", "che_ctp40")]:
+        dec = decompose_ci(d, hh[col].to_numpy(float), ls, covars)
+        dec.insert(0, "outcome", name)
+        dec["total_CI"] = dec.attrs["total_CI"]
+        decs.append(dec)
+    return indices, pd.concat(decs, ignore_index=True)
 
 
 def sector_gap_tests(hh):
@@ -242,6 +295,37 @@ def sector_gap_tests(hh):
 
 
 # ---------------------------------------------------------------------------
+
+def adjusted_sector_gap(hh):
+    """Informal-formal gap conditional on consumption quintile and other controls.
+
+    The unconditional gap mixes an informality effect with the fact that
+    informal households are poorer. A population-weighted linear probability
+    model with standard errors clustered on the enumeration area separates the
+    two descriptively; it is not a causal estimate.
+    """
+    import statsmodels.api as sm
+    X = pd.get_dummies(hh[["quintile", "zone"]].astype(str), drop_first=True).astype(float)
+    X["urban"] = hh["urban"].astype(float)
+    X["hhsize"] = hh["hhsize"].astype(float)
+    X["informal"] = hh["informal"].astype(float)
+    X = sm.add_constant(X)
+    groups = pd.factorize(hh["strata"].astype(str) + "|" + hh["cluster"].astype(str))[0]
+    specs = [("Unadjusted", ["const", "informal"]),
+             ("Consumption quintile", [c for c in X if c.startswith("quintile")]
+              + ["const", "informal"]),
+             ("Quintile, zone, residence, household size", list(X.columns))]
+    rows = []
+    for name, col in [("CHE > 10%", "che10"), ("CHE, CTP >= 40%", "che_ctp40")]:
+        for spec, cols in specs:
+            m = sm.WLS(hh[col].astype(float), X[cols], weights=hh["popwt"]).fit(
+                cov_type="cluster", cov_kwds={"groups": groups})
+            rows.append({"outcome": name, "controls": spec,
+                         "informal_coef_pp": 100 * m.params["informal"],
+                         "se_pp": 100 * m.bse["informal"],
+                         "p_value": m.pvalues["informal"]})
+    return pd.DataFrame(rows)
+
 
 def table1b_coverage(hh):
     """Observed health-insurance coverage, by sector, quintile and residence.
@@ -297,6 +381,8 @@ def main():
     gaps = sector_gap_tests(hh)
 
     t1.to_csv(config.TABLES / "table1_sample.csv", index=False)
+    table2d_calibration(hh).to_csv(config.TABLES / "table2d_calibration.csv",
+                                   index=False)
     cov = table1b_coverage(hh)
     cov.to_csv(config.TABLES / "table1b_coverage.csv", index=False)
     t2.to_csv(config.TABLES / "table2_che.csv", index=False)
@@ -304,6 +390,9 @@ def main():
     t3.to_csv(config.TABLES / "table3_concentration.csv", index=False)
     dec.to_csv(config.TABLES / "table3b_decomposition.csv", index=False)
     gaps.to_csv(config.TABLES / "table2c_sector_gaps.csv", index=False)
+    adj = adjusted_sector_gap(hh)
+    adj.to_csv(config.TABLES / "table2e_adjusted_gap.csv", index=False)
+    print(adj.to_string(index=False, float_format=lambda x: f"{x:,.3f}"))
 
     print("\n=== Observed health-insurance coverage ===")
     print(cov[cov["dimension"].isin(["Overall", "Sector"])]

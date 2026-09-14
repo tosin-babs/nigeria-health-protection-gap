@@ -22,6 +22,13 @@
   "INPATIENT_RECALL_MONTHS": 12.0,
   "WEEKS_PER_YEAR": 52.0,
   "OUTPATIENT_ANNUALISER": 13.0,
+  "RECALL_BOUND_REPLICATES": 20,
+  "RECALL_ANNUALISER_CASES": [
+    13.0,
+    12.0,
+    10.0
+  ],
+  "CALIBRATE_CONSUMPTION": true,
   "COVERED_SHARE_OUTPATIENT": 0.85,
   "COVERED_SHARE_INPATIENT": 0.9,
   "COVERED_SHARE_TRADITIONAL": 0.0,
@@ -114,6 +121,30 @@
     0.01,
     0.05
   ],
+  "TAKE_UP_GRID": [
+    0.1,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "REINSURANCE_RETENTIONS": [
+    250000.0,
+    500000.0,
+    1000000.0
+  ],
+  "REINSURANCE_LOADING": 0.3,
+  "CONTRIBUTION_SCHEDULES": [
+    "flat",
+    "graded",
+    "exempt"
+  ],
+  "EXEMPT_QUINTILES": [
+    1,
+    2
+  ],
+  "BOOT_REPLICATES": 200,
+  "BOOT_N_SIM": 2000,
   "FIG_DPI": 300,
   "PALETTE": {
     "primary": "#1f4e79",
@@ -131,7 +162,7 @@
     "#f4b183",
     "#c0504d"
   ],
-  "_run_utc": "2026-09-13T00:17:21+00:00",
+  "_run_utc": "2026-09-14T12:59:45+00:00",
   "_numpy": "2.5.3",
   "_pandas": "3.0.5"
 }

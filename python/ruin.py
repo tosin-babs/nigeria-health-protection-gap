@@ -110,8 +110,9 @@ def ruin_from_paths(paths, n, contribution, subsidy, u0,
     years = paths.shape[1]
     claims = paths
     if inflation_shock:
-        # A one-off shock from year 2 onwards, compounding over the horizon.
-        factors = np.array([(1 + inflation_shock) ** max(0, t - 1)
+        # A permanent level shift in claims from year 2 onwards: contributions
+        # and subsidy are fixed in advance, claims are not.
+        factors = np.array([1.0 if t == 1 else 1 + inflation_shock
                             for t in range(1, years + 1)])
         claims = paths * factors
 
@@ -182,6 +183,65 @@ def affordable_contribution(hh, quintiles=(1, 2, 3)):
     target = out[out["group"].isin([f"Informal, quintile {q}" for q in quintiles])]
     out.attrs["target_contribution"] = float(target["affordable_contribution"].mean())
     return out
+
+
+def take_up_probabilities(pred_cost, base_weights, strength, take_up):
+    """Enrolment probability per person at a given take-up rate and tilt.
+
+    q_i = min(1, k * tilt_i), with k chosen so the weighted mean of q_i equals
+    the take-up rate. At 100% take-up everyone enrols and no selection is
+    possible; at low take-up with a strong tilt the pool is the sick. Returns
+    the enrolled distribution as probabilities over the individuals.
+    """
+    w = np.asarray(base_weights, float)
+    if strength <= 1.0 or take_up >= 1.0:
+        q = np.full(len(w), take_up)
+    else:
+        z = np.log(np.maximum(np.asarray(pred_cost, float), 1.0))
+        z = (z - z.mean()) / z.std()
+        tilt = np.exp(np.log(strength) * z)
+        lo, hi = 0.0, 1e6
+        for _ in range(100):
+            k = (lo + hi) / 2
+            q = np.minimum(1.0, k * tilt)
+            if (w * q).sum() / w.sum() < take_up:
+                lo = k
+            else:
+                hi = k
+        q = np.minimum(1.0, (lo + hi) / 2 * tilt)
+    p = w * q
+    return p / p.sum()
+
+
+def contribution_per_person(ind, hh, schedule, aff):
+    """Contribution each informal-sector person would be billed under a schedule.
+
+    flat    the Q1-Q3 affordable average for everyone (the headline design)
+    graded  5% of the mean per-capita consumption of the person's own quintile
+    exempt  nothing in the exempt quintiles, graded above them
+    """
+    by_q = aff.set_index("group")["affordable_contribution"]
+    flat = aff.attrs["target_contribution"]
+    q = ind["quintile"].astype(int)
+    if schedule == "flat":
+        return np.full(len(ind), flat)
+    graded = q.map(lambda k: by_q[f"Informal, quintile {k}"]).to_numpy(float)
+    if schedule == "graded":
+        return graded
+    if schedule == "exempt":
+        return np.where(q.isin(config.EXEMPT_QUINTILES), 0.0, graded)
+    raise ValueError(schedule)
+
+
+def reinsured_support(values, probs, retention, loading=None):
+    """Per-life excess-of-loss: the pool keeps min(X, R) and pays a loaded
+    reinsurance premium equal to (1 + loading) * E[(X - R)+] per enrollee."""
+    loading = config.REINSURANCE_LOADING if loading is None else loading
+    values = np.asarray(values, float)
+    ceded = float(np.sum(probs * np.maximum(values - retention, 0.0)))
+    kept = np.minimum(values, retention)
+    s = pd.Series(probs).groupby(kept).sum()
+    return s.index.to_numpy(float), s.to_numpy(float) / s.sum(), ceded * (1 + loading)
 
 
 def build_path_cache(pools, seed=config.SEED):
@@ -311,6 +371,78 @@ def main():
     st["medical_inflation_shock"] = st["medical_inflation_shock"].map(lambda x: f"{x:.0%}")
     st["ruin_target"] = st["ruin_target"].map(lambda x: f"{x:.0%}")
     print(st.to_string(index=False, float_format=lambda x: f"{x:,.0f}"))
+
+    # ---- Contribution schedules: flat, graded, vulnerable group exempt ------
+    rows = []
+    for schedule in config.CONTRIBUTION_SCHEDULES:
+        c_i = contribution_per_person(pool, hh, schedule, aff)
+        for name, strength in [("Random", 1.0),
+                               ("Strong adverse selection",
+                                config.ADVERSE_SELECTION_STRENGTH)]:
+            p_sel = selection_probabilities(pool["pred_cost"], pool["ind_weight"], strength)
+            mean_c = float(np.sum(p_sel * c_i))
+            v, pr = pools[name]
+            paths = cache[(20_000, name)][:, :3]
+            s_min = minimum_subsidy_from_paths(paths, 20_000, mean_c, 0.0, 0.05,
+                                               gross_premium)
+            rows.append({"schedule": schedule, "take_up": name,
+                         "mean_contribution_per_enrollee": mean_c,
+                         "expected_claim_per_enrollee": float(v @ pr),
+                         "min_subsidy_per_enrollee": s_min,
+                         "subsidy_share_of_cost":
+                             s_min / (mean_c + s_min) if np.isfinite(s_min) else np.nan})
+    sched = pd.DataFrame(rows)
+    sched.to_csv(config.TABLES / "table6e_contribution_schedules.csv", index=False)
+    print("\nContribution schedules (20,000 lives, 3 years, psi<5%):")
+    print(sched.to_string(index=False, float_format=lambda x: f"{x:,.2f}"))
+
+    # ---- Voluntary enrolment: selection loading against take-up -------------
+    rows = []
+    for strength, lab in [(1.5, "Moderate tilt"), (config.ADVERSE_SELECTION_STRENGTH, "Strong tilt")]:
+        for take_up in config.TAKE_UP_GRID:
+            p_enr = take_up_probabilities(pool["pred_cost"], pool["ind_weight"],
+                                          strength, take_up)
+            v, pr = cost_support(pool["insurer_cost"], p_enr * len(pool))
+            m = float(v @ pr)
+            paths = claims_paths(v, pr, 20_000, 3, n_sim=4_000,
+                                 seed=config.SEED + int(100 * take_up))
+            s_min = minimum_subsidy_from_paths(paths, 20_000, contribution, 0.0,
+                                               0.05, gross_premium)
+            rows.append({"tilt": lab, "tilt_strength": strength, "take_up": take_up,
+                         "expected_claim_per_enrollee": m,
+                         "selection_loading_pct": 100 * (m / mean_rand - 1),
+                         "min_subsidy_per_enrollee": s_min,
+                         "min_subsidy_pct_of_gross_premium": 100 * s_min / gross_premium})
+    tk = pd.DataFrame(rows)
+    tk.to_csv(config.TABLES / "table6f_take_up.csv", index=False)
+    print("\nSelection loading by take-up rate (20,000 lives, 3 years, psi<5%):")
+    print(tk.to_string(index=False, float_format=lambda x: f"{x:,.1f}"))
+
+    # ---- Per-life excess-of-loss reinsurance --------------------------------
+    rows = []
+    for name in ["Random", "Strong adverse selection"]:
+        v, pr = pools[name]
+        for R in (np.inf,) + tuple(config.REINSURANCE_RETENTIONS):
+            if np.isfinite(R):
+                v_r, p_r, ri_prem = reinsured_support(v, pr, R)
+            else:
+                v_r, p_r, ri_prem = v, pr, 0.0
+            paths = claims_paths(v_r, p_r, 20_000, 3, n_sim=4_000,
+                                 seed=config.SEED + 7) + 20_000 * ri_prem
+            s_min = minimum_subsidy_from_paths(paths, 20_000, contribution, 0.0,
+                                               0.05, gross_premium)
+            annual = paths[:, 0] / 20_000
+            rows.append({"take_up": name,
+                         "retention": R if np.isfinite(R) else np.nan,
+                         "reinsurance_premium_per_enrollee": ri_prem,
+                         "expected_retained_claim_per_enrollee": float(v_r @ p_r),
+                         "sd_pool_claims_per_enrollee": float(annual.std()),
+                         "p99_pool_claims_per_enrollee": float(np.quantile(annual, 0.99)),
+                         "min_subsidy_per_enrollee": s_min})
+    ri = pd.DataFrame(rows)
+    ri.to_csv(config.TABLES / "table6g_reinsurance.csv", index=False)
+    print("\nPer-life excess-of-loss reinsurance (20,000 lives):")
+    print(ri.to_string(index=False, float_format=lambda x: f"{x:,.0f}"))
 
     return {"scenarios": scen, "minimum_subsidy": mins, "contribution": contribution,
             "gross_premium": gross_premium, "stress": stress,

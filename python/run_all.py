@@ -28,6 +28,7 @@ STAGES = [
     ("RQ3  Pool solvency", "ruin"),
     ("RQ4  Coverage counterfactual", "counterfactual"),
     ("Robustness", "robustness"),
+    ("Recall bounds and bootstrap", "bounds"),
     ("Figures", "exhibits"),
     ("Calculator payload", "export_tool_data"),
     ("Manuscript number check", "check_manuscript"),

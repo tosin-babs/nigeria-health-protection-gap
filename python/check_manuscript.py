@@ -26,6 +26,9 @@ T = config.TABLES
 def load():
     t2 = pd.read_csv(T / "table2_che.csv")
     ov = t2[t2["dimension"] == "Overall"].set_index("measure")
+    ovh = t2[t2["dimension"] == "Overall (household-weighted)"].set_index("measure")
+    unc = pd.read_csv(T / "table2d_calibration.csv")
+    unc = unc[unc["aggregate"] == "Uncalibrated"].set_index("measure")
     cov = pd.read_csv(T / "table1b_coverage.csv")
     covo = cov[cov["dimension"] == "Overall"].iloc[0]
     covs = cov[cov["dimension"] == "Sector"].set_index("group")
@@ -37,18 +40,39 @@ def load():
     g = g[(g["pool_size"] == 20_000)
           & (g["risk_margin_basis"] == "Standard deviation")].iloc[0]
     aff = pd.read_csv(T / "table5d_affordability.csv").set_index("quintile")
+    con6a = pd.read_csv(T / "table6a_affordable_contribution.csv")
+    contribution = con6a[con6a["group"].isin(
+        [f"Informal, quintile {q}" for q in (1, 2, 3)])]["affordable_contribution"].mean()
     sub = pd.read_csv(T / "table6c_minimum_subsidy.csv")
     sub = sub[(sub["pool_size"] == 20_000) & (sub["years"] == 3)
               & (sub["initial_capital_mult"] == 0.0)].set_index(
                   ["take_up", "ruin_target"])
+    sch = pd.read_csv(T / "table6e_contribution_schedules.csv").set_index(
+        ["schedule", "take_up"])
+    tk = pd.read_csv(T / "table6f_take_up.csv").set_index(["tilt", "take_up"])
+    red = pd.read_csv(T / "table7b_reductions.csv")
+    red = red[red["payment_basis"] == "OOP plus member contribution"].set_index(
+        ["scenario", "measure"])
+    rb = pd.read_csv(T / "table9_recall_bounds.csv").set_index("case")
+    bs = pd.read_csv(T / "table10_bootstrap.csv").set_index("quantity")
+    fit = pd.read_csv(T / "table4b_fit_statistics.csv").set_index("statistic")["value"]
+    adj = pd.read_csv(T / "table2e_adjusted_gap.csv").set_index(["outcome", "controls"])
+    full = "Quintile, zone, residence, household size"
 
     def naira(x):
-        return f"₦{x:,.0f}"
+        return f"N{x:,.0f}"
 
+    lo_case = "x13, independent 4-week windows (no persistence)"
     checks = {
         "CHE 10% incidence": f'{ov.loc["Budget share > 10%", "incidence_pct"]:.1f}%',
         "CHE 10% CI low": f'{ov.loc["Budget share > 10%", "ci_low"]:.1f}',
+        "CHE 10% CI high": f'{ov.loc["Budget share > 10%", "ci_high"]:.1f}',
         "CTP 40% incidence": f'{ov.loc["Capacity to pay >= 40%", "incidence_pct"]:.1f}%',
+        "CHE 10% household-weighted": f'{ovh.loc["Budget share > 10%", "incidence_pct"]:.1f}%',
+        "CHE 10% uncalibrated": f'{unc.loc["Budget share > 10%", "incidence_pct"]:.1f}%',
+        "CTP 40% uncalibrated": f'{unc.loc["Capacity to pay >= 40%", "incidence_pct"]:.1f}%',
+        "CHE 10% no-persistence bound": f'{rb.loc[lo_case, "che10_pct"]:.1f}%',
+        "CTP 40% no-persistence bound": f'{rb.loc[lo_case, "che_ctp40_pct"]:.1f}%',
         "coverage, households": f'{covo["hh_with_cover_pct"]:.2f}%',
         "coverage, individuals": f'{covo["individuals_covered_pct"]:.2f}%',
         "coverage, informal": f'{covs.loc["Informal", "hh_with_cover_pct"]:.2f}%',
@@ -61,11 +85,17 @@ def load():
             f'{con.loc["CHE, capacity to pay >= 40%", "CI"]:.3f}',
         "sector gap, CTP informal":
             f'{gap.loc["CHE, CTP >= 40%", "informal"]:.1f}%',
+        "sector gap, CTP formal":
+            f'{gap.loc["CHE, CTP >= 40%", "formal"]:.1f}%',
+        "Tweedie p": f'p = {fit["Tweedie variance power p"]:.2f}',
+        "adjusted CTP gap": f'{adj.loc[("CHE, CTP >= 40%", full), "informal_coef_pp"]:.1f} points',
+        "adjusted budget-share gap": f'{adj.loc[("CHE > 10%", full), "informal_coef_pp"]:.1f} points',
         "pure premium": naira(b["naira_per_person_year"].iloc[-1]),
         "gross premium": naira(g["gross_premium_per_person"]),
         "Q1 premium share":
             f'{aff.loc["Q1 (poorest)", "premium_pct_of_per_capita_consumption"]:.1f}%',
         "Q1 household premium": naira(aff.loc["Q1 (poorest)", "premium_per_household"]),
+        "flat contribution": naira(contribution),
         "subsidy, random, 5%":
             naira(sub.loc[("Random", 0.05), "min_subsidy_per_enrollee"]),
         "subsidy, random, 1%":
@@ -73,17 +103,34 @@ def load():
         "subsidy, strong, 5%":
             naira(sub.loc[("Strong adverse selection", 0.05),
                           "min_subsidy_per_enrollee"]),
+        "subsidy, graded, random":
+            naira(sch.loc[("graded", "Random"), "min_subsidy_per_enrollee"]),
+        "subsidy, exempt, random":
+            naira(sch.loc[("exempt", "Random"), "min_subsidy_per_enrollee"]),
+        "subsidy, 75% take-up, strong tilt":
+            naira(tk.loc[("Strong tilt", 0.75), "min_subsidy_per_enrollee"]),
+        "CHE10 fully subsidised":
+            f'{red.loc[("Informal sector, full coverage, no contribution", "che10"), "counterfactual_pct"]:.1f}%',
+        "CHE10 flat contribution":
+            f'{red.loc[("Informal sector, full coverage", "che10"), "counterfactual_pct"]:.1f}%',
+        "CTP40 flat contribution":
+            f'{red.loc[("Informal sector, full coverage", "che_ctp40"), "counterfactual_pct"]:.1f}%',
+        "CHE10 exempt":
+            f'{red.loc[("Informal sector, full coverage, Q1-Q2 exempt", "che10"), "counterfactual_pct"]:.1f}%',
+        "bootstrap gross low": naira(bs.loc["gross_premium", "ci_low"]),
+        "bootstrap gross high": naira(bs.loc["gross_premium", "ci_high"]),
+        "bootstrap subsidy random low": naira(bs.loc["min_subsidy_random", "ci_low"]),
+        "bootstrap subsidy random high": naira(bs.loc["min_subsidy_random", "ci_high"]),
     }
     return checks
-
 
 
 def cross_reference():
     """Every table cited in the prose is rendered, and vice versa.
 
-    Paper 2 shipped a draft citing twelve tables that make_tables.py never
-    rendered, so a reader of the submitted document was pointed at tables that
-    were not in it. This makes that failure impossible to repeat.
+    An earlier draft cited tables that make_tables.py never rendered, so a
+    reader of the submitted document was pointed at tables that were not in
+    it. This makes that failure impossible to repeat.
     """
     ms = list((config.ROOT / "manuscript").glob("Paper?_manuscript.md"))[0]
     tb = config.ROOT / "manuscript" / "tables.md"
@@ -110,9 +157,14 @@ def cross_reference():
 
 
 def main():
+    # Render the tables from the current CSVs first, so the cross-reference
+    # check sees the tables the document will actually carry.
+    import make_tables
+    make_tables.main()
     text = MS.read_text()
-    # The manuscript writes minus as U+2212; normalise so both forms match.
-    haystack = text.replace("−", "-")
+    # The manuscript writes minus as U+2212 and naira as the currency sign;
+    # normalise so both forms match.
+    haystack = text.replace("−", "-").replace("₦", "N")
     checks = load()
 
     bad = []

@@ -369,7 +369,7 @@ def health_w5():
 # ---------------------------------------------------------------------------
 # Assembly
 # ---------------------------------------------------------------------------
-def build_w5():
+def build_w5(factors=None):
     cover = read(config.W5_PP / "secta_plantingw5.csv")
     cover = cover[cover["wt_cross_wave5"].notna()].copy()
     # Three weights are released. wt_wave5 and wt_longpanel_wave5 are panel
@@ -497,8 +497,23 @@ def build_w5():
 
     hh["oop_annual"] = hh["oop_outpatient"] + hh["oop_inpatient"]
     hh["oop_with_transport"] = hh["oop_annual"] + hh["oop_transport"]
-    hh["cons_annual"] = (hh["food_annual"] + hh["nonfood_excl_health"]
-                         + hh["edu_annual"] + hh["oop_annual"])
+    hh["cons_annual_raw"] = (hh["food_annual"] + hh["nonfood_excl_health"]
+                             + hh["edu_annual"] + hh["oop_annual"])
+    # Calibrated aggregate (see config.CALIBRATE_CONSUMPTION). Health spending
+    # is never scaled: it is measured directly and enters the numerator too.
+    hh["food_annual_raw"] = hh["food_annual"]
+    hh["nonfood_excl_health_raw"] = hh["nonfood_excl_health"]
+    if factors is not None and config.CALIBRATE_CONSUMPTION:
+        hh["food_annual"] = hh["food_annual_raw"] * factors["food_factor"]
+        hh["nonfood_excl_health"] = (hh["nonfood_excl_health_raw"]
+                                     * factors["nonfood_factor"])
+        non_rent = (hh["food_annual"] + hh["nonfood_excl_health"]
+                    + hh["edu_annual"] + hh["oop_annual"])
+        hh["rent_imputed"] = non_rent * factors["rent_ratio"]
+        hh["cons_annual"] = non_rent + hh["rent_imputed"]
+    else:
+        hh["rent_imputed"] = 0.0
+        hh["cons_annual"] = hh["cons_annual_raw"]
 
     hh = hh[hh["cons_annual"] > 0].copy()
     hh = add_welfare_variables(hh)
@@ -638,6 +653,67 @@ def build_w4():
     return hh
 
 
+def calibration_factors():
+    """Component scaling factors that map the rebuilt aggregate onto wave 4's.
+
+    Three numbers: the ratio of the official to the rebuilt mean for food and
+    for non-food (excluding health, which is measured directly in both), and
+    the official ratio of imputed rent to everything else. Applied to wave 4
+    itself they recover 96% of the official level and bring CHE at the 10%
+    threshold to within about one point of the official figure; that check is
+    written alongside the factors and reported in Table A1.
+    """
+    food = food_consumption("w4")
+    nf = []
+    for fn, fl, val, mult in [("sect8a_plantingw4.csv", "s8q1", "s8q2", 52.0),
+                              ("sect8b_plantingw4.csv", "s8q3", "s8q4", 12.0),
+                              ("sect8c_plantingw4.csv", "s8q5", "s8q6", 1.0)]:
+        d = _nonfood_block(config.W4 / fn, fl, val, mult)
+        nf.append(d.groupby("hhid")["annual"].sum(min_count=1))
+    nonfood = pd.concat(nf, axis=1).sum(axis=1, min_count=1)
+
+    t = read(config.W4 / "totcons_final.csv").set_index("hhid")
+    size = t["hhsize"]
+    food_cols = [c for c in t.columns if c.startswith(("food_own", "food_purch", "food_meals"))]
+    nonfood_cols = [c for c in t.columns if c.startswith("nonfood")]
+    off_food = t[food_cols].sum(axis=1) * size
+    off_nonfood = t[nonfood_cols].sum(axis=1) * size
+    health = (t["health31"].fillna(0) + t["health32"].fillna(0)) * size
+    edu = (t["edu29"].fillna(0) + t["edu30"].fillna(0)) * size
+    rent = t["rent33"].fillna(0) * size
+    total = t["totcons_pc"] * size
+    food = food.reindex(t.index).fillna(0.0)
+    nonfood = nonfood.reindex(t.index).fillna(0.0)
+    w = (t["wt_wave4"] * size)
+    ok = ((total > 0) & w.notna() & ((food + nonfood) > 0)).to_numpy()
+
+    f_food = float(off_food[ok].mean() / food[ok].mean())
+    f_nonfood = float(off_nonfood[ok].mean() / nonfood[ok].mean())
+    rent_ratio = float(rent[ok].sum() / (total - rent)[ok].sum())
+
+    raw = food + nonfood + edu + health
+    cal = (food * f_food + nonfood * f_nonfood + edu + health) * (1 + rent_ratio)
+
+    def che(den, th):
+        return 100 * np.average((health / den > th)[ok], weights=w[ok])
+
+    rows = []
+    for name, den in [("Official aggregate", total),
+                      ("Rebuilt, uncalibrated", raw),
+                      ("Rebuilt, calibrated", cal)]:
+        rows.append({"aggregate": name,
+                     "mean_naira": float(np.average(den[ok], weights=w[ok])),
+                     "ratio_to_official": float(np.average(den[ok], weights=w[ok])
+                                                / np.average(total[ok], weights=w[ok])),
+                     "spearman_vs_official": float(den[ok].corr(total[ok], method="spearman")),
+                     "che10_pct": che(den, 0.10), "che25_pct": che(den, 0.25),
+                     "mean_oop_share_pct": 100 * float(np.average((health / den)[ok], weights=w[ok]))})
+    check = pd.DataFrame(rows)
+    factors = {"food_factor": f_food, "nonfood_factor": f_nonfood,
+               "rent_ratio": rent_ratio}
+    return factors, check
+
+
 def validate_w4_aggregate():
     """Rebuild the wave-4 aggregate with the wave-5 code and compare.
 
@@ -703,8 +779,15 @@ def validate_w4_aggregate():
 
 # ---------------------------------------------------------------------------
 def main():
+    print("Calibration factors from wave 4 ...")
+    factors, cal_check = calibration_factors()
+    pd.DataFrame([factors]).to_csv(config.TABLES / "tableA1b_calibration.csv", index=False)
+    cal_check.to_csv(config.TABLES / "tableA1c_calibration_check.csv", index=False)
+    print("  " + ", ".join(f"{k} {v:.4f}" for k, v in factors.items()))
+    print(cal_check.to_string(index=False, float_format=lambda x: f"{x:,.3f}"))
+
     print("Building wave 5 ...")
-    hh5, ind5 = build_w5()
+    hh5, ind5 = build_w5(factors)
     hh5.to_csv(config.DERIVED / "hh_w5.csv", index=False)
     ind5.to_csv(config.DERIVED / "ind_w5.csv", index=False)
     print(f"  households {len(hh5):,}  individuals {len(ind5):,}")

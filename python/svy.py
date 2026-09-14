@@ -8,8 +8,7 @@ estimate that respects that design. The formulas follow Lumley (2004) /
 `R survey`, so results are directly comparable with the R implementations used
 elsewhere in this literature.
 
-Nothing here is specific to Nigeria; the module is the reusable core that
-Papers 3-6 of the research programme will apply to US survey data.
+Nothing here is specific to Nigeria; the module is survey-agnostic.
 """
 
 from __future__ import annotations
@@ -258,8 +257,12 @@ def concentration_index(design, outcome, living_standard, binary=True):
 
     out = {"CI": float(idx), "CI_se": se, "mean": float(mu)}
     if binary:
+        # E = 4 * mu * CI = 8 * cov_w(y, r), so its linearisation is that of
+        # the covariance alone; scaling the CI's standard error by 4 * mu would
+        # ignore the covariance between the estimated mean and the index.
         out["Erreygers"] = 4.0 * mu * idx
-        out["Erreygers_se"] = 4.0 * mu * se
+        z_e = 8.0 * ((y - mu) * (r - r_bar) - cov_wr) / W
+        out["Erreygers_se"] = float(np.sqrt(d._var_total(z_e)))
     else:
         out["Erreygers"] = np.nan
         out["Erreygers_se"] = np.nan

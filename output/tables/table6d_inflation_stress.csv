@@ -1,7 +1,7 @@
 medical_inflation_shock,take_up,pool_size,ruin_target,min_subsidy_per_enrollee
-0.0,Random,20000,0.05,15523.22421797966
-0.0,Moderate adverse selection,20000,0.05,31747.501956121767
-0.0,Strong adverse selection,20000,0.05,50209.77967373599
-0.25,Random,20000,0.05,21165.89929315766
-0.25,Moderate adverse selection,20000,0.05,41448.38776510954
-0.25,Strong adverse selection,20000,0.05,64711.65269868844
+0.0,Random,20000,0.05,15338.697895682733
+0.0,Moderate adverse selection,20000,0.05,32204.989999000765
+0.0,Strong adverse selection,20000,0.05,51401.323017885545
+0.25,Random,20000,0.05,18722.547411417094
+0.25,Moderate adverse selection,20000,0.05,38066.56525585383
+0.25,Strong adverse selection,20000,0.05,60212.89194639309
