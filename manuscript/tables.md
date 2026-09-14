@@ -277,6 +277,8 @@
 
 **Table A2.** Catastrophic expenditure by residence and zone, and observed health-insurance coverage.
 
+*The 25% and 40% budget-share thresholds are in output/tables/table2_che.csv.*
+
 | Measure | Dimension | Group | Incidence % | 95% low | 95% high | n |
 |---|---:|---:|---:|---:|---:|---:|
 | Budget share > 10% | Residence | Rural | 14.2 | 12.0 | 16.4 | 3,205 |
@@ -287,22 +289,6 @@
 | Budget share > 10% | Zone | South East | 24.8 | 20.2 | 29.5 | 786 |
 | Budget share > 10% | Zone | South South | 15.9 | 11.2 | 20.5 | 762 |
 | Budget share > 10% | Zone | South West | 8.8 | 6.1 | 11.4 | 752 |
-| Budget share > 25% | Residence | Rural | 3.8 | 2.6 | 4.9 | 3,205 |
-| Budget share > 25% | Residence | Urban | 2.6 | 1.4 | 3.8 | 1,480 |
-| Budget share > 25% | Zone | North Central | 5.2 | 2.2 | 8.2 | 804 |
-| Budget share > 25% | Zone | North East | 2.3 | 0.6 | 4.0 | 808 |
-| Budget share > 25% | Zone | North West | 1.8 | 0.1 | 3.5 | 773 |
-| Budget share > 25% | Zone | South East | 7.3 | 4.9 | 9.7 | 786 |
-| Budget share > 25% | Zone | South South | 4.5 | 2.0 | 6.9 | 762 |
-| Budget share > 25% | Zone | South West | 1.9 | 0.9 | 3.0 | 752 |
-| Budget share > 40% | Residence | Rural | 1.0 | 0.5 | 1.4 | 3,205 |
-| Budget share > 40% | Residence | Urban | 0.5 | 0.1 | 0.9 | 1,480 |
-| Budget share > 40% | Zone | North Central | 0.9 | -0.3 | 2.1 | 804 |
-| Budget share > 40% | Zone | North East | 1.2 | 0.2 | 2.1 | 808 |
-| Budget share > 40% | Zone | North West | 0.2 | -0.2 | 0.5 | 773 |
-| Budget share > 40% | Zone | South East | 1.6 | 0.5 | 2.7 | 786 |
-| Budget share > 40% | Zone | South South | 1.0 | 0.3 | 1.7 | 762 |
-| Budget share > 40% | Zone | South West | 0.7 | 0.0 | 1.4 | 752 |
 | Capacity to pay >= 40% | Residence | Rural | 9.0 | 7.4 | 10.7 | 3,205 |
 | Capacity to pay >= 40% | Residence | Urban | 6.0 | 4.2 | 7.8 | 1,480 |
 | Capacity to pay >= 40% | Zone | North Central | 13.0 | 9.1 | 17.0 | 804 |
@@ -428,102 +414,35 @@
 | Lagos LASHMA 'Ilera Eko' Standard, family of four | 55,000 | 27,247 | 0.50 |
 | Lagos LASHMA 'Ilera Eko' Standard, family of six | 80,000 | 27,247 | 0.34 |
 
-**Table A6.** Frequency, severity and Tweedie model estimates.
+**Table A6.** Frequency, severity and Tweedie model estimates, as multiplicative effects on the fitted mean.
 
-*Survey-weighted, standard errors clustered on the enumeration area. exp(coef) is the multiplicative effect on the fitted mean.*
+*exp(coef); * marks p < 0.05. Survey-weighted, standard errors clustered on the enumeration area. Coefficients, standard errors and z statistics are in output/tables/table4_cost_models.csv. Reference categories: age 25-44, North Central, quintile 1.*
 
-| Model | Term | Coef | SE | z | p | exp(coef) |
-|---|---:|---:|---:|---:|---:|---:|
-| Frequency: outpatient (Poisson, annual rate) | Intercept | 0.6643 | 0.1571 | 4.23 | 0.000 | 1.943 |
-| Frequency: outpatient (Poisson, annual rate) | C(age_band, Treatment(reference='25-44'))[T.0-4] | 0.1857 | 0.0824 | 2.25 | 0.024 | 1.204 |
-| Frequency: outpatient (Poisson, annual rate) | C(age_band, Treatment(reference='25-44'))[T.15-24] | -0.4115 | 0.0600 | -6.86 | 0.000 | 0.663 |
-| Frequency: outpatient (Poisson, annual rate) | C(age_band, Treatment(reference='25-44'))[T.45-59] | 0.1615 | 0.0497 | 3.25 | 0.001 | 1.175 |
-| Frequency: outpatient (Poisson, annual rate) | C(age_band, Treatment(reference='25-44'))[T.5-14] | -0.1729 | 0.0534 | -3.24 | 0.001 | 0.841 |
-| Frequency: outpatient (Poisson, annual rate) | C(age_band, Treatment(reference='25-44'))[T.60+] | 0.5032 | 0.0584 | 8.61 | 0.000 | 1.654 |
-| Frequency: outpatient (Poisson, annual rate) | C(zone)[T.North East] | 0.0974 | 0.1093 | 0.89 | 0.373 | 1.102 |
-| Frequency: outpatient (Poisson, annual rate) | C(zone)[T.North West] | -0.0840 | 0.1086 | -0.77 | 0.439 | 0.919 |
-| Frequency: outpatient (Poisson, annual rate) | C(zone)[T.South East] | 0.0835 | 0.1104 | 0.76 | 0.450 | 1.087 |
-| Frequency: outpatient (Poisson, annual rate) | C(zone)[T.South South] | 0.1016 | 0.1058 | 0.96 | 0.337 | 1.107 |
-| Frequency: outpatient (Poisson, annual rate) | C(zone)[T.South West] | -0.3365 | 0.1099 | -3.06 | 0.002 | 0.714 |
-| Frequency: outpatient (Poisson, annual rate) | C(quintile)[T.2] | 0.2667 | 0.0841 | 3.17 | 0.002 | 1.306 |
-| Frequency: outpatient (Poisson, annual rate) | C(quintile)[T.3] | 0.4864 | 0.0803 | 6.06 | 0.000 | 1.627 |
-| Frequency: outpatient (Poisson, annual rate) | C(quintile)[T.4] | 0.5343 | 0.0814 | 6.56 | 0.000 | 1.706 |
-| Frequency: outpatient (Poisson, annual rate) | C(quintile)[T.5] | 0.6872 | 0.0858 | 8.01 | 0.000 | 1.988 |
-| Frequency: outpatient (Poisson, annual rate) | female | 0.0693 | 0.0335 | 2.07 | 0.038 | 1.072 |
-| Frequency: outpatient (Poisson, annual rate) | urban | 0.0476 | 0.0595 | 0.80 | 0.424 | 1.049 |
-| Frequency: outpatient (Poisson, annual rate) | chronic | 0.5330 | 0.0603 | 8.84 | 0.000 | 1.704 |
-| Frequency: outpatient (Poisson, annual rate) | hhsize | -0.0119 | 0.0068 | -1.75 | 0.081 | 0.988 |
-| Frequency: inpatient (Poisson, annual rate) | Intercept | -4.0191 | 0.4306 | -9.33 | 0.000 | 0.018 |
-| Frequency: inpatient (Poisson, annual rate) | C(age_band, Treatment(reference='25-44'))[T.0-4] | -0.5526 | 0.2863 | -1.93 | 0.054 | 0.575 |
-| Frequency: inpatient (Poisson, annual rate) | C(age_band, Treatment(reference='25-44'))[T.15-24] | -0.4628 | 0.1596 | -2.90 | 0.004 | 0.630 |
-| Frequency: inpatient (Poisson, annual rate) | C(age_band, Treatment(reference='25-44'))[T.45-59] | 0.1292 | 0.1334 | 0.97 | 0.333 | 1.138 |
-| Frequency: inpatient (Poisson, annual rate) | C(age_band, Treatment(reference='25-44'))[T.5-14] | -0.5592 | 0.1453 | -3.85 | 0.000 | 0.572 |
-| Frequency: inpatient (Poisson, annual rate) | C(age_band, Treatment(reference='25-44'))[T.60+] | 0.4225 | 0.1670 | 2.53 | 0.011 | 1.526 |
-| Frequency: inpatient (Poisson, annual rate) | C(zone)[T.North East] | -0.7250 | 0.2421 | -2.99 | 0.003 | 0.484 |
-| Frequency: inpatient (Poisson, annual rate) | C(zone)[T.North West] | -0.9135 | 0.2410 | -3.79 | 0.000 | 0.401 |
-| Frequency: inpatient (Poisson, annual rate) | C(zone)[T.South East] | -0.9122 | 0.2032 | -4.49 | 0.000 | 0.402 |
-| Frequency: inpatient (Poisson, annual rate) | C(zone)[T.South South] | -0.9894 | 0.2342 | -4.22 | 0.000 | 0.372 |
-| Frequency: inpatient (Poisson, annual rate) | C(zone)[T.South West] | -1.7381 | 0.2534 | -6.86 | 0.000 | 0.176 |
-| Frequency: inpatient (Poisson, annual rate) | C(quintile)[T.2] | 0.9629 | 0.3213 | 3.00 | 0.003 | 2.619 |
-| Frequency: inpatient (Poisson, annual rate) | C(quintile)[T.3] | 0.9662 | 0.3396 | 2.84 | 0.004 | 2.628 |
-| Frequency: inpatient (Poisson, annual rate) | C(quintile)[T.4] | 1.2518 | 0.3425 | 3.66 | 0.000 | 3.497 |
-| Frequency: inpatient (Poisson, annual rate) | C(quintile)[T.5] | 1.7461 | 0.3548 | 4.92 | 0.000 | 5.732 |
-| Frequency: inpatient (Poisson, annual rate) | female | 0.0985 | 0.0940 | 1.05 | 0.295 | 1.103 |
-| Frequency: inpatient (Poisson, annual rate) | urban | 0.4503 | 0.1644 | 2.74 | 0.006 | 1.569 |
-| Frequency: inpatient (Poisson, annual rate) | chronic | 1.0763 | 0.1853 | 5.81 | 0.000 | 2.934 |
-| Frequency: inpatient (Poisson, annual rate) | hhsize | 0.0161 | 0.0245 | 0.65 | 0.513 | 1.016 |
-| Severity: cost per outpatient episode (gamma) | Intercept | 8.3841 | 0.1854 | 45.21 | 0.000 | 4,376.717 |
-| Severity: cost per outpatient episode (gamma) | C(age_band, Treatment(reference='25-44'))[T.0-4] | -0.7646 | 0.1202 | -6.36 | 0.000 | 0.465 |
-| Severity: cost per outpatient episode (gamma) | C(age_band, Treatment(reference='25-44'))[T.15-24] | -0.5272 | 0.1164 | -4.53 | 0.000 | 0.590 |
-| Severity: cost per outpatient episode (gamma) | C(age_band, Treatment(reference='25-44'))[T.45-59] | -0.0938 | 0.1347 | -0.70 | 0.486 | 0.910 |
-| Severity: cost per outpatient episode (gamma) | C(age_band, Treatment(reference='25-44'))[T.5-14] | -0.6960 | 0.1115 | -6.24 | 0.000 | 0.499 |
-| Severity: cost per outpatient episode (gamma) | C(age_band, Treatment(reference='25-44'))[T.60+] | 0.0582 | 0.1337 | 0.44 | 0.663 | 1.060 |
-| Severity: cost per outpatient episode (gamma) | C(zone)[T.North East] | -0.2288 | 0.1139 | -2.01 | 0.045 | 0.796 |
-| Severity: cost per outpatient episode (gamma) | C(zone)[T.North West] | -0.4364 | 0.1121 | -3.89 | 0.000 | 0.646 |
-| Severity: cost per outpatient episode (gamma) | C(zone)[T.South East] | -0.0036 | 0.1230 | -0.03 | 0.976 | 0.996 |
-| Severity: cost per outpatient episode (gamma) | C(zone)[T.South South] | -0.0826 | 0.1170 | -0.71 | 0.480 | 0.921 |
-| Severity: cost per outpatient episode (gamma) | C(zone)[T.South West] | -0.1729 | 0.1651 | -1.05 | 0.295 | 0.841 |
-| Severity: cost per outpatient episode (gamma) | C(quintile)[T.2] | 0.2127 | 0.0982 | 2.17 | 0.030 | 1.237 |
-| Severity: cost per outpatient episode (gamma) | C(quintile)[T.3] | 0.2573 | 0.0857 | 3.00 | 0.003 | 1.293 |
-| Severity: cost per outpatient episode (gamma) | C(quintile)[T.4] | 0.5376 | 0.0895 | 6.01 | 0.000 | 1.712 |
-| Severity: cost per outpatient episode (gamma) | C(quintile)[T.5] | 1.1133 | 0.1073 | 10.38 | 0.000 | 3.044 |
-| Severity: cost per outpatient episode (gamma) | female | -0.1430 | 0.0627 | -2.28 | 0.023 | 0.867 |
-| Severity: cost per outpatient episode (gamma) | urban | 0.0666 | 0.0929 | 0.72 | 0.473 | 1.069 |
-| Severity: cost per outpatient episode (gamma) | chronic | 0.4834 | 0.1056 | 4.58 | 0.000 | 1.622 |
-| Severity: cost per outpatient episode (gamma) | hhsize | 0.0375 | 0.0082 | 4.59 | 0.000 | 1.038 |
-| Severity: cost per inpatient episode (gamma) | Intercept | 9.4126 | 0.3437 | 27.39 | 0.000 | 12,242.037 |
-| Severity: cost per inpatient episode (gamma) | C(age_band, Treatment(reference='25-44'))[T.0-4] | -1.2628 | 0.2948 | -4.28 | 0.000 | 0.283 |
-| Severity: cost per inpatient episode (gamma) | C(age_band, Treatment(reference='25-44'))[T.15-24] | -0.8997 | 0.2430 | -3.70 | 0.000 | 0.407 |
-| Severity: cost per inpatient episode (gamma) | C(age_band, Treatment(reference='25-44'))[T.45-59] | 0.4119 | 0.3211 | 1.28 | 0.200 | 1.510 |
-| Severity: cost per inpatient episode (gamma) | C(age_band, Treatment(reference='25-44'))[T.5-14] | -0.3087 | 0.3230 | -0.96 | 0.339 | 0.734 |
-| Severity: cost per inpatient episode (gamma) | C(age_band, Treatment(reference='25-44'))[T.60+] | 0.2488 | 0.2733 | 0.91 | 0.363 | 1.282 |
-| Severity: cost per inpatient episode (gamma) | C(quintile)[T.2] | 1.0855 | 0.3949 | 2.75 | 0.006 | 2.961 |
-| Severity: cost per inpatient episode (gamma) | C(quintile)[T.3] | 1.0196 | 0.3273 | 3.12 | 0.002 | 2.772 |
-| Severity: cost per inpatient episode (gamma) | C(quintile)[T.4] | 1.6177 | 0.3880 | 4.17 | 0.000 | 5.042 |
-| Severity: cost per inpatient episode (gamma) | C(quintile)[T.5] | 1.7803 | 0.3343 | 5.33 | 0.000 | 5.932 |
-| Severity: cost per inpatient episode (gamma) | female | -0.1041 | 0.1670 | -0.62 | 0.533 | 0.901 |
-| Severity: cost per inpatient episode (gamma) | urban | -0.3804 | 0.1886 | -2.02 | 0.044 | 0.684 |
-| Aggregate annual cost (Tweedie, p=1.65) | Intercept | 9.0016 | 0.1937 | 46.48 | 0.000 | 8,116.020 |
-| Aggregate annual cost (Tweedie, p=1.65) | C(age_band, Treatment(reference='25-44'))[T.0-4] | -0.5734 | 0.1573 | -3.65 | 0.000 | 0.564 |
-| Aggregate annual cost (Tweedie, p=1.65) | C(age_band, Treatment(reference='25-44'))[T.15-24] | -0.9633 | 0.1424 | -6.77 | 0.000 | 0.382 |
-| Aggregate annual cost (Tweedie, p=1.65) | C(age_band, Treatment(reference='25-44'))[T.45-59] | 0.0914 | 0.1631 | 0.56 | 0.575 | 1.096 |
-| Aggregate annual cost (Tweedie, p=1.65) | C(age_band, Treatment(reference='25-44'))[T.5-14] | -0.8343 | 0.1327 | -6.29 | 0.000 | 0.434 |
-| Aggregate annual cost (Tweedie, p=1.65) | C(age_band, Treatment(reference='25-44'))[T.60+] | 0.5631 | 0.1639 | 3.44 | 0.001 | 1.756 |
-| Aggregate annual cost (Tweedie, p=1.65) | C(zone)[T.North East] | -0.2028 | 0.1247 | -1.63 | 0.104 | 0.816 |
-| Aggregate annual cost (Tweedie, p=1.65) | C(zone)[T.North West] | -0.5706 | 0.1207 | -4.73 | 0.000 | 0.565 |
-| Aggregate annual cost (Tweedie, p=1.65) | C(zone)[T.South East] | 0.0175 | 0.1235 | 0.14 | 0.887 | 1.018 |
-| Aggregate annual cost (Tweedie, p=1.65) | C(zone)[T.South South] | -0.0538 | 0.1298 | -0.41 | 0.679 | 0.948 |
-| Aggregate annual cost (Tweedie, p=1.65) | C(zone)[T.South West] | -0.5348 | 0.1726 | -3.10 | 0.002 | 0.586 |
-| Aggregate annual cost (Tweedie, p=1.65) | C(quintile)[T.2] | 0.5689 | 0.1239 | 4.59 | 0.000 | 1.766 |
-| Aggregate annual cost (Tweedie, p=1.65) | C(quintile)[T.3] | 0.8525 | 0.1186 | 7.19 | 0.000 | 2.345 |
-| Aggregate annual cost (Tweedie, p=1.65) | C(quintile)[T.4] | 1.2091 | 0.1231 | 9.82 | 0.000 | 3.351 |
-| Aggregate annual cost (Tweedie, p=1.65) | C(quintile)[T.5] | 1.9367 | 0.1425 | 13.59 | 0.000 | 6.936 |
-| Aggregate annual cost (Tweedie, p=1.65) | female | -0.0539 | 0.0745 | -0.72 | 0.469 | 0.948 |
-| Aggregate annual cost (Tweedie, p=1.65) | urban | 0.0481 | 0.1104 | 0.44 | 0.663 | 1.049 |
-| Aggregate annual cost (Tweedie, p=1.65) | chronic | 1.1781 | 0.1635 | 7.21 | 0.000 | 3.248 |
-| Aggregate annual cost (Tweedie, p=1.65) | hhsize | 0.0250 | 0.0100 | 2.49 | 0.013 | 1.025 |
+| Term | Outpatient rate | Inpatient rate | Outpatient cost | Inpatient cost | Annual cost (Tweedie) |
+|---|---:|---:|---:|---:|---:|
+| Intercept | 1.943* | 0.018* | 4376.717* | 12242.037* | 8116.020* |
+| age_band 0-4 | 1.204* | 0.575 | 0.465* | 0.283* | 0.564* |
+| age_band 15-24 | 0.663* | 0.630* | 0.590* | 0.407* | 0.382* |
+| age_band 45-59 | 1.175* | 1.138 | 0.910 | 1.510 | 1.096 |
+| age_band 5-14 | 0.841* | 0.572* | 0.499* | 0.734 | 0.434* |
+| age_band 60+ | 1.654* | 1.526* | 1.060 | 1.282 | 1.756* |
+| zone North East | 1.102 | 0.484* | 0.796* |  | 0.816 |
+| zone North West | 0.919 | 0.401* | 0.646* |  | 0.565* |
+| zone South East | 1.087 | 0.402* | 0.996 |  | 1.018 |
+| zone South South | 1.107 | 0.372* | 0.921 |  | 0.948 |
+| zone South West | 0.714* | 0.176* | 0.841 |  | 0.586* |
+| quintile 2 | 1.306* | 2.619* | 1.237* | 2.961* | 1.766* |
+| quintile 3 | 1.627* | 2.628* | 1.293* | 2.772* | 2.345* |
+| quintile 4 | 1.706* | 3.497* | 1.712* | 5.042* | 3.351* |
+| quintile 5 | 1.988* | 5.732* | 3.044* | 5.932* | 6.936* |
+| female | 1.072* | 1.103 | 0.867* | 0.901 | 0.948 |
+| urban | 1.049 | 1.569* | 1.069 | 0.684* | 1.049 |
+| chronic | 1.704* | 2.934* | 1.622* |  | 3.248* |
+| hhsize | 0.988 | 1.016 | 1.038* |  | 1.025* |
 
-**Table A7.** Cost-model fit statistics, the Tweedie profile likelihood, and calibration by decile of prediction.
+**Table A7.** Cost-model fit statistics, the Tweedie profile likelihood near its maximum, and calibration by decile of prediction.
+
+*The full profile is in output/tables/tableA2_tweedie_profile.csv.*
 
 | Statistic | Value |
 |---|---:|
@@ -541,11 +460,6 @@
 
 | p | Log-likelihood | Deviance |
 |---|---:|---:|
-| 1.20 | -92,450.1 | 228,629,912.3 |
-| 1.25 | -87,297.4 | 139,618,667.9 |
-| 1.30 | -84,036.2 | 86,008,598.8 |
-| 1.35 | -81,854.4 | 53,478,242.2 |
-| 1.40 | -80,350.9 | 33,586,615.5 |
 | 1.45 | -79,307.6 | 21,326,453.7 |
 | 1.50 | -78,599.0 | 13,707,933.5 |
 | 1.55 | -78,152.7 | 8,934,017.0 |
@@ -553,8 +467,6 @@
 | 1.65 | -77,923.3 | 3,996,089.7 |
 | 1.70 | -78,151.1 | 2,764,579.2 |
 | 1.75 | -78,680.8 | 1,974,035.1 |
-| 1.80 | -79,670.5 | 1,473,222.3 |
-| 1.85 | -81,512.4 | 1,176,606.2 |
 
 | Decile | n | Predicted mean | Observed mean | Observed / predicted | Lift |
 |---|---:|---:|---:|---:|---:|
@@ -569,75 +481,27 @@
 | 9 | 2,463 | 32,965 | 37,389 | 1.134 | 1.90 |
 | 10 | 2,463 | 82,286 | 83,195 | 1.011 | 4.23 |
 
-**Table A8.** Probability of ruin over three years with no opening capital, and the medical-inflation stress.
+**Table A8.** Probability of ruin over three years for a 20,000-life pool with no opening capital, and the medical-inflation stress.
 
-*The full grid across pool sizes, take-up patterns, subsidy levels, horizons and capital multiples is in output/tables. The stress is a permanent 25% rise in claims from year 2.*
+*The full grid across pool sizes of 5,000 to 100,000, take-up patterns, subsidy levels in 5% steps, horizons and capital multiples is in output/tables/table6b_ruin_scenarios.csv. The stress is a permanent 25% rise in claims from year 2.*
 
 | Pool size | Take-up | Subsidy | Per enrollee | Ruin probability | MC SE |
 |---|---:|---:|---:|---:|---:|
-| 5,000 | Random | 0% | 0 | 1.0000 | 0.0000 |
-| 5,000 | Random | 25% | 6,812 | 1.0000 | 0.0000 |
-| 5,000 | Random | 50% | 13,624 | 0.6905 | 0.0046 |
-| 5,000 | Random | 75% | 20,435 | 0.0009 | 0.0003 |
-| 5,000 | Random | 100% | 27,247 | 0.0000 | 0.0000 |
-| 5,000 | Random | 150% | 40,871 | 0.0000 | 0.0000 |
-| 5,000 | Random | 200% | 54,494 | 0.0000 | 0.0000 |
 | 20,000 | Random | 0% | 0 | 1.0000 | 0.0000 |
-| 20,000 | Random | 25% | 6,812 | 1.0000 | 0.0000 |
 | 20,000 | Random | 50% | 13,624 | 0.7195 | 0.0045 |
-| 20,000 | Random | 75% | 20,435 | 0.0000 | 0.0000 |
 | 20,000 | Random | 100% | 27,247 | 0.0000 | 0.0000 |
 | 20,000 | Random | 150% | 40,871 | 0.0000 | 0.0000 |
 | 20,000 | Random | 200% | 54,494 | 0.0000 | 0.0000 |
-| 100,000 | Random | 0% | 0 | 1.0000 | 0.0000 |
-| 100,000 | Random | 25% | 6,812 | 1.0000 | 0.0000 |
-| 100,000 | Random | 50% | 13,624 | 0.7516 | 0.0043 |
-| 100,000 | Random | 75% | 20,435 | 0.0000 | 0.0000 |
-| 100,000 | Random | 100% | 27,247 | 0.0000 | 0.0000 |
-| 100,000 | Random | 150% | 40,871 | 0.0000 | 0.0000 |
-| 100,000 | Random | 200% | 54,494 | 0.0000 | 0.0000 |
-| 5,000 | Moderate adverse selection | 0% | 0 | 1.0000 | 0.0000 |
-| 5,000 | Moderate adverse selection | 25% | 6,812 | 1.0000 | 0.0000 |
-| 5,000 | Moderate adverse selection | 50% | 13,624 | 1.0000 | 0.0000 |
-| 5,000 | Moderate adverse selection | 75% | 20,435 | 1.0000 | 0.0000 |
-| 5,000 | Moderate adverse selection | 100% | 27,247 | 0.9815 | 0.0013 |
-| 5,000 | Moderate adverse selection | 150% | 40,871 | 0.0000 | 0.0000 |
-| 5,000 | Moderate adverse selection | 200% | 54,494 | 0.0000 | 0.0000 |
 | 20,000 | Moderate adverse selection | 0% | 0 | 1.0000 | 0.0000 |
-| 20,000 | Moderate adverse selection | 25% | 6,812 | 1.0000 | 0.0000 |
 | 20,000 | Moderate adverse selection | 50% | 13,624 | 1.0000 | 0.0000 |
-| 20,000 | Moderate adverse selection | 75% | 20,435 | 1.0000 | 0.0000 |
 | 20,000 | Moderate adverse selection | 100% | 27,247 | 1.0000 | 0.0000 |
 | 20,000 | Moderate adverse selection | 150% | 40,871 | 0.0000 | 0.0000 |
 | 20,000 | Moderate adverse selection | 200% | 54,494 | 0.0000 | 0.0000 |
-| 100,000 | Moderate adverse selection | 0% | 0 | 1.0000 | 0.0000 |
-| 100,000 | Moderate adverse selection | 25% | 6,812 | 1.0000 | 0.0000 |
-| 100,000 | Moderate adverse selection | 50% | 13,624 | 1.0000 | 0.0000 |
-| 100,000 | Moderate adverse selection | 75% | 20,435 | 1.0000 | 0.0000 |
-| 100,000 | Moderate adverse selection | 100% | 27,247 | 1.0000 | 0.0000 |
-| 100,000 | Moderate adverse selection | 150% | 40,871 | 0.0000 | 0.0000 |
-| 100,000 | Moderate adverse selection | 200% | 54,494 | 0.0000 | 0.0000 |
-| 5,000 | Strong adverse selection | 0% | 0 | 1.0000 | 0.0000 |
-| 5,000 | Strong adverse selection | 25% | 6,812 | 1.0000 | 0.0000 |
-| 5,000 | Strong adverse selection | 50% | 13,624 | 1.0000 | 0.0000 |
-| 5,000 | Strong adverse selection | 75% | 20,435 | 1.0000 | 0.0000 |
-| 5,000 | Strong adverse selection | 100% | 27,247 | 1.0000 | 0.0000 |
-| 5,000 | Strong adverse selection | 150% | 40,871 | 1.0000 | 0.0000 |
-| 5,000 | Strong adverse selection | 200% | 54,494 | 0.0462 | 0.0021 |
 | 20,000 | Strong adverse selection | 0% | 0 | 1.0000 | 0.0000 |
-| 20,000 | Strong adverse selection | 25% | 6,812 | 1.0000 | 0.0000 |
 | 20,000 | Strong adverse selection | 50% | 13,624 | 1.0000 | 0.0000 |
-| 20,000 | Strong adverse selection | 75% | 20,435 | 1.0000 | 0.0000 |
 | 20,000 | Strong adverse selection | 100% | 27,247 | 1.0000 | 0.0000 |
 | 20,000 | Strong adverse selection | 150% | 40,871 | 1.0000 | 0.0000 |
 | 20,000 | Strong adverse selection | 200% | 54,494 | 0.0002 | 0.0001 |
-| 100,000 | Strong adverse selection | 0% | 0 | 1.0000 | 0.0000 |
-| 100,000 | Strong adverse selection | 25% | 6,812 | 1.0000 | 0.0000 |
-| 100,000 | Strong adverse selection | 50% | 13,624 | 1.0000 | 0.0000 |
-| 100,000 | Strong adverse selection | 75% | 20,435 | 1.0000 | 0.0000 |
-| 100,000 | Strong adverse selection | 100% | 27,247 | 1.0000 | 0.0000 |
-| 100,000 | Strong adverse selection | 150% | 40,871 | 1.0000 | 0.0000 |
-| 100,000 | Strong adverse selection | 200% | 54,494 | 0.0000 | 0.0000 |
 
 | Claims shock | Take-up | Minimum subsidy |
 |---|---:|---:|
@@ -669,90 +533,28 @@
 | Universal coverage | Out-of-pocket only | 100.0% | 1.6 | 0.3 | 0.5 | 58.7 | 27,603 |
 | Universal coverage | OOP plus member contribution | 100.0% | 10.0 | 0.7 | 7.9 | 60.3 | 101,782 |
 
-**Table A10.** Counterfactual catastrophic spending by consumption quintile, out-of-pocket plus contribution basis.
+**Table A10.** Counterfactual catastrophic spending by consumption quintile, out-of-pocket plus contribution basis (percent).
 
-| Scenario | Measure | Quintile | Estimate % | 95% low | 95% high |
-|---|---:|---:|---:|---:|---:|
-| Baseline (no coverage) | CHE > 10% | Q1 (poorest) | 11.9 | 8.6 | 15.2 |
-| Baseline (no coverage) | CHE > 10% | Q2 | 14.4 | 10.3 | 18.5 |
-| Baseline (no coverage) | CHE > 10% | Q3 | 14.2 | 10.7 | 17.7 |
-| Baseline (no coverage) | CHE > 10% | Q4 | 14.6 | 11.0 | 18.3 |
-| Baseline (no coverage) | CHE > 10% | Q5 (richest) | 15.6 | 12.6 | 18.6 |
-| Baseline (no coverage) | CHE, CTP >= 40% | Q1 (poorest) | 9.9 | 7.3 | 12.6 |
-| Baseline (no coverage) | CHE, CTP >= 40% | Q2 | 11.2 | 7.4 | 15.0 |
-| Baseline (no coverage) | CHE, CTP >= 40% | Q3 | 6.4 | 4.3 | 8.4 |
-| Baseline (no coverage) | CHE, CTP >= 40% | Q4 | 7.6 | 5.1 | 10.1 |
-| Baseline (no coverage) | CHE, CTP >= 40% | Q5 (richest) | 4.4 | 2.8 | 6.1 |
-| Vulnerable group only, fully subsidised | CHE > 10% | Q1 (poorest) | 3.5 | 1.7 | 5.3 |
-| Vulnerable group only, fully subsidised | CHE > 10% | Q2 | 4.0 | 1.9 | 6.1 |
-| Vulnerable group only, fully subsidised | CHE > 10% | Q3 | 14.2 | 10.7 | 17.7 |
-| Vulnerable group only, fully subsidised | CHE > 10% | Q4 | 14.6 | 11.0 | 18.3 |
-| Vulnerable group only, fully subsidised | CHE > 10% | Q5 (richest) | 15.6 | 12.6 | 18.6 |
-| Vulnerable group only, fully subsidised | CHE, CTP >= 40% | Q1 (poorest) | 1.6 | 0.5 | 2.6 |
-| Vulnerable group only, fully subsidised | CHE, CTP >= 40% | Q2 | 2.4 | 0.9 | 3.9 |
-| Vulnerable group only, fully subsidised | CHE, CTP >= 40% | Q3 | 6.4 | 4.3 | 8.4 |
-| Vulnerable group only, fully subsidised | CHE, CTP >= 40% | Q4 | 7.6 | 5.1 | 10.1 |
-| Vulnerable group only, fully subsidised | CHE, CTP >= 40% | Q5 (richest) | 4.4 | 2.8 | 6.1 |
-| Informal sector, 50% take-up | CHE > 10% | Q1 (poorest) | 22.5 | 18.0 | 26.9 |
-| Informal sector, 50% take-up | CHE > 10% | Q2 | 11.8 | 8.0 | 15.6 |
-| Informal sector, 50% take-up | CHE > 10% | Q3 | 9.7 | 6.7 | 12.6 |
-| Informal sector, 50% take-up | CHE > 10% | Q4 | 10.4 | 7.6 | 13.2 |
-| Informal sector, 50% take-up | CHE > 10% | Q5 (richest) | 11.7 | 9.1 | 14.2 |
-| Informal sector, 50% take-up | CHE, CTP >= 40% | Q1 (poorest) | 19.2 | 15.4 | 23.1 |
-| Informal sector, 50% take-up | CHE, CTP >= 40% | Q2 | 9.8 | 6.4 | 13.3 |
-| Informal sector, 50% take-up | CHE, CTP >= 40% | Q3 | 4.2 | 2.6 | 5.9 |
-| Informal sector, 50% take-up | CHE, CTP >= 40% | Q4 | 4.6 | 2.6 | 6.6 |
-| Informal sector, 50% take-up | CHE, CTP >= 40% | Q5 (richest) | 2.4 | 1.5 | 3.4 |
-| Informal sector, full coverage | CHE > 10% | Q1 (poorest) | 31.0 | 25.6 | 36.4 |
-| Informal sector, full coverage | CHE > 10% | Q2 | 7.1 | 4.2 | 10.0 |
-| Informal sector, full coverage | CHE > 10% | Q3 | 6.0 | 3.7 | 8.3 |
-| Informal sector, full coverage | CHE > 10% | Q4 | 7.1 | 4.6 | 9.7 |
-| Informal sector, full coverage | CHE > 10% | Q5 (richest) | 6.5 | 4.6 | 8.4 |
-| Informal sector, full coverage | CHE, CTP >= 40% | Q1 (poorest) | 28.3 | 23.1 | 33.6 |
-| Informal sector, full coverage | CHE, CTP >= 40% | Q2 | 7.5 | 4.5 | 10.5 |
-| Informal sector, full coverage | CHE, CTP >= 40% | Q3 | 2.4 | 1.0 | 3.8 |
-| Informal sector, full coverage | CHE, CTP >= 40% | Q4 | 2.5 | 0.8 | 4.1 |
-| Informal sector, full coverage | CHE, CTP >= 40% | Q5 (richest) | 1.5 | 0.7 | 2.3 |
-| Informal sector, full coverage, no contribution | CHE > 10% | Q1 (poorest) | 3.5 | 1.7 | 5.3 |
-| Informal sector, full coverage, no contribution | CHE > 10% | Q2 | 4.0 | 1.9 | 6.1 |
-| Informal sector, full coverage, no contribution | CHE > 10% | Q3 | 3.4 | 1.7 | 5.1 |
-| Informal sector, full coverage, no contribution | CHE > 10% | Q4 | 5.4 | 3.2 | 7.7 |
-| Informal sector, full coverage, no contribution | CHE > 10% | Q5 (richest) | 5.8 | 4.0 | 7.6 |
-| Informal sector, full coverage, no contribution | CHE, CTP >= 40% | Q1 (poorest) | 1.6 | 0.5 | 2.6 |
-| Informal sector, full coverage, no contribution | CHE, CTP >= 40% | Q2 | 2.4 | 0.9 | 3.9 |
-| Informal sector, full coverage, no contribution | CHE, CTP >= 40% | Q3 | 1.4 | 0.3 | 2.5 |
-| Informal sector, full coverage, no contribution | CHE, CTP >= 40% | Q4 | 2.0 | 0.4 | 3.6 |
-| Informal sector, full coverage, no contribution | CHE, CTP >= 40% | Q5 (richest) | 1.3 | 0.6 | 2.1 |
-| Informal sector, full coverage, graded contribution | CHE > 10% | Q1 (poorest) | 12.6 | 9.4 | 15.8 |
-| Informal sector, full coverage, graded contribution | CHE > 10% | Q2 | 7.1 | 4.2 | 10.0 |
-| Informal sector, full coverage, graded contribution | CHE > 10% | Q3 | 7.5 | 4.9 | 10.0 |
-| Informal sector, full coverage, graded contribution | CHE > 10% | Q4 | 10.9 | 7.4 | 14.4 |
-| Informal sector, full coverage, graded contribution | CHE > 10% | Q5 (richest) | 12.0 | 9.3 | 14.7 |
-| Informal sector, full coverage, graded contribution | CHE, CTP >= 40% | Q1 (poorest) | 12.3 | 8.5 | 16.0 |
-| Informal sector, full coverage, graded contribution | CHE, CTP >= 40% | Q2 | 7.5 | 4.5 | 10.5 |
-| Informal sector, full coverage, graded contribution | CHE, CTP >= 40% | Q3 | 3.4 | 1.9 | 4.9 |
-| Informal sector, full coverage, graded contribution | CHE, CTP >= 40% | Q4 | 3.5 | 1.8 | 5.3 |
-| Informal sector, full coverage, graded contribution | CHE, CTP >= 40% | Q5 (richest) | 1.9 | 1.0 | 2.7 |
-| Informal sector, full coverage, Q1-Q2 exempt | CHE > 10% | Q1 (poorest) | 3.5 | 1.7 | 5.3 |
-| Informal sector, full coverage, Q1-Q2 exempt | CHE > 10% | Q2 | 4.0 | 1.9 | 6.1 |
-| Informal sector, full coverage, Q1-Q2 exempt | CHE > 10% | Q3 | 7.5 | 4.9 | 10.0 |
-| Informal sector, full coverage, Q1-Q2 exempt | CHE > 10% | Q4 | 10.9 | 7.4 | 14.4 |
-| Informal sector, full coverage, Q1-Q2 exempt | CHE > 10% | Q5 (richest) | 12.0 | 9.3 | 14.7 |
-| Informal sector, full coverage, Q1-Q2 exempt | CHE, CTP >= 40% | Q1 (poorest) | 1.6 | 0.5 | 2.6 |
-| Informal sector, full coverage, Q1-Q2 exempt | CHE, CTP >= 40% | Q2 | 2.4 | 0.9 | 3.9 |
-| Informal sector, full coverage, Q1-Q2 exempt | CHE, CTP >= 40% | Q3 | 3.4 | 1.9 | 4.9 |
-| Informal sector, full coverage, Q1-Q2 exempt | CHE, CTP >= 40% | Q4 | 3.5 | 1.8 | 5.3 |
-| Informal sector, full coverage, Q1-Q2 exempt | CHE, CTP >= 40% | Q5 (richest) | 1.9 | 1.0 | 2.7 |
-| Universal coverage | CHE > 10% | Q1 (poorest) | 32.3 | 27.0 | 37.6 |
-| Universal coverage | CHE > 10% | Q2 | 6.0 | 3.3 | 8.7 |
-| Universal coverage | CHE > 10% | Q3 | 3.7 | 2.1 | 5.3 |
-| Universal coverage | CHE > 10% | Q4 | 4.2 | 1.9 | 6.5 |
-| Universal coverage | CHE > 10% | Q5 (richest) | 3.9 | 2.3 | 5.5 |
-| Universal coverage | CHE, CTP >= 40% | Q1 (poorest) | 29.0 | 23.3 | 34.8 |
-| Universal coverage | CHE, CTP >= 40% | Q2 | 6.7 | 3.9 | 9.6 |
-| Universal coverage | CHE, CTP >= 40% | Q3 | 1.5 | 0.4 | 2.6 |
-| Universal coverage | CHE, CTP >= 40% | Q4 | 1.0 | 0.3 | 1.8 |
-| Universal coverage | CHE, CTP >= 40% | Q5 (richest) | 1.3 | 0.5 | 2.1 |
+*Design-based 95% intervals for every cell are in output/tables/table7c_by_quintile.csv.*
+
+| Scenario | Measure | Q1 (poorest) | Q2 | Q3 | Q4 | Q5 (richest) |
+|---|---:|---:|---:|---:|---:|---:|
+| Baseline (no coverage) | CHE > 10% | 11.9 | 14.4 | 14.2 | 14.6 | 15.6 |
+| Baseline (no coverage) | CHE, CTP >= 40% | 9.9 | 11.2 | 6.4 | 7.6 | 4.4 |
+| Informal sector, 50% take-up | CHE > 10% | 22.5 | 11.8 | 9.7 | 10.4 | 11.7 |
+| Informal sector, 50% take-up | CHE, CTP >= 40% | 19.2 | 9.8 | 4.2 | 4.6 | 2.4 |
+| Informal sector, full coverage | CHE > 10% | 31.0 | 7.1 | 6.0 | 7.1 | 6.5 |
+| Informal sector, full coverage | CHE, CTP >= 40% | 28.3 | 7.5 | 2.4 | 2.5 | 1.5 |
+| Informal sector, full coverage, Q1-Q2 exempt | CHE > 10% | 3.5 | 4.0 | 7.5 | 10.9 | 12.0 |
+| Informal sector, full coverage, Q1-Q2 exempt | CHE, CTP >= 40% | 1.6 | 2.4 | 3.4 | 3.5 | 1.9 |
+| Informal sector, full coverage, graded contribution | CHE > 10% | 12.6 | 7.1 | 7.5 | 10.9 | 12.0 |
+| Informal sector, full coverage, graded contribution | CHE, CTP >= 40% | 12.3 | 7.5 | 3.4 | 3.5 | 1.9 |
+| Informal sector, full coverage, no contribution | CHE > 10% | 3.5 | 4.0 | 3.4 | 5.4 | 5.8 |
+| Informal sector, full coverage, no contribution | CHE, CTP >= 40% | 1.6 | 2.4 | 1.4 | 2.0 | 1.3 |
+| Universal coverage | CHE > 10% | 32.3 | 6.0 | 3.7 | 4.2 | 3.9 |
+| Universal coverage | CHE, CTP >= 40% | 29.0 | 6.7 | 1.5 | 1.0 | 1.3 |
+| Vulnerable group only, fully subsidised | CHE > 10% | 3.5 | 4.0 | 14.2 | 14.6 | 15.6 |
+| Vulnerable group only, fully subsidised | CHE, CTP >= 40% | 1.6 | 2.4 | 6.4 | 7.6 | 4.4 |
 
 **Table A11.** Robustness grid.
 

@@ -331,10 +331,13 @@ def main():
                      ["Wave-4 aggregate", "Mean", "Ratio to official",
                       "Spearman", "CHE10 %", "CHE25 %", "Mean OOP share %"])]
 
-    t2a = t2[t2["dimension"].isin(["Residence", "Zone"])]
+    t2a = t2[t2["dimension"].isin(["Residence", "Zone"])
+             & t2["measure"].isin(["Budget share > 10%", "Capacity to pay >= 40%"])]
     cov = pd.read_csv(T / "table1b_coverage.csv")
     parts += [caption("A2", "Catastrophic expenditure by residence and zone, and "
-                            "observed health-insurance coverage."),
+                            "observed health-insurance coverage.",
+                      "The 25% and 40% budget-share thresholds are in "
+                      "output/tables/table2_che.csv."),
               render(t2a, ["measure", "dimension", "group", "incidence_pct",
                            "ci_low", "ci_high", "n"],
                      [None, None, None, lambda x: pct(x, 1), lambda x: pct(x, 1),
@@ -411,23 +414,41 @@ def main():
                      ["Scheme", "Published premium", "Modeled premium", "Ratio"])]
 
     d = pd.read_csv(T / "table4_cost_models.csv")
-    parts += [caption("A6", "Frequency, severity and Tweedie model estimates.",
-                      "Survey-weighted, standard errors clustered on the "
-                      "enumeration area. exp(coef) is the multiplicative effect on "
-                      "the fitted mean."),
-              render(d, ["model", "term", "coef", "se", "z", "p", "exp_coef"],
-                     [None, None, auto(4), auto(4), auto(2), auto(3), auto(3)],
-                     ["Model", "Term", "Coef", "SE", "z", "p", "exp(coef)"])]
+    d["cell"] = d.apply(lambda r: f"{r['exp_coef']:.3f}"
+                        + ("*" if r["p"] < 0.05 else ""), axis=1)
+    d["term"] = (d["term"].str.replace(r"C\((\w+)(?:, Treatment\(reference='[^']*'\))?\)\[T\.([^\]]+)\]",
+                                       r"\1 \2", regex=True))
+    short = {"Frequency: outpatient (Poisson, annual rate)": "Outpatient rate",
+             "Frequency: inpatient (Poisson, annual rate)": "Inpatient rate",
+             "Severity: cost per outpatient episode (gamma)": "Outpatient cost",
+             "Severity: cost per inpatient episode (gamma)": "Inpatient cost",
+             "Aggregate annual cost (Tweedie, p=1.65)": "Annual cost (Tweedie)"}
+    order = [t for t in d["term"].unique()]
+    w = (d.assign(model=d["model"].map(short))
+          .pivot_table(index="term", columns="model", values="cell", aggfunc="first")
+          .reindex(order).reindex(columns=list(short.values())).fillna("").reset_index())
+    parts += [caption("A6", "Frequency, severity and Tweedie model estimates, as "
+                            "multiplicative effects on the fitted mean.",
+                      "exp(coef); * marks p < 0.05. Survey-weighted, standard "
+                      "errors clustered on the enumeration area. Coefficients, "
+                      "standard errors and z statistics are in "
+                      "output/tables/table4_cost_models.csv. Reference "
+                      "categories: age 25-44, North Central, quintile 1."),
+              render(w, ["term"] + list(short.values()), [None] * 6,
+                     ["Term"] + list(short.values()))]
 
     fit = pd.read_csv(T / "table4b_fit_statistics.csv")
     prof = pd.read_csv(T / "tableA2_tweedie_profile.csv")
     lift = pd.read_csv(T / "tableA3_lift.csv")
     parts += [caption("A7", "Cost-model fit statistics, the Tweedie profile "
-                            "likelihood, and calibration by decile of prediction."),
+                            "likelihood near its maximum, and calibration by "
+                            "decile of prediction.",
+                      "The full profile is in output/tables/tableA2_tweedie_profile.csv."),
               render(fit, ["statistic", "value"], [None, lambda x: f"{x:,.3f}"],
                      ["Statistic", "Value"]),
               "",
-              render(prof[prof["converged"]], ["p", "loglik", "deviance"],
+              render(prof[prof["converged"]].sort_values("loglik", ascending=False).head(7).sort_values("p"),
+                     ["p", "loglik", "deviance"],
                      [auto(2), auto(1), auto(1)], ["p", "Log-likelihood", "Deviance"]),
               "",
               render(lift, ["decile", "n", "predicted_mean", "observed_mean",
@@ -439,13 +460,15 @@ def main():
 
     d = pd.read_csv(T / "table6b_ruin_scenarios.csv")
     d = d[(d["years"] == 3) & (d["initial_capital_mult"] == 0.0)
-          & (d["subsidy_fraction_of_premium"].isin([0.0, 0.25, 0.50, 0.75,
-                                                    1.00, 1.50, 2.00]))]
+          & (d["pool_size"] == 20_000)
+          & (d["subsidy_fraction_of_premium"].isin([0.0, 0.50, 1.00, 1.50, 2.00]))]
     st = pd.read_csv(T / "table6d_inflation_stress.csv")
-    parts += [caption("A8", "Probability of ruin over three years with no opening "
-                            "capital, and the medical-inflation stress.",
-                      "The full grid across pool sizes, take-up patterns, subsidy "
-                      "levels, horizons and capital multiples is in output/tables. "
+    parts += [caption("A8", "Probability of ruin over three years for a "
+                            "20,000-life pool with no opening capital, and the "
+                            "medical-inflation stress.",
+                      "The full grid across pool sizes of 5,000 to 100,000, "
+                      "take-up patterns, subsidy levels in 5% steps, horizons and "
+                      "capital multiples is in output/tables/table6b_ruin_scenarios.csv. "
                       "The stress is a permanent 25% rise in claims from year 2."),
               render(d, ["pool_size", "take_up", "subsidy_fraction_of_premium",
                          "subsidy_per_enrollee", "psi", "mc_se"],
@@ -470,13 +493,17 @@ def main():
                       "CTP40 %", "Poverty after %", "Mean payments"])]
 
     d = pd.read_csv(T / "table7c_by_quintile.csv")
+    w = (d.pivot_table(index=["scenario", "measure"], columns="group",
+                       values="estimate_pct", aggfunc="first").reset_index())
+    qcols = [c for c in w.columns if c not in ("scenario", "measure")]
     parts += [caption("A10", "Counterfactual catastrophic spending by consumption "
-                             "quintile, out-of-pocket plus contribution basis."),
-              render(d, ["scenario", "measure", "group", "estimate_pct",
-                         "ci_low_pct", "ci_high_pct"],
-                     [None, None, None, auto(1), auto(1), auto(1)],
-                     ["Scenario", "Measure", "Quintile", "Estimate %", "95% low",
-                      "95% high"])]
+                             "quintile, out-of-pocket plus contribution basis "
+                             "(percent).",
+                      "Design-based 95% intervals for every cell are in "
+                      "output/tables/table7c_by_quintile.csv."),
+              render(w, ["scenario", "measure"] + qcols,
+                     [None, None] + [auto(1)] * len(qcols),
+                     ["Scenario", "Measure"] + [str(c) for c in qcols])]
 
     rob = pd.read_csv(T / "table8_robustness.csv")
     parts += [caption("A11", "Robustness grid.",
