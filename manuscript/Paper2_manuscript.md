@@ -184,8 +184,6 @@ Catastrophic health expenditure affects between 7% and 14% of Nigerians at the 1
 
 **Ethics.** The analysis uses de-identified secondary survey data and did not require ethical approval.
 
-**AI-assistance disclosure.** Generative AI (Claude, Anthropic) was used to assist with code development, code review and language editing. The author designed the study, specified all models and parameters, verified and interpreted all results, and takes full responsibility for the content. AI systems are not authors and are not listed as such.
-
 **CRediT statement.** Oluwatosin Dorcas Babalola: conceptualization, methodology, software, formal analysis, data curation, writing (original draft, review and editing).
 
 ---
