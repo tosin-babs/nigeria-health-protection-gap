@@ -55,7 +55,7 @@ def render(df, cols, fmts, headers=None):
     lines = ["| " + " | ".join(out.columns) + " |",
              "|" + "|".join(align) + "|"]
     for _, r in out.iterrows():
-        lines.append("| " + " | ".join(str(v) for v in r) + " |")
+        lines.append("| " + " | ".join("" if str(v) in ("nan", "None") else str(v) for v in r) + " |")
     return "\n".join(lines)
 
 
@@ -72,7 +72,7 @@ def main():
              "All estimates are survey-weighted with Taylor-linearized standard "
              "errors for a stratified single-stage cluster design. Naira are in "
              f"constant {config.CPI_BASE_LABEL} prices. Consumption is the "
-             "calibrated aggregate unless a row says otherwise.*\n"]
+             "published wave-4 aggregate.*\n"]
 
     # ---- Table 1: sample -----------------------------------------------------
     t1 = pd.read_csv(T / "table1_sample.csv")

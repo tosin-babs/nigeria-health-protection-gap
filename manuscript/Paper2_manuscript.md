@@ -6,7 +6,7 @@
 
 ² Department of Chemistry, University of Jos, Jos, Nigeria.
 
-**Word count.** 5,457 excluding abstract, tables and references.
+**Word count.** 5,071 excluding abstract, tables and references.
 
 ---
 
@@ -26,7 +26,7 @@
 
 ## 1. Introduction
 
-Out-of-pocket payments financed 71.9% of Nigeria's current health expenditure in 2023, among the highest shares recorded anywhere (WHO Global Health Expenditure Database). The National Health Insurance Authority (NHIA) Act 2022 was meant to change this: it makes health insurance mandatory, requires every state to run a scheme, obliges employers with five or more staff to enroll their workers, and creates a Vulnerable Group Fund to pay for those who cannot pay for themselves (Federal Republic of Nigeria 2022). Enrollment remains low and most Nigerian workers are informally employed. The survey analyzed here, fielded in 2018/19, describes the population the Act set out to cover.
+Out-of-pocket payments financed 71.5% of Nigeria's current health expenditure in 2019, among the highest shares recorded anywhere (WHO Global Health Expenditure Database). The National Health Insurance Authority (NHIA) Act 2022 was meant to change this: it makes health insurance mandatory, requires every state to run a scheme, obliges employers with five or more staff to enroll their workers, and creates a Vulnerable Group Fund to pay for those who cannot pay for themselves (Federal Republic of Nigeria 2022). Enrollment remains low and most Nigerian workers are informally employed. The survey analyzed here, fielded in 2018/19, describes the population the Act set out to cover.
 
 A substantial Nigerian literature measures catastrophic health expenditure (Aregbeshola and Khan 2018; Edeh 2022; Opeloyeru and Lawanson 2023), and a commentary literature assesses the Act (Ipinnimo et al. 2022; Ahmad and Lucero-Prisno 2022). Neither tells a state scheme what the statutory package costs per enrollee, how much of that cost informal workers can carry, how large a subsidy keeps a voluntary pool solvent, or how much financial protection the package would deliver once the newly insured use more care. Those are actuarial questions, and this paper answers them on one nationally representative dataset collected before the Act, which fixes the baseline its schemes inherited.
 
@@ -60,7 +60,7 @@ Aggregate annual health cost per person has a point mass at zero and a long righ
 
 **Consumption.** The denominator is the World Bank's published wave-4 consumption aggregate: food from a seven-day recall with own production and gifts valued at local unit values, non-food items, education and imputed rent, which is 6.1% of consumption. Its health components are replaced by health-module spending, so that health enters the numerator and the denominator from the same instrument.
 
-**Coverage and sector.** Wave 4 has no health-insurance module, so coverage is not measured; the scheme counts published at the time put it in single digits. A wage worker is formal when the employer is a government body, or any other employer with five or more workers, the Act's threshold; a household is informal if it contains no formal worker. On this rule 82.5% of households are informal (80.1% of the population). Three alternative rules are tested.
+**Coverage and sector.** Wave 4 has no health-insurance module, so coverage is not measured. A wage worker is formal when the employer is a government body, or any other employer with five or more workers, the Act's threshold; a household is informal if it contains no formal worker. On this rule 82.5% of households are informal (80.1% of the population). Three alternative rules are tested.
 
 **Prices and poverty line.** Wave-4 naira are carried to August-2023 prices with the composite CPI (factor 2.31), so the premium is stated at the prices the Act's schemes faced. The 2019 national poverty line of ₦137,430 per person per year (National Bureau of Statistics 2020), which was set on the same 2018/19 prices as the survey, becomes ₦317,463.
 
@@ -217,6 +217,6 @@ Catastrophic health expenditure affects between 4% and 14% of Nigerians at the 1
 24. Wagstaff, A., & van Doorslaer, E. (2003). Catastrophe and impoverishment in paying for health care: with applications to Vietnam 1993–1998. *Health Economics*, 12(11), 921–933. doi:10.1002/hec.776
 25. Wagstaff, A., Flores, G., Hsu, J., Smitz, M.-F., Chepynoga, K., Buisman, L. R., van Wilgenburg, K., & Eozenou, P. (2018). Progress on catastrophic health spending in 133 countries: a retrospective observational study. *The Lancet Global Health*, 6(2), e169–e179. doi:10.1016/S2214-109X(17)30429-1
 26. WHO and World Bank (2023). *Tracking Universal Health Coverage: 2023 Global Monitoring Report*. Geneva: World Health Organization.
-27. WHO Global Health Expenditure Database. Out-of-pocket expenditure as a share of current health expenditure, Nigeria, 2023 (World Bank indicator SH.XPD.OOPC.CH.ZS).
+27. WHO Global Health Expenditure Database. Out-of-pocket expenditure as a share of current health expenditure, Nigeria, 2019 (World Bank indicator SH.XPD.OOPC.CH.ZS).
 28. Wüthrich, M. V. (2015). From ruin theory to solvency in non-life insurance. *Scandinavian Actuarial Journal*, 2015(6), 516–526. doi:10.1080/03461238.2013.858401
 29. Xu, K., Evans, D. B., Kawabata, K., Zeramdini, R., Klavus, J., & Murray, C. J. L. (2003). Household catastrophic health expenditure: a multicountry analysis. *The Lancet*, 362(9378), 111–117. doi:10.1016/S0140-6736(03)13861-5

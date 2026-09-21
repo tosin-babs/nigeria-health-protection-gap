@@ -1,6 +1,6 @@
 # Tables
 
-*Generated from output/tables/*.csv by python/make_tables.py. All estimates are survey-weighted with Taylor-linearized standard errors for a stratified single-stage cluster design. Naira are in constant August 2023 prices. Consumption is the calibrated aggregate unless a row says otherwise.*
+*Generated from output/tables/*.csv by python/make_tables.py. All estimates are survey-weighted with Taylor-linearized standard errors for a stratified single-stage cluster design. Naira are in constant August 2023 prices. Consumption is the published wave-4 aggregate.*
 
 
 **Table 1.** Sample characteristics, weighted by household weight.
@@ -182,11 +182,11 @@
 
 | Take-up | Retention | Reinsurance premium | SD of claims per enrollee | p99 of claims per enrollee | Minimum subsidy |
 |---|---:|---:|---:|---:|---:|
-| Random | None | 0 | 521 | 20,457 | 11,678 |
+| Random |  | 0 | 521 | 20,457 | 11,678 |
 | Random | 250,000 | 4,133 | 306 | 20,899 | 12,338 |
 | Random | 500,000 | 1,709 | 396 | 20,576 | 11,873 |
 | Random | 1,000,000 | 576 | 453 | 20,390 | 11,708 |
-| Strong adverse selection | None | 0 | 916 | 41,143 | 34,394 |
+| Strong adverse selection |  | 0 | 916 | 41,143 | 34,394 |
 | Strong adverse selection | 250,000 | 13,127 | 417 | 43,015 | 36,787 |
 | Strong adverse selection | 500,000 | 6,367 | 590 | 41,862 | 35,372 |
 | Strong adverse selection | 1,000,000 | 2,263 | 751 | 41,213 | 34,658 |
@@ -282,14 +282,14 @@
 
 | Indicator | Estimate | SE |
 |---|---:|---:|
-| Poverty line (N per person per year, August 2023 prices) | 317,463.30 | nan |
+| Poverty line (N per person per year, August 2023 prices) | 317,463.30 |  |
 | Poverty headcount before OOP (%) | 54.00 | 1.87 |
 | Poverty headcount after OOP (%) | 57.14 | 1.85 |
-| Impoverished by OOP (pp) | 3.14 | nan |
+| Impoverished by OOP (pp) | 3.14 |  |
 | Newly impoverished households (%) | 3.14 | 0.45 |
 | Normalized poverty gap before OOP (%) | 19.92 | 0.91 |
 | Normalized poverty gap after OOP (%) | 21.76 | 0.96 |
-| Increase in poverty gap (pp) | 1.83 | nan |
+| Increase in poverty gap (pp) | 1.83 |  |
 
 | Poverty line | x national line | Headcount before % | Headcount after % | Impoverishment pp | Millions |
 |---|---:|---:|---:|---:|---:|

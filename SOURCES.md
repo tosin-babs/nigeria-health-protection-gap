@@ -75,7 +75,7 @@ in the robustness grid (Table 8).
 
 | Claim | Value | Source |
 |---|---|---|
-| Out-of-pocket share of current health expenditure, Nigeria, 2023 | 71.9% | WHO Global Health Expenditure Database via World Bank `SH.XPD.OOPC.CH.ZS` — [data page](https://data.worldbank.org/indicator/SH.XPD.OOPC.CH.ZS?locations=NG) |
+| Out-of-pocket share of current health expenditure, Nigeria, 2019 | 71.5% | WHO Global Health Expenditure Database via World Bank `SH.XPD.OOPC.CH.ZS` — [data page](https://data.worldbank.org/indicator/SH.XPD.OOPC.CH.ZS?locations=NG) |
 | Same, 2015–2022 range | 71.5% – 77.4% | Same series |
 | Health-insurance enrolment, Nigeria | 22.03 million (July 2026); 21.73 million at end-2025 | NHIA, reported in [Nairametrics, 7 Mar 2026](https://nairametrics.com/2026/03/07/health-insurance-coverage-in-nigeria-rises-to-21-7m-in-2025-report/) |
 | Enrolment as a share of population | under 10% of about 220 million | Derived from the above |
