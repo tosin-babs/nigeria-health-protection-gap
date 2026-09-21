@@ -1,9 +1,9 @@
 indicator,estimate,se
-"Poverty line (N per person per year, wave-5 prices)",317463.3,
-Poverty headcount before OOP (%),57.20101910179807,1.6510717515470619
-Poverty headcount after OOP (%),60.29367684206647,1.5968441289591278
-Impoverished by OOP (pp),3.092657740268401,
-Newly impoverished households (%),3.0926577402684043,0.45835946821183166
-Normalized poverty gap before OOP (%),22.010295189755116,0.9279031365839598
-Normalized poverty gap after OOP (%),23.872064807014034,0.9343904112034735
-Increase in poverty gap (pp),1.8617696172589182,
+"Poverty line (N per person per year, August 2023 prices)",317463.3,
+Poverty headcount before OOP (%),54.001675240073666,1.8712083110077433
+Poverty headcount after OOP (%),57.14444946023981,1.8533777506056621
+Impoverished by OOP (pp),3.1427742201661446,
+Newly impoverished households (%),3.1427742201661375,0.451283047074368
+Normalized poverty gap before OOP (%),19.924428362839556,0.9135157366241672
+Normalized poverty gap after OOP (%),21.755334496027544,0.9577318313644343
+Increase in poverty gap (pp),1.8309061331879843,

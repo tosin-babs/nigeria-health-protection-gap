@@ -13,12 +13,10 @@ Accessed 12 September 2026 unless stated otherwise.
 
 | Item | Source | Access |
 |---|---|---|
-| Nigeria General Household Survey-Panel, wave 5 (2023/24) | National Bureau of Statistics with the World Bank LSMS-ISA programme | [World Bank Microdata Library](https://microdata.worldbank.org/index.php/catalog/6410) — free registration; not redistributed here |
 | Nigeria General Household Survey-Panel, wave 4 (2018/19) | Same | [World Bank Microdata Library](https://microdata.worldbank.org/index.php/catalog/3557) |
 
-The wave-4 release includes the published consumption aggregate
-`totcons_final.csv`, which `build_data.py` uses to validate the wave-5
-reconstruction (Table A1).
+Wave 4 is the analysis wave. Its release includes the published consumption
+aggregate `totcons_final.csv`, which is the denominator.
 
 ---
 
@@ -70,26 +68,6 @@ in the robustness grid (Table 8).
 | Affordability ceiling | 5% of per-capita consumption | Assumption. Jofre-Bonet & Kamara (2018) find mean willingness to pay close to 5% of business income among informal workers in Sierra Leone |
 | Reinsurance loading | 30% of expected ceded cost | Assumption; retentions N250,000 to N1 million |
 | Take-up grid | 10% to 100% | Scenario levers for voluntary enrollment |
-| Consumption calibration | food 1.158, non-food 0.892, rent 0.069 | Estimated from the wave-4 published aggregate by `build_data.calibration_factors()` (Table A1) |
-
-### 2.4 Published state-scheme premiums (external validation only)
-
-Not inputs to the model. Lagos State launch of the Ilera Eko "Standard Jaara"
-plan, announced by Governor Babajide Sanwo-Olu, 17 July 2024:
-
-| Plan | Annual premium |
-|---|---|
-| Individual | ₦15,000 |
-| Family of four | ₦55,000 |
-| Family of six | ₦80,000 |
-| Additional dependent | ₦10,000 |
-
-Source: [Nairametrics, 17 July 2024](https://nairametrics.com/2024/07/17/lasg-launches-n15000-n80000-yearly-ilera-eko-standard-jaara-health-insurance-plan/);
-scheme site [lashma.com](https://www.lashma.com/).
-
-> These are nominal July-2024 naira against a premium in August-2023 naira, and
-> Ilera Eko's benefit package is not the NHIA basic package priced here. The
-> comparison is a plausibility check, not a like-for-like test.
 
 ---
 
@@ -144,37 +122,21 @@ The World Bank catalogue confirms the module's scope: *"Section 5A (Savings and
 Insurance, questions 16-17c). This section records household-level information
 on insurance coverage."*
 
-### 5.2 Health-module cost fields — confirmed against the questionnaire
+### 5.2 Health-module cost fields (wave 4)
 
-The wave-5 CSV release ships without a codebook, so the health-module cost
-fields were identified from their response patterns across facility types
-(consultation fees are zero at most chemist shops but positive at hospitals;
-medicine spending is near-universal among those who sought care).
+The wave-4 CSV release carries bare numeric codes and no codebook in the
+download, so the fields were identified from their response patterns and
+skip structure, and the code lists were taken to follow the wave-5 instrument,
+which the panel carries forward.
 
-| Variable | Question wording | Recall |
+| Variable | Reading | Recall |
 |---|---|---|
-| `s3q12` | "How much did the household pay for [NAME]'s consultation with [Q9 1st choice], **excluding drugs**?" | 4 weeks |
-| `s3q13` | "How much did the household pay for [NAME]'s **transportation** to and from the [Q10]?" (excluded by default) | 4 weeks |
-| `s3q16` | "In the past 4 weeks, did the household spend any money for [NAME]'s drugs or medicines?" — gate for Q17/Q17a | 4 weeks |
-| `s3q17` | "How much did the household pay for [NAME]'s **prescription** drugs or medicines?" | 4 weeks |
-| `s3q17a` | "How much did the household pay for [NAME]'s **non-prescription** drugs or medicines?" | 4 weeks |
-| `s3q20` | "How much did the household pay for [NAME] to stay in the hospital or health facility in the last 12 months? **Include consultation costs, medical procedures and drugs/medicines**" | 12 months |
+| `s4aq1` | Ill or injured (17.8% yes) | 4 weeks |
+| `s4aq6a` | Who was consulted for the illness; 0 = nobody, 8 and 11 = pharmacist or chemist | 4 weeks |
+| `s4aq7` | Where care was sought; 10 = traditional healer | 4 weeks |
+| `s4aq9` | Consultation fee, asked of those who consulted | 4 weeks |
+| `s4aq10` | Transport (excluded by default) | 4 weeks |
+| `s4aq13`, `s4aq14` | Bought medicines, and the amount, asked of everyone | 4 weeks |
+| `s4aq15`, `s4aq16`, `s4aq17` | Hospitalized, nights, and cost | 12 months |
+| `s4aq23` to `s4aq33` | Washington Group short set; 3 and 4 = severe difficulty | current |
 
-Source: Post-Planting Household Questionnaire, Section 3 (Health), pages 48–49 —
-[catalogue 6410, document 180528](https://microdata.worldbank.org/catalog/6410/download/180528).
-
-Q16/Q17/Q17a explicitly *exclude* drugs related to hospital admissions and Q20
-explicitly *includes* them, so outpatient and inpatient spending do not overlap.
-
-**One earlier reading was wrong.** `s3q17a` was read as tests and other costs; it
-is non-prescription drugs. The out-of-pocket total is unaffected — the same three
-fields are summed either way — but the drug share of outpatient spending is not.
-It is now measured at **86.25%** (Q17+Q17a over Q12+Q17+Q17a) against an assumed
-60%, and because drugs carry the co-payment and respond less to a price fall than
-free-at-point-of-use services, the gross premium fell from ₦26,912 to ₦25,864 in the version of the model current at the time.
-`build_data.py` recomputes the share on every run and prints it against the config
-value.
-
-
-If any of these five readings is wrong, the premium is wrong. Nothing else in
-the pipeline depends on them.

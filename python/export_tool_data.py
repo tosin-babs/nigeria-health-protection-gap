@@ -59,8 +59,8 @@ def _round_sig(x, sig=6):
 
 
 def main():
-    ind = pd.read_csv(config.DERIVED / "ind_w5_priced.csv")
-    hh = pd.read_csv(config.DERIVED / "hh_w5_che.csv")
+    ind = pd.read_csv(config.DERIVED / "ind_main_priced.csv")
+    hh = pd.read_csv(config.DERIVED / "hh_main_che.csv")
 
     # ---------------------------------------------------- premium population --
     pop = _collapse(ind, "ind_weight")
@@ -136,7 +136,7 @@ def main():
 
     payload = {
         "meta": {
-            "source": "Nigeria General Household Survey-Panel wave 5 (2023/24), "
+            "source": "Nigeria General Household Survey-Panel wave 4 (2018/19), "
                       "NBS / World Bank LSMS-ISA",
             "n_households": int(len(hh)),
             "n_individuals": int(len(ind)),

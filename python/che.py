@@ -88,9 +88,10 @@ def table1_sample(hh):
         (hh["n_visits"] > 0).astype(float), 100, "pct")
     add("Any member hospitalized in past 12 months (%)",
         (hh["n_inpatient"] > 0).astype(float), 100, "pct")
-    add("Any member holds health insurance (%)", hh["insured_any"], 100, "pct")
-    add("Paid a health-insurance premium in past 12 months (%)",
-        hh["premium_paid"], 100, "pct")
+    if config.PRIMARY_WAVE != "w4":      # wave 4 has no insurance module
+        add("Any member holds health insurance (%)", hh["insured_any"], 100, "pct")
+        add("Paid a health-insurance premium in past 12 months (%)",
+            hh["premium_paid"], 100, "pct")
 
     out = pd.DataFrame(rows)
     out["n_households"] = len(hh)
@@ -214,7 +215,7 @@ def impoverishment(hh, poverty_line_2023=None):
     gpost_e, gpost_se = d.mean(gap_post)
 
     rows = [
-        ("Poverty line (N per person per year, wave-5 prices)", poverty_line_2023, np.nan),
+        ("Poverty line (N per person per year, August 2023 prices)", poverty_line_2023, np.nan),
         ("Poverty headcount before OOP (%)", 100 * pre_e, 100 * pre_se),
         ("Poverty headcount after OOP (%)", 100 * post_e, 100 * post_se),
         ("Impoverished by OOP (pp)", 100 * (post_e - pre_e), np.nan),
@@ -370,9 +371,9 @@ def table1b_coverage(hh):
 
 
 def main():
-    hh = pd.read_csv(config.DERIVED / "hh_w5.csv")
+    hh = pd.read_csv(config.DERIVED / "hh_main.csv")
     hh = add_che_flags(hh)
-    hh.to_csv(config.DERIVED / "hh_w5_che.csv", index=False)
+    hh.to_csv(config.DERIVED / "hh_main_che.csv", index=False)
 
     t1 = table1_sample(hh)
     t2 = table2_che(hh)

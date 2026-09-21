@@ -279,8 +279,8 @@ def scenario_table(cache, contribution, gross_premium):
 
 # ---------------------------------------------------------------------------
 def main():
-    ind = pd.read_csv(config.DERIVED / "ind_w5_priced.csv")
-    hh = pd.read_csv(config.DERIVED / "hh_w5_che.csv")
+    ind = pd.read_csv(config.DERIVED / "ind_main_priced.csv")
+    hh = pd.read_csv(config.DERIVED / "hh_main_che.csv")
     gross = pd.read_csv(config.TABLES / "table5c_gross_premium.csv")
     gross_premium = float(gross[(gross["pool_size"] == 20_000)
                                 & (gross["risk_margin_basis"] == "Standard deviation")]

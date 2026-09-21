@@ -24,6 +24,11 @@ for _p in (DERIVED, TABLES, FIGURES):
 
 SEED = 2026
 
+# ---------------------------------------------------------- analysis wave ----
+# "w4": GHS-Panel wave 4 (2018/19), with the published consumption aggregate.
+# "w5": wave 5 (2023/24), with the rebuilt and calibrated aggregate.
+PRIMARY_WAVE = "w4"
+
 # --------------------------------------------------------- survey design ----
 # secta_plantingw5 releases `strata` (6 levels, = geopolitical zone) and
 # `ea` (enumeration area = PSU). Households with a missing wave-5 weight were
@@ -108,7 +113,7 @@ COINSURANCE_DRUGS = 0.10          # NHIA 10% co-payment on drugs  [VERIFY curren
 # spending, drugs are 86.25% of outpatient cost and the consultation fee 13.75%.
 # build_data.py recomputes and prints this on every run; it is kept here as a
 # lever so the robustness grid can move it.
-DRUG_SHARE_OF_OUTPATIENT = 0.8625  # drugs / (consultation + drugs), from Q12+Q17+Q17a
+DRUG_SHARE_OF_OUTPATIENT = 0.8613  # drugs / (consultation + drugs); wave 4: s4aq14 over s4aq9 + s4aq14
 INDUCED_DEMAND_ELASTICITY = -0.20  # RAND HIE arc elasticity (Manning et al. 1987)
 ELASTICITY_RANGE = (-0.10, -0.20, -0.35)
 

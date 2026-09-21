@@ -69,18 +69,12 @@ def load():
         "CHE 10% CI high": f'{ov.loc["Budget share > 10%", "ci_high"]:.1f}',
         "CTP 40% incidence": f'{ov.loc["Capacity to pay >= 40%", "incidence_pct"]:.1f}%',
         "CHE 10% household-weighted": f'{ovh.loc["Budget share > 10%", "incidence_pct"]:.1f}%',
-        "CHE 10% uncalibrated": f'{unc.loc["Budget share > 10%", "incidence_pct"]:.1f}%',
-        "CTP 40% uncalibrated": f'{unc.loc["Capacity to pay >= 40%", "incidence_pct"]:.1f}%',
         "CHE 10% no-persistence bound": f'{rb.loc[lo_case, "che10_pct"]:.1f}%',
         "CTP 40% no-persistence bound": f'{rb.loc[lo_case, "che_ctp40_pct"]:.1f}%',
-        "coverage, households": f'{covo["hh_with_cover_pct"]:.2f}%',
-        "coverage, individuals": f'{covo["individuals_covered_pct"]:.2f}%',
-        "coverage, informal": f'{covs.loc["Informal", "hh_with_cover_pct"]:.2f}%',
-        "coverage, formal": f'{covs.loc["Formal", "hh_with_cover_pct"]:.2f}%',
         "poverty before": f'{imp["Poverty headcount before OOP (%)"]:.1f}%',
         "poverty after": f'{imp["Poverty headcount after OOP (%)"]:.1f}%',
         "concentration, budget share":
-            f'+{con.loc["CHE, budget share > 10%", "CI"]:.3f}',
+            f'{con.loc["CHE, budget share > 10%", "CI"]:+.3f}',
         "concentration, CTP":
             f'{con.loc["CHE, capacity to pay >= 40%", "CI"]:.3f}',
         "sector gap, CTP informal":

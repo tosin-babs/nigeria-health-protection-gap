@@ -204,8 +204,8 @@ def run(ind, hh, contribution, aff=None):
 
 # ---------------------------------------------------------------------------
 def main():
-    ind = pd.read_csv(config.DERIVED / "ind_w5_priced.csv")
-    hh = pd.read_csv(config.DERIVED / "hh_w5_che.csv")
+    ind = pd.read_csv(config.DERIVED / "ind_main_priced.csv")
+    hh = pd.read_csv(config.DERIVED / "hh_main_che.csv")
     aff = pd.read_csv(config.TABLES / "table6a_affordable_contribution.csv")
     contribution = float(
         aff[aff["group"].isin(["Informal, quintile 1", "Informal, quintile 2",

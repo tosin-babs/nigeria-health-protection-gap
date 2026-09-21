@@ -653,6 +653,242 @@ def build_w4():
     return hh
 
 
+
+# ---------------------------------------------------------------------------
+# Wave 4 as the primary wave (2018/19)
+# ---------------------------------------------------------------------------
+def n4(series):
+    """Wave 4 releases bare numeric codes ("1", "2.0") rather than wave 5's
+    "1. YES" labels, which code() and yes() would read as missing."""
+    return pd.to_numeric(series, errors="coerce")
+
+
+def roster_w4():
+    """Current household members, as roster_w5: s1q4 asks previous members
+    whether they are still in the household; new members are not asked."""
+    r = read(config.W4 / "sect1_plantingw4.csv")
+    # Blank for members of households new to the panel in wave 4, who are
+    # current by definition: keep everyone not explicitly marked as gone.
+    r = r[pd.to_numeric(r["s1q4"], errors="coerce") != 2].copy()
+    r["age"] = pd.to_numeric(r["s1q6"], errors="coerce")
+    r["female"] = flag(n4(r["s1q2"]) == 2).astype(float)
+    r["rel_code"] = n4(r["s1q3"])
+    r["is_head"] = flag(r["rel_code"] == 1)
+    return r[["hhid", "indiv", "age", "female", "rel_code", "is_head"]]
+
+
+def employment_w4():
+    """Formal and informal work in wave 4 (planting labour module, sect3).
+
+    s3q4 marks a wage job in the last seven days; for wage workers s3q15 gives
+    the employer (1 federal, 2 state and 3 local government, 5 private firm,
+    9 religious body; the rest are small) and s3q15c the size of the workplace
+    in four bands. Government employers are formal; any other employer is
+    formal from the second size band up, taken as five or more workers, the
+    NHIA Act's threshold. The size bands are inferred: government employers
+    fall almost entirely in band 4 and private employers mostly in band 1.
+    Section 5.6 tests the government-only and any-wage-job alternatives.
+    """
+    l = read(config.W4 / "sect3_plantingw4.csv")
+    wage = n4(l["s3q4"]) == 1
+    employer = n4(l["s3q15"])
+    size_band = n4(l["s3q15c"])
+    public = wage & employer.isin([1, 2, 3])
+    big = wage & ~employer.isin([1, 2, 3]) & size_band.isin([2, 3, 4])
+    works = ((n4(l["s3q2"]) == 1) | wage | (n4(l["s3q5"]) == 1) | (n4(l["s3q6"]) == 1))
+    l["formal_worker"] = flag(public | big)
+    l["wage_employee"] = flag(wage)
+    l["works"] = flag(works)
+    l["employer_public"] = flag(public)
+    l["firm_ge5"] = flag(wage & size_band.isin([2, 3, 4]))
+    l["formal_alt_govt"] = flag(public)
+    l["formal_alt_anywage"] = l["wage_employee"]
+    return l[["hhid", "indiv", "works", "formal_worker", "wage_employee",
+              "employer_public", "firm_ge5", "formal_alt_govt", "formal_alt_anywage"]]
+
+
+def health_w4():
+    """Individual utilisation and out-of-pocket cost, wave 4 health module
+    (post-harvest visit, sect4a):
+
+      s4aq1   illness or injury in the last 4 weeks
+      s4aq6a  who was consulted (0 nobody; 8 and 11 pharmacist or chemist)
+      s4aq7   where care was sought (10 traditional healer)
+      s4aq8   who runs the facility (1-3 government)
+      s4aq9   consultation fee                          (4-week recall)
+      s4aq10  transport                                 (4-week recall, excluded)
+      s4aq14  medicines bought in the last 4 weeks      (4-week recall)
+      s4aq15  hospitalized in the last 12 months
+      s4aq16  nights in hospital
+      s4aq17  cost of hospitalization                   (12-month recall)
+
+    The code lists follow the wave-5 instrument, which the panel carries
+    forward. The medicine question is asked of everyone, not only of those who
+    consulted, so it catches self-treatment as well.
+    """
+    h = read(config.W4 / "sect4a_harvestw4.csv")
+    h["ill_4wk"] = flag(n4(h["s4aq1"]) == 1)
+    who = n4(h["s4aq6a"])
+    h["sought_care"] = flag(who.notna() & (who != 0))
+    h["days_lost"] = pd.to_numeric(h["s4aq5"], errors="coerce").fillna(0).clip(0, 28)
+    h["self_medicated"] = flag(who.isin([8, 11]))
+    h["saw_clinician"] = flag(who.isin([1, 2, 3, 4, 5, 6, 7]))
+    place = n4(h["s4aq7"])
+    h["traditional"] = flag(place.isin([10]))
+    h["facility_public"] = flag(n4(h["s4aq8"]).isin([1, 2, 3]))
+
+    fee = pd.to_numeric(h["s4aq9"], errors="coerce").fillna(0)
+    transport = pd.to_numeric(h["s4aq10"], errors="coerce").fillna(0)
+    meds = pd.to_numeric(h["s4aq14"], errors="coerce").fillna(0)
+    h["op_cost_window"] = np.where(h["sought_care"] == 1, fee, 0.0) + meds
+    h["op_transport_window"] = np.where(h["sought_care"] == 1, transport, 0.0)
+    h["op_drug_window"] = meds
+
+    h["inpatient"] = flag(n4(h["s4aq15"]) == 1)
+    h["inpatient_nights"] = pd.to_numeric(h["s4aq16"], errors="coerce").fillna(0)
+    h["ip_cost_year"] = pd.to_numeric(h["s4aq17"], errors="coerce").fillna(0)
+
+    _op = h["op_cost_window"]
+    if (_op > 0).any():
+        share = float(meds[_op > 0].sum() / _op[_op > 0].sum())
+        print(f"  drug share of outpatient spend: {share:.4f} "
+              f"(config has {config.DRUG_SHARE_OF_OUTPATIENT})")
+
+    # Washington Group short set: severe difficulty (codes 3, 4) in any domain.
+    wg = ["s4aq23", "s4aq25", "s4aq27", "s4aq29", "s4aq31", "s4aq33"]
+    sev = pd.concat([n4(h[c]).isin([3, 4]) for c in wg if c in h], axis=1)
+    h["chronic"] = flag(sev.any(axis=1))
+
+    keep = ["hhid", "indiv", "ill_4wk", "sought_care", "days_lost", "self_medicated",
+            "saw_clinician", "traditional", "facility_public", "op_cost_window",
+            "op_transport_window", "op_drug_window", "inpatient", "inpatient_nights",
+            "ip_cost_year", "chronic"]
+    return h[keep]
+
+
+def build_w4_primary():
+    """Wave 4 (2018/19) as the analysis wave.
+
+    The denominator is the World Bank's published consumption aggregate
+    (totcons_final), with its health components replaced by health-module
+    spending so that health enters numerator and denominator from one
+    instrument. No calibration is needed. Wave 4 has no insurance module, so
+    coverage is not measured. Naira amounts are carried to August 2023 prices
+    with config.CPI_W4_TO_W5.
+    """
+    t = read(config.W4 / "totcons_final.csv")
+    cover = read(config.W4 / "secta_plantingw4.csv")[["hhid", "state", "cluster", "strata"]]
+    zone_names = {1: "North Central", 2: "North East", 3: "North West",
+                  4: "South East", 5: "South South", 6: "South West"}
+    hh = pd.DataFrame({
+        "hhid": t["hhid"],
+        "zone": t["zone"].map(zone_names),
+        "sector": np.where(t["sector"] == 1, "Urban", "Rural"),
+        "urban": flag(t["sector"] == 1),
+        "ea": t["ea"],
+        "hh_weight": t["wt_wave4"].astype(float),
+        "hhsize": t["hhsize"].astype(float),
+    }).merge(cover, on="hhid", how="left")
+    hh["cluster"] = hh["ea"].astype(str)
+    hh["strata"] = hh["strata"].fillna(t["zone"])
+    ti = t.set_index("hhid")
+    size = ti["hhsize"]
+    food_cols = [c for c in t.columns if c.startswith(("food_own", "food_purch", "food_meals"))]
+    nonfood_cols = [c for c in t.columns if c.startswith("nonfood")]
+    hh = hh.set_index("hhid")
+    hh["food_annual"] = ti[food_cols].sum(axis=1) * size
+    hh["nonfood_excl_health"] = ti[nonfood_cols].sum(axis=1) * size
+    hh["edu_annual"] = (ti["edu29"].fillna(0) + ti["edu30"].fillna(0)) * size
+    hh["rent_imputed"] = ti["rent33"].fillna(0) * size
+    hh["oop_consumption_module"] = (ti["health31"].fillna(0) + ti["health32"].fillna(0)) * size
+
+    ros = roster_w4()
+    heads = ros[ros["is_head"] == 1].drop_duplicates("hhid").set_index("hhid")
+    hh["head_age"] = heads["age"]
+    hh["head_female"] = heads["female"]
+    hh["n_under5"] = ros.assign(k=flag(ros["age"] < 5)).groupby("hhid")["k"].sum()
+    hh["n_over60"] = ros.assign(o=flag(ros["age"] >= 60)).groupby("hhid")["o"].sum()
+
+    hh["insured_health"] = 0
+    hh["n_insured_members"] = 0
+    hh["insured_any"] = 0
+    hh["premium_paid"] = 0
+    hh["health_insurance_paid"] = 0.0
+
+    emp = employment_w4()
+    emp_hh = emp.groupby("hhid").agg(
+        n_workers=("works", "sum"), any_formal=("formal_worker", "max"),
+        any_public=("employer_public", "max"), any_firm_ge5=("firm_ge5", "max"),
+        any_formal_govt=("formal_alt_govt", "max"), any_formal_anywage=("formal_alt_anywage", "max"))
+    head_emp = emp.merge(ros[ros["is_head"] == 1][["hhid", "indiv"]], on=["hhid", "indiv"],
+                         how="inner").set_index("hhid")
+    hh = hh.join(emp_hh)
+    hh["head_formal"] = head_emp["formal_worker"]
+    for c in ["n_workers", "any_formal", "any_public", "any_firm_ge5", "any_formal_govt",
+              "any_formal_anywage", "head_formal", "n_under5", "n_over60"]:
+        hh[c] = hh[c].fillna(0).astype(int)
+    hh["informal"] = 1 - hh["any_formal"]
+    hh["sector_label"] = np.where(hh["informal"] == 1, "Informal", "Formal")
+    hh = hh.reset_index()
+
+    ind = build_individuals(hh, roster_w4(), health_w4())
+    ind_hh = ind.groupby("hhid").agg(
+        oop_outpatient=("op_cost_annual", "sum"), oop_inpatient=("ip_cost_annual", "sum"),
+        oop_drugs_hm=("op_drug_annual", "sum"), oop_transport=("op_transport_annual", "sum"),
+        n_ill=("ill_4wk", "sum"), n_visits=("sought_care", "sum"),
+        n_inpatient=("inpatient", "sum"), any_chronic=("chronic", "max"))
+    hh = hh.merge(ind_hh, left_on="hhid", right_index=True, how="inner")
+    hh["oop_annual"] = hh["oop_outpatient"] + hh["oop_inpatient"]
+    hh["oop_with_transport"] = hh["oop_annual"] + hh["oop_transport"]
+    hh["cons_annual"] = (hh["food_annual"] + hh["nonfood_excl_health"] + hh["edu_annual"]
+                         + hh["rent_imputed"] + hh["oop_annual"])
+    hh["cons_annual_raw"] = hh["cons_annual"] - hh["rent_imputed"]
+    hh["food_annual_raw"] = hh["food_annual"]
+    hh["nonfood_excl_health_raw"] = hh["nonfood_excl_health"]
+    hh = hh[(hh["cons_annual"] > 0) & (hh["hh_weight"] > 0)].copy()
+
+    # August 2023 prices.
+    k = config.CPI_W4_TO_W5
+    money = ["food_annual", "nonfood_excl_health", "edu_annual", "rent_imputed",
+             "oop_consumption_module", "oop_outpatient", "oop_inpatient", "oop_drugs_hm",
+             "oop_transport", "oop_annual", "oop_with_transport", "cons_annual",
+             "cons_annual_raw", "food_annual_raw", "nonfood_excl_health_raw"]
+    for c in money:
+        hh[c] = hh[c] * k
+    for c in ["op_cost_window", "op_transport_window", "op_drug_window", "ip_cost_year",
+              "op_cost_annual", "op_transport_annual", "op_drug_annual", "ip_cost_annual",
+              "cost_annual"]:
+        ind[c] = ind[c] * k
+
+    hh = add_welfare_variables(hh)
+    hh["wave"] = "W4 (2018/19)"
+    ind = ind.merge(hh.set_index("hhid")[["cons_pc", "quintile", "quintile_label", "cons_annual"]],
+                    left_on="hhid", right_index=True, how="inner")
+    return hh, ind
+
+
+def build_individuals(hh, ros, hm):
+    """Individual-year file from a roster and a health module (either wave)."""
+    ind = ros.merge(hm, on=["hhid", "indiv"], how="inner")
+    ann = config.OUTPATIENT_ANNUALISER
+    ind["op_cost_annual"] = ind["op_cost_window"] * ann
+    ind["op_transport_annual"] = ind["op_transport_window"] * ann
+    ind["op_drug_annual"] = ind["op_drug_window"] * ann
+    ind["ip_cost_annual"] = ind["ip_cost_year"]
+    ind["cost_annual"] = ind["op_cost_annual"] + ind["ip_cost_annual"]
+    ind["op_visits_annual"] = ind["sought_care"] * ann
+    ind["exposure_op"] = config.OUTPATIENT_RECALL_WEEKS / config.WEEKS_PER_YEAR
+    ind["exposure_ip"] = 1.0
+    ind["age_band"] = pd.cut(ind["age"], [-0.1, 4, 14, 24, 44, 59, 200],
+                             labels=["0-4", "5-14", "15-24", "25-44", "45-59", "60+"])
+    base = hh if hh.index.name == "hhid" else hh.set_index("hhid")
+    cols = [c for c in ["cluster", "strata", "hh_weight", "zone", "state", "urban", "sector",
+                        "hhsize", "informal", "sector_label", "insured_any"] if c in base]
+    ind = ind.merge(base[cols], left_on="hhid", right_index=True, how="inner")
+    ind["ind_weight"] = ind["hh_weight"]
+    return ind
+
+
 def calibration_factors():
     """Component scaling factors that map the rebuilt aggregate onto wave 4's.
 
@@ -779,6 +1015,13 @@ def validate_w4_aggregate():
 
 # ---------------------------------------------------------------------------
 def main():
+    if config.PRIMARY_WAVE == "w4":
+        print("Building wave 4 (2018/19) as the analysis wave ...")
+        hh, ind = build_w4_primary()
+        hh.to_csv(config.DERIVED / "hh_main.csv", index=False)
+        ind.to_csv(config.DERIVED / "ind_main.csv", index=False)
+        print(f"  households {len(hh):,}  individuals {len(ind):,}")
+        return hh, ind, None
     print("Calibration factors from wave 4 ...")
     factors, cal_check = calibration_factors()
     pd.DataFrame([factors]).to_csv(config.TABLES / "tableA1b_calibration.csv", index=False)
@@ -788,8 +1031,8 @@ def main():
 
     print("Building wave 5 ...")
     hh5, ind5 = build_w5(factors)
-    hh5.to_csv(config.DERIVED / "hh_w5.csv", index=False)
-    ind5.to_csv(config.DERIVED / "ind_w5.csv", index=False)
+    hh5.to_csv(config.DERIVED / "hh_main.csv", index=False)
+    ind5.to_csv(config.DERIVED / "ind_main.csv", index=False)
     print(f"  households {len(hh5):,}  individuals {len(ind5):,}")
 
     print("Building wave 4 ...")

@@ -90,16 +90,6 @@ def main():
     t2 = pd.read_csv(T / "table2_che.csv")
     keep = ["Overall", "Overall (household-weighted)", "Sector", "Consumption quintile"]
     t2m = t2[t2["dimension"].isin(keep)].copy()
-    cal = pd.read_csv(T / "table2d_calibration.csv")
-    unc = cal[(cal["aggregate"] == "Uncalibrated")
-              & (cal["measure"] != "Mean consumption per capita (N)")].copy()
-    unc = unc.rename(columns={"se": "incidence_se"})
-    unc["dimension"] = "Overall, uncalibrated aggregate"
-    unc["group"] = "All households"
-    unc["mean_overshoot_pct"] = np.nan
-    unc["mean_positive_overshoot_pct"] = np.nan
-    unc["n"] = int(t2m["n"].max())
-    t2m = pd.concat([t2m, unc[t2m.columns]], ignore_index=True)
     order = {"Overall": 0, "Overall (household-weighted)": 1,
              "Overall, uncalibrated aggregate": 2, "Sector": 3,
              "Consumption quintile": 4}
@@ -108,9 +98,8 @@ def main():
     parts += [caption(2, "Catastrophic health expenditure: incidence and intensity.",
                       "Population-weighted rates are the share of people living "
                       "in an affected household; the household-weighted row is "
-                      "the share of households. Uncalibrated rows use the rebuilt "
-                      "consumption aggregate without the wave-4 calibration. "
-                      "Zone and residence breakdowns are in Table A2."),
+                      "the share of households. The denominator is the published "
+                      "consumption aggregate. Zone and residence breakdowns are in Table A1."),
               render(t2m, ["measure", "dimension", "group", "incidence_pct",
                            "ci_low", "ci_high", "mean_positive_overshoot_pct", "n"],
                      [None, None, None, lambda x: pct(x, 1), lambda x: pct(x, 1),
@@ -161,7 +150,7 @@ def main():
                          "households can pay.",
                       "Naira per person per year. Second panel: loadings for a "
                       "20,000-life pool on the two risk-margin conventions (other "
-                      "pool sizes in Table A5). Third panel: the gross premium "
+                      "pool sizes in Table A4). Third panel: the gross premium "
                       "against per-capita consumption by quintile; quintiles rank "
                       "people, and household size is the household-weighted mean "
                       "since a premium is billed once per household. Fourth panel: "
@@ -304,38 +293,9 @@ def main():
     # ---- Appendix ------------------------------------------------------------
     parts += ["\n\n# Appendix tables\n"]
 
-    a1 = pd.read_csv(T / "tableA1_aggregate_validation.csv")
-    a1c = pd.read_csv(T / "tableA1c_calibration_check.csv")
-    a1b = pd.read_csv(T / "tableA1b_calibration.csv")
-    parts += [caption("A1", "The rebuilt consumption aggregate against wave 4's "
-                            "published aggregate, and the calibration check.",
-                      "Upper panel: component means. Lower panel: CHE on wave 4 "
-                      "computed with the official aggregate, the rebuilt aggregate "
-                      "and the calibrated rebuilt aggregate, holding out-of-pocket "
-                      f"spending fixed. Calibration factors: food "
-                      f"{a1b['food_factor'].iloc[0]:.3f}, non-food "
-                      f"{a1b['nonfood_factor'].iloc[0]:.3f}, rent to non-rent "
-                      f"{a1b['rent_ratio'].iloc[0]:.4f}."),
-              render(a1, ["component", "official_mean_naira", "rebuilt_mean_naira",
-                          "ratio_rebuilt_to_official", "pearson_r", "spearman_rho"],
-                     [None, money, money, lambda x: num(x, 3),
-                      lambda x: num(x, 3), lambda x: num(x, 3)],
-                     ["Component", "Official mean", "Rebuilt mean", "Ratio",
-                      "Pearson r", "Spearman rho"]),
-              "",
-              render(a1c, ["aggregate", "mean_naira", "ratio_to_official",
-                           "spearman_vs_official", "che10_pct", "che25_pct",
-                           "mean_oop_share_pct"],
-                     [None, money, lambda x: num(x, 3), lambda x: num(x, 3),
-                      lambda x: pct(x, 1), lambda x: pct(x, 1), lambda x: pct(x, 1)],
-                     ["Wave-4 aggregate", "Mean", "Ratio to official",
-                      "Spearman", "CHE10 %", "CHE25 %", "Mean OOP share %"])]
-
     t2a = t2[t2["dimension"].isin(["Residence", "Zone"])
              & t2["measure"].isin(["Budget share > 10%", "Capacity to pay >= 40%"])]
-    cov = pd.read_csv(T / "table1b_coverage.csv")
-    parts += [caption("A2", "Catastrophic expenditure by residence and zone, and "
-                            "observed health-insurance coverage.",
+    parts += [caption("A1", "Catastrophic expenditure by residence and zone.",
                       "The 25% and 40% budget-share thresholds are in "
                       "output/tables/table2_che.csv."),
               render(t2a, ["measure", "dimension", "group", "incidence_pct",
@@ -343,19 +303,11 @@ def main():
                      [None, None, None, lambda x: pct(x, 1), lambda x: pct(x, 1),
                       lambda x: pct(x, 1), lambda x: f"{x:,.0f}"],
                      ["Measure", "Dimension", "Group", "Incidence %", "95% low",
-                      "95% high", "n"]),
-              "",
-              render(cov, ["dimension", "group", "hh_with_cover_pct",
-                           "hh_with_cover_se", "individuals_covered_pct",
-                           "hh_paid_premium_pct", "n"],
-                     [None, None, lambda x: pct(x, 2), lambda x: pct(x, 2),
-                      lambda x: pct(x, 2), lambda x: pct(x, 2), lambda x: f"{x:,.0f}"],
-                     ["Dimension", "Group", "Households covered %", "SE",
-                      "Individuals covered %", "Households paying a premium %", "n"])]
+                      "95% high", "n"])]
 
     imp = pd.read_csv(T / "table2b_impoverishment.csv")
     pov = pd.read_csv(T / "table8c_poverty_lines.csv")
-    parts += [caption("A3", "Impoverishment from out-of-pocket payments, and its "
+    parts += [caption("A2", "Impoverishment from out-of-pocket payments, and its "
                             "sensitivity to the poverty line.",
                       "The headcount is a level and depends on the line and on the "
                       "consumption aggregate; the impoverishing effect is a "
@@ -372,7 +324,7 @@ def main():
                       "Headcount after %", "Impoverishment pp", "Millions"])]
 
     d = pd.read_csv(T / "table3b_decomposition.csv")
-    parts += [caption("A4", "Decomposition of the concentration indices.",
+    parts += [caption("A3", "Decomposition of the concentration indices.",
                       "Descriptive, not causal. Contributions are in index units; "
                       "shares are not shown for the budget-share index because it "
                       "is not distinguishable from zero and shares of a near-zero "
@@ -386,14 +338,10 @@ def main():
     g = pd.read_csv(T / "table5c_gross_premium.csv")
     rm = pd.read_csv(T / "table5b_risk_margins.csv")
     rc = pd.read_csv(T / "table5e_risk_classes.csv")
-    sc = pd.read_csv(T / "table5f_state_comparison.csv")
-    parts += [caption("A5", "Gross premium by pool size, risk margins, risk "
-                            "relativities and the comparison with a published "
-                            "state-scheme rate.",
+    parts += [caption("A4", "Gross premium by pool size, risk margins and risk "
+                            "relativities.",
                       "Relativities are relative to the community average; the "
-                      "premium itself is community-rated. The Lagos comparison is "
-                      "a plausibility check: the Ilera Eko package is not the NHIA "
-                      "basic package, and its rates are nominal July-2024 naira."),
+                      "premium itself is community-rated."),
               render(g, ["pool_size", "risk_margin_basis", "risk_margin",
                          "gross_premium_per_person"],
                      [lambda x: f"{x:,.0f}", None, money, money],
@@ -406,12 +354,7 @@ def main():
               "",
               render(rc, ["dimension", "class", "n", "mean_insurer_cost", "relativity"],
                      [None, None, lambda x: f"{x:,.0f}", money, auto(2)],
-                     ["Dimension", "Class", "n", "Mean insurer cost", "Relativity"]),
-              "",
-              render(sc, ["scheme", "annual_premium_naira",
-                          "modelled_premium_per_person", "ratio_modelled_to_published"],
-                     [None, money, money, auto(2)],
-                     ["Scheme", "Published premium", "Modeled premium", "Ratio"])]
+                     ["Dimension", "Class", "n", "Mean insurer cost", "Relativity"])]
 
     d = pd.read_csv(T / "table4_cost_models.csv")
     d["cell"] = d.apply(lambda r: f"{r['exp_coef']:.3f}"
@@ -422,12 +365,12 @@ def main():
              "Frequency: inpatient (Poisson, annual rate)": "Inpatient rate",
              "Severity: cost per outpatient episode (gamma)": "Outpatient cost",
              "Severity: cost per inpatient episode (gamma)": "Inpatient cost",
-             "Aggregate annual cost (Tweedie, p=1.65)": "Annual cost (Tweedie)"}
+             **{m: "Annual cost (Tweedie)" for m in d["model"].unique() if str(m).startswith("Aggregate annual cost")}}
     order = [t for t in d["term"].unique()]
     w = (d.assign(model=d["model"].map(short))
           .pivot_table(index="term", columns="model", values="cell", aggfunc="first")
           .reindex(order).reindex(columns=list(short.values())).fillna("").reset_index())
-    parts += [caption("A6", "Frequency, severity and Tweedie model estimates, as "
+    parts += [caption("A5", "Frequency, severity and Tweedie model estimates, as "
                             "multiplicative effects on the fitted mean.",
                       "exp(coef); * marks p < 0.05. Survey-weighted, standard "
                       "errors clustered on the enumeration area. Coefficients, "
@@ -440,7 +383,7 @@ def main():
     fit = pd.read_csv(T / "table4b_fit_statistics.csv")
     prof = pd.read_csv(T / "tableA2_tweedie_profile.csv")
     lift = pd.read_csv(T / "tableA3_lift.csv")
-    parts += [caption("A7", "Cost-model fit statistics, the Tweedie profile "
+    parts += [caption("A6", "Cost-model fit statistics, the Tweedie profile "
                             "likelihood near its maximum, and calibration by "
                             "decile of prediction.",
                       "The full profile is in output/tables/tableA2_tweedie_profile.csv."),
@@ -463,7 +406,7 @@ def main():
           & (d["pool_size"] == 20_000)
           & (d["subsidy_fraction_of_premium"].isin([0.0, 0.50, 1.00, 1.50, 2.00]))]
     st = pd.read_csv(T / "table6d_inflation_stress.csv")
-    parts += [caption("A8", "Probability of ruin over three years for a "
+    parts += [caption("A7", "Probability of ruin over three years for a "
                             "20,000-life pool with no opening capital, and the "
                             "medical-inflation stress.",
                       "The full grid across pool sizes of 5,000 to 100,000, "
@@ -482,7 +425,7 @@ def main():
                      ["Claims shock", "Take-up", "Minimum subsidy"])]
 
     d = pd.read_csv(T / "table7a_counterfactual.csv")
-    parts += [caption("A9", "Catastrophic spending under each coverage scenario, on "
+    parts += [caption("A8", "Catastrophic spending under each coverage scenario, on "
                             "both payment bases."),
               render(d, ["scenario", "payment_basis", "share_of_population_covered",
                          "che10_pct", "che25_pct", "che_ctp40_pct",
@@ -496,7 +439,7 @@ def main():
     w = (d.pivot_table(index=["scenario", "measure"], columns="group",
                        values="estimate_pct", aggfunc="first").reset_index())
     qcols = [c for c in w.columns if c not in ("scenario", "measure")]
-    parts += [caption("A10", "Counterfactual catastrophic spending by consumption "
+    parts += [caption("A9", "Counterfactual catastrophic spending by consumption "
                              "quintile, out-of-pocket plus contribution basis "
                              "(percent).",
                       "Design-based 95% intervals for every cell are in "
@@ -506,7 +449,7 @@ def main():
                      ["Scenario", "Measure"] + [str(c) for c in qcols])]
 
     rob = pd.read_csv(T / "table8_robustness.csv")
-    parts += [caption("A11", "Robustness grid.",
+    parts += [caption("A10", "Robustness grid.",
                       "Each row changes one decision. Subsidies are for a "
                       "20,000-life pool over three years, ruin below 5%, "
                       "4,000 simulations."),
@@ -517,18 +460,8 @@ def main():
                      ["Check", "CHE10 %", "CTP40 %", "Pure premium", "Gross premium",
                       "Contribution", "Subsidy, random", "Subsidy, strong selection"])]
 
-    w4 = pd.read_csv(T / "table8b_wave4.csv")
     a4 = pd.read_csv(T / "tableA4_simulation_check.csv")
-    parts += [caption("A12", "Wave 4 (2018/19) on the published aggregate, and the "
-                             "multinomial simulation shortcut checked against direct "
-                             "resampling.",
-                      "The wave-4 out-of-pocket measure comes from the published "
-                      "aggregate, which annualizes a one-month health recall by "
-                      "about twelve; it is not the wave-5 health-module measure."),
-              render(w4, ["wave", "measure", "estimate_pct", "se"],
-                     [None, None, auto(1), auto(1)],
-                     ["Wave", "Measure", "Estimate %", "SE"]),
-              "",
+    parts += [caption("A11", "The multinomial simulation shortcut checked against direct resampling."),
               render(a4, list(a4.columns), [None] + [auto(4) for _ in a4.columns[1:]],
                      [c.replace("_", " ").capitalize() for c in a4.columns])]
 

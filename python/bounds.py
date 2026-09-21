@@ -109,7 +109,7 @@ def independent_windows(ind, p_hat, rng):
 
 
 def recall_bounds(hh, ind):
-    scored = costmodels.prepare(pd.read_csv(config.DERIVED / "ind_w5.csv"))
+    scored = costmodels.prepare(pd.read_csv(config.DERIVED / "ind_main.csv"))
     freq = costmodels.fit_frequency(scored)
     p_hat = pd.Series(np.asarray(freq["outpatient_poisson"].fittedvalues),
                       index=pd.MultiIndex.from_frame(scored[["hhid", "indiv"]]))
@@ -225,8 +225,8 @@ def bootstrap(hh, ind, B=None, n_sim=None):
 
 # ---------------------------------------------------------------------------
 def main():
-    hh = pd.read_csv(config.DERIVED / "hh_w5_che.csv")
-    ind = pd.read_csv(config.DERIVED / "ind_w5_priced.csv")
+    hh = pd.read_csv(config.DERIVED / "hh_main_che.csv")
+    ind = pd.read_csv(config.DERIVED / "ind_main_priced.csv")
 
     print("Recall-treatment bounds ...")
     rb = recall_bounds(hh, ind)

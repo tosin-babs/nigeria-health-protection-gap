@@ -281,11 +281,11 @@ def risk_class_table(ind_scored):
 
 # ---------------------------------------------------------------------------
 def main():
-    ind = pd.read_csv(config.DERIVED / "ind_w5.csv")
-    scored = pd.read_csv(config.DERIVED / "ind_w5_scored.csv")
+    ind = pd.read_csv(config.DERIVED / "ind_main.csv")
+    scored = pd.read_csv(config.DERIVED / "ind_main_scored.csv")
     ind = ind.merge(scored[["hhid", "indiv", "pred_cost"]], on=["hhid", "indiv"],
                     how="inner")
-    hh = pd.read_csv(config.DERIVED / "hh_w5_che.csv")
+    hh = pd.read_csv(config.DERIVED / "hh_main_che.csv")
 
     d = benefit_mapping(ind)
     build, margins, gross, summary = premium_buildup(d)
@@ -317,7 +317,7 @@ def main():
     aff.to_csv(config.TABLES / "table5d_affordability.csv", index=False)
     rc.to_csv(config.TABLES / "table5e_risk_classes.csv", index=False)
     comp.to_csv(config.TABLES / "table5f_state_comparison.csv", index=False)
-    d.to_csv(config.DERIVED / "ind_w5_priced.csv", index=False)
+    d.to_csv(config.DERIVED / "ind_main_priced.csv", index=False)
 
     print("\nRisk relativities (community rate = 1.00):")
     print(rc.to_string(index=False, float_format=lambda x: f"{x:,.2f}"))

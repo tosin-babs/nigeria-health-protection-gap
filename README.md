@@ -1,8 +1,8 @@
 # Measuring the Health-Protection Gap and Pricing Informal-Sector Health Insurance under Nigeria's NHIA Act 2022
 
 Reproduction code for the paper of that title. The analysis measures
-catastrophic health expenditure in Nigeria on the 2023/24 General Household
-Survey-Panel, prices the NHIA basic benefit package for informal-sector
+catastrophic health expenditure in Nigeria on the 2018/19 General Household
+Survey-Panel (wave 4), prices the NHIA basic benefit package for informal-sector
 workers, tests whether a state-level pool could stay solvent under alternative
 take-up and financing designs, and asks how much of the catastrophic-spending
 burden coverage would remove.
@@ -41,14 +41,14 @@ size and take-up pattern the page offers (worst case: a 5,000-life pool).
 
 | Stage | Script | Output |
 |---|---|---|
-| Calibration factors from wave 4, then the household and individual analysis files | `python/build_data.py` | `data/derived/*.csv`, Tables A1 |
-| CHE incidence, intensity, impoverishment, concentration, observed coverage | `python/che.py` | Tables 1, 2, 3, A2, A3, A4 |
-| Frequency, severity and Tweedie cost models | `python/costmodels.py` | Tables A6, A7 |
-| Benefit mapping and premium build-up | `python/premium.py` | Tables 4, 5, A5 |
-| Collective-risk model, minimum subsidy, take-up grid, contribution schedules, reinsurance | `python/ruin.py` | Tables 6, 7, A8, A12 |
-| Coverage counterfactual with paired tests | `python/counterfactual.py` | Tables 8, A9, A10 |
-| Robustness grid | `python/robustness.py` | Tables A11, A12 |
-| Recall-treatment bounds and design-based bootstrap | `python/bounds.py` | Table 9 |
+| Household and individual analysis files from wave 4 | `python/build_data.py` | `data/derived/*.csv` |
+| CHE incidence, intensity, impoverishment, concentration | `python/che.py` | Tables 1 to 3, A1 to A3 |
+| Frequency, severity and Tweedie cost models | `python/costmodels.py` | Tables A5, A6 |
+| Benefit mapping and premium build-up | `python/premium.py` | Table 4, A4 |
+| Collective-risk model, minimum subsidy, take-up grid, contribution schedules, reinsurance | `python/ruin.py` | Tables 5, 6, A7, A11 |
+| Coverage counterfactual with paired tests | `python/counterfactual.py` | Tables 7, A8, A9 |
+| Robustness grid | `python/robustness.py` | Table A10 |
+| Recall-treatment bounds and design-based bootstrap | `python/bounds.py` | Table 8 |
 | Figures | `python/exhibits.py` | `output/figures/*.png`, `*.pdf` |
 | Calculator payload | `python/export_tool_data.py` | `tool/model_data.json` |
 | Check the prose against the tables | `python/check_manuscript.py` | pass/fail |
@@ -82,77 +82,68 @@ Tested with Python 3.14, numpy 2.5, pandas 3.0, scipy 1.18, statsmodels 0.15.
 
 ## Data
 
-The analysis uses the Nigeria General Household Survey-Panel, waves 4 (2018/19)
-and 5 (2023/24), collected by the National Bureau of Statistics with the World
-Bank LSMS-ISA program. **The microdata are not redistributed here.** Download
-them from the World Bank Microdata Library (free registration), then unzip into:
+The analysis uses wave 4 (2018/19) of the Nigeria General Household
+Survey-Panel, collected by the National Bureau of Statistics with the World Bank
+LSMS-ISA program. **The microdata are not redistributed here.** Download them
+from the World Bank Microdata Library (free registration), then unzip into:
 
 ```
-data/raw/ghs_w5/    <- NGA_2023_GHSP-W5_v01_M_CSV.zip
 data/raw/ghs_w4/    <- NGA_2018_GHSP-W4_v03_M_CSV.zip
 ```
 
-`config.py` expects the wave-5 archive's own folder layout
-(`Post Planting Wave 5/Household/...`) and the wave-4 archive's flat layout.
+`config.PRIMARY_WAVE` selects the analysis wave. The code for wave 5 (2023/24),
+which rebuilds and calibrates a consumption aggregate because that release
+ships none, is kept in `build_data.py` for comparison; set
+`PRIMARY_WAVE = "w5"` and add `data/raw/ghs_w5/` to use it.
 
 ### Three things worth knowing before you read the results
 
-**The wave-5 release ships no consumption aggregate, so the denominator is
-rebuilt and then calibrated.** Wave 4 publishes `totcons_final.csv`; wave 5
-does not. The denominator is rebuilt from the food, non-food and education
-modules. Run on wave 4, the same code recovers 84% of the official level and
-omits imputed rent, and on wave 4 that shortfall raises CHE at the 10%
-threshold from 14.1% to 17.6% with out-of-pocket spending held fixed. The main
-results therefore scale each rebuilt component by the ratio of its official to
-its rebuilt wave-4 mean and add rent at the official rent share; on wave 4 the
-calibrated aggregate recovers 96% of the official level and gives CHE of 15.2%
-(Table A1). The uncalibrated figures are reported alongside in Table 2 and in
-the robustness grid.
+**The denominator is the published consumption aggregate.** Wave 4 ships
+`totcons_final.csv`, the World Bank's aggregate including imputed rent. Its
+health components are replaced by health-module spending so that health
+enters numerator and denominator from one instrument; using the aggregate's
+own health items instead moves CHE at the 10% threshold by 0.1 points.
 
-**Out-of-pocket spending is measured from the health module, not the
-consumption module.** Wave 5's non-food module asks a single 12-month question
-about health spending and gets an answer from only 17% of households, implying
-an out-of-pocket share of 0.3% of consumption against 4.9% in the published
-wave-4 aggregate. The health module asks every member about a specific episode
-of care and its itemized cost. The consumption-module figure is reported in the
-robustness grid as a data-quality note.
+**Wave 4 has no insurance module.** Coverage is not measured, so it is
+assigned in the counterfactual rather than estimated.
 
 **The 4-week outpatient window is scaled to a year.** That assumes the other
 twelve windows repeat the observed one, which maximizes the dispersion of
 annual cost across households; the opposite assumption (independent 4-week
 windows drawn from the fitted frequency model) is the lower bound. Both are
-carried through CHE, the premium and the subsidy in Table 9. The published
-wave-4 aggregate scales its own one-month health item by about twelve.
+carried through CHE, the premium and the subsidy in Table 8. The published
+aggregate scales its own one-month health item by about twelve.
 
 ## Variable mapping
 
-The health-module cost fields, confirmed against the Post-Planting Household
-Questionnaire (World Bank Microdata catalogue 6410, document 180528):
+Wave 4 health module (post-harvest visit, `sect4a_harvestw4.csv`):
 
 | Variable | Question | Recall |
 |---|---|---|
-| `s3q12` | Consultation fee, explicitly excluding drugs | 4 weeks |
-| `s3q13` | Transport to and from the facility (excluded by default) | 4 weeks |
-| `s3q17` | Prescription drugs and medicines | 4 weeks |
-| `s3q17a` | Non-prescription drugs and medicines | 4 weeks |
-| `s3q20` | Hospital stay, including consultation, procedures and drugs | 12 months |
+| `s4aq1` | Ill or injured | 4 weeks |
+| `s4aq6a` | Who was consulted (0 nobody) | 4 weeks |
+| `s4aq9` | Consultation fee | 4 weeks |
+| `s4aq10` | Transport (excluded by default) | 4 weeks |
+| `s4aq14` | Medicines bought, asked of everyone | 4 weeks |
+| `s4aq15`, `s4aq17` | Hospitalized, and its cost | 12 months |
 
-Informal-sector status uses employer type (`s4aq52`) and firm size (`s4aq55`),
-the latter because section 14 of the NHIA Act 2022 obliges employers with five
-or more staff to enrol their workers. Three alternative rules are tested in
-Table A11.
+Answers are released as bare numeric codes. Informal-sector status uses the
+wage-job employer (`s3q15`) and workplace size band (`s3q15c`) from the
+planting labour module: government employers are formal, and any other
+employer from the second size band up, taken as five or more workers, the
+NHIA Act's threshold. Three alternative rules are tested in Table A10.
 
 ## Provenance
 
 `SOURCES.md` lists every number in this project that did not come out of the
 survey: the CPI deflator and its derivation, the poverty line, each
-benefit-package assumption, the published state-scheme premiums, and every
+benefit-package assumption, and every
 contextual statistic quoted in the paper, each with its issuing agency and a
 URL. Every DOI in the manuscript was checked against the Crossref REST API.
 
 ## Citation
 
-Babalola, O. D., Iroko, O. E., & Oyinlade, O. (2026). *Measuring the Health-Protection Gap and Actuarially
+Babalola, O. D., Iroko, O. E., & Oyinlade, O. (n.d.). *Measuring the Health-Protection Gap and Actuarially
 Pricing Informal-Sector Health Insurance under Nigeria's NHIA Act 2022*.
 Working paper.
 
@@ -163,6 +154,6 @@ Microdata Library's terms of use and are not covered by that license.
 
 ## Authors
 
-- Oluwatosin Dorcas Babalola, Department of Actuarial Science, University of Lagos, Lagos, Nigeria, obabalola4@student.gsu.edu (corresponding)
+- Oluwatosin Dorcas Babalola, Department of Actuarial Science, University of Lagos, Lagos, Nigeria (corresponding)
 - Oluwakemi Elizabeth Iroko, Department of Chemistry, University of Jos, Jos, Nigeria
 - Oluwakemi Oyinlade, Department of Actuarial Science, University of Lagos, Lagos, Nigeria

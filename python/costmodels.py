@@ -252,7 +252,7 @@ def quantile_residuals(d, res, p):
 
 # ---------------------------------------------------------------------------
 def main():
-    ind = pd.read_csv(config.DERIVED / "ind_w5.csv")
+    ind = pd.read_csv(config.DERIVED / "ind_main.csv")
     d = prepare(ind)
     print(f"Model frame: {len(d):,} individuals, "
           f"{d['sought_care'].mean():.1%} with outpatient contact in 4 weeks, "
@@ -330,7 +330,7 @@ def main():
        "chronic", "informal", "ind_weight", "cluster", "strata", "cost_annual",
        "op_cost_annual", "ip_cost_annual", "op_drug_annual", "sought_care",
        "inpatient", "pred_cost"]].to_csv(
-        config.DERIVED / "ind_w5_scored.csv", index=False)
+        config.DERIVED / "ind_main_scored.csv", index=False)
 
     return {"data": d, "freq": freq, "sev": sev, "tweedie": tw, "p": p_hat,
             "profile": prof, "lift": lift}

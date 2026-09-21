@@ -162,6 +162,8 @@ def wave4_comparison():
     not with the wave-5 health-module headline. Reporting the pair keeps the
     trend honest about the change of instrument.
     """
+    if config.PRIMARY_WAVE == "w4":
+        return pd.DataFrame()
     h4 = pd.read_csv(config.DERIVED / "hh_w4.csv")
     h4 = add_che_flags(h4)
     d = Design(h4, "popwt", config.STRATA, "cluster")
@@ -205,16 +207,19 @@ def poverty_line_sensitivity(hh):
 
 # ---------------------------------------------------------------------------
 def main():
-    hh0 = pd.read_csv(config.DERIVED / "hh_w5_che.csv")
-    ind0 = pd.read_csv(config.DERIVED / "ind_w5_priced.csv")
+    hh0 = pd.read_csv(config.DERIVED / "hh_main_che.csv")
+    ind0 = pd.read_csv(config.DERIVED / "ind_main_priced.csv")
 
+    w4 = config.PRIMARY_WAVE == "w4"
     rows = [headline_numbers(hh0, ind0, "Main specification",
-                             "Calibrated aggregate; health-module OOP; eq. scale "
+                             ("Published aggregate" if w4 else "Calibrated aggregate")
+                             + "; health-module OOP; eq. scale "
                              "0.56; 13x annualiser; transport excluded; p profiled")]
 
-    h, i = variant_uncalibrated(hh0, ind0)
-    rows.append(headline_numbers(h, i, "Uncalibrated consumption aggregate",
-                                 "Rebuilt modules only, no rent, no wave-4 scaling"))
+    if not w4:
+        h, i = variant_uncalibrated(hh0, ind0)
+        rows.append(headline_numbers(h, i, "Uncalibrated consumption aggregate",
+                                     "Rebuilt modules only, no rent, no wave-4 scaling"))
 
     for power in (0.5, 0.75, 1.0):
         h, i = variant_equivalence_scale(hh0, ind0, power)
@@ -232,7 +237,10 @@ def main():
 
     h, i = variant_consumption_module_oop(hh0, ind0)
     rows.append(headline_numbers(
-        h, i, "OOP from the wave-5 consumption module",
+        h, i, "OOP from the published aggregate's health items" if w4 else
+        "OOP from the wave-5 consumption module",
+        "The aggregate's own health components, a one-month recall annualized by "
+        "about twelve" if w4 else
         "Data-quality check, not a credible alternative: the wave-5 non-food "
         "health items are answered by only 17% of households and imply an OOP "
         "share of 0.3% of consumption, against 5.4% in the published wave-4 "
@@ -252,7 +260,7 @@ def main():
     # The variance power enters through the predicted cost that drives the
     # adverse-selection tilt, so the model has to be refitted at each p rather
     # than simply relabelled.
-    scored = costmodels.prepare(pd.read_csv(config.DERIVED / "ind_w5.csv"))
+    scored = costmodels.prepare(pd.read_csv(config.DERIVED / "ind_main.csv"))
     for p in (1.4, 1.5, 1.7):
         fit = costmodels.fit_tweedie(scored, p)
         i = ind0.drop(columns=["pred_cost"]).merge(

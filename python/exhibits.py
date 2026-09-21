@@ -166,7 +166,7 @@ def figure6_concentration_curves():
     points are written to a CSV so the figure stays reproducible from a table
     like every other exhibit here.
     """
-    hh = pd.read_csv(config.DERIVED / "hh_w5_che.csv")
+    hh = pd.read_csv(config.DERIVED / "hh_main_che.csv")
     hh = hh.sort_values("cons_pc")
     w = hh["popwt"].to_numpy(float)
     # Weighted fractional rank in per-capita consumption: the midpoint of each
