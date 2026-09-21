@@ -36,7 +36,7 @@ HEAD = """<!doctype html>
 <meta name="description" content="An interactive calculator for the price, \
 affordability and solvency of informal-sector health cover in Nigeria under the \
 NHIA Act 2022, built on the 2023/24 General Household Survey-Panel.">
-<meta name="author" content="Oluwatosin Dorcas Babalola">
+<meta name="author" content="Oluwatosin Dorcas Babalola, Oluwakemi Elizabeth Iroko, Oluwakemi Oyinlade">
 <meta property="og:title" content="The Naira Gap">
 <meta property="og:description" content="What health cover costs in Nigeria, and \
 what people can pay.">

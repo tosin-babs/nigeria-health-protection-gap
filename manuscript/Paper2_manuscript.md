@@ -1,8 +1,10 @@
 # Measuring the Health-Protection Gap and Actuarially Pricing Informal-Sector Health Insurance under Nigeria's NHIA Act 2022
 
-**Oluwatosin Dorcas Babalola**¹ *(corresponding author)*
+**Oluwatosin Dorcas Babalola**¹ *(corresponding author)*, **Oluwakemi Elizabeth Iroko**², **Oluwakemi Oyinlade**¹
 
-¹ Department of Actuarial Science and Quantitative Risk Analysis and Management, Georgia State University, Atlanta, GA, USA. obabalola4@student.gsu.edu
+¹ Department of Actuarial Science, University of Lagos, Lagos, Nigeria. obabalola4@student.gsu.edu
+
+² Department of Chemistry, University of Jos, Jos, Nigeria.
 
 **Word count.** 5,457 excluding abstract, tables and references.
 
@@ -184,7 +186,7 @@ Catastrophic health expenditure affects between 7% and 14% of Nigerians at the 1
 
 **Ethics.** The analysis uses de-identified secondary survey data and did not require ethical approval.
 
-**CRediT statement.** Oluwatosin Dorcas Babalola: conceptualization, methodology, software, formal analysis, data curation, writing (original draft, review and editing).
+**CRediT statement.** **Oluwatosin Dorcas Babalola**: conceptualization, methodology, software, formal analysis, data curation, writing (original draft, review and editing). **Oluwakemi Elizabeth Iroko**: roles to be confirmed by the authors. **Oluwakemi Oyinlade**: roles to be confirmed by the authors.
 
 ---
 
