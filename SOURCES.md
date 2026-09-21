@@ -102,7 +102,6 @@ scheme site [lashma.com](https://www.lashma.com/).
 | Health-insurance enrolment, Nigeria | 22.03 million (July 2026); 21.73 million at end-2025 | NHIA, reported in [Nairametrics, 7 Mar 2026](https://nairametrics.com/2026/03/07/health-insurance-coverage-in-nigeria-rises-to-21-7m-in-2025-report/) |
 | Enrolment as a share of population | under 10% of about 220 million | Derived from the above |
 | Coverage measured in the survey year | 1.07% of individuals; 1.98% of households | **Computed from the microdata** (Section 5A, q16-17c) — Table 1b, not an external figure |
-| Informal employment rate | 93.0% (Q2 2024); 92.7% (Q1 2024) | NBS, *Nigeria Labour Force Survey Q2 2024*, [PDF](https://nigerianstat.gov.ng/pdfuploads/NLFS_Q2_2024.pdf) |
 | NHIA Act 2022 provisions | — | [Gazetted copy, nhia.gov.ng](https://www.nhia.gov.ng/wp-content/uploads/2024/03/NHIA-Act-2022-Gazetted-Copy.pdf) |
 
 ---
@@ -114,7 +113,6 @@ Checked against the Crossref REST API, not from memory.
 | Reference | DOI | Status |
 |---|---|---|
 | Aregbeshola & Khan (2018), *IJHPM* 7(9), 798–806 | `10.15171/ijhpm.2018.19` | Confirmed |
-| Aniebo, Lawani & Eze (2025), *Global Social Welfare* 13(2), 205–218 | `10.1007/s40609-025-00423-4` | Confirmed — authors were previously unknown |
 | Xu et al. (2003), *The Lancet* | `10.1016/S0140-6736(03)13861-5` | Confirmed |
 | Wagstaff & van Doorslaer (2003), *Health Economics* | `10.1002/hec.776` | Confirmed |
 | Wagstaff et al. (2018), *Lancet Global Health* | `10.1016/S2214-109X(17)30429-1` | Confirmed |
