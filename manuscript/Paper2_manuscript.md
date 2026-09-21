@@ -217,6 +217,6 @@ Catastrophic health expenditure affects between 7% and 14% of Nigerians at the 1
 24. Wagstaff, A., & van Doorslaer, E. (2003). Catastrophe and impoverishment in paying for health care: with applications to Vietnam 1993–1998. *Health Economics*, 12(11), 921–933. doi:10.1002/hec.776
 25. Wagstaff, A., Flores, G., Hsu, J., Smitz, M.-F., Chepynoga, K., Buisman, L. R., van Wilgenburg, K., & Eozenou, P. (2018). Progress on catastrophic health spending in 133 countries: a retrospective observational study. *The Lancet Global Health*, 6(2), e169–e179. doi:10.1016/S2214-109X(17)30429-1
 26. WHO and World Bank (2023). *Tracking Universal Health Coverage: 2023 Global Monitoring Report*. Geneva: World Health Organization.
-27. WHO Global Health Expenditure Database. Out-of-pocket expenditure as a share of current health expenditure, Nigeria, 2023 (World Bank indicator SH.XPD.OOPC.CH.ZS). Accessed September 2026.
+27. WHO Global Health Expenditure Database. Out-of-pocket expenditure as a share of current health expenditure, Nigeria, 2023 (World Bank indicator SH.XPD.OOPC.CH.ZS).
 28. Wüthrich, M. V. (2015). From ruin theory to solvency in non-life insurance. *Scandinavian Actuarial Journal*, 2015(6), 516–526. doi:10.1080/03461238.2013.858401
 29. Xu, K., Evans, D. B., Kawabata, K., Zeramdini, R., Klavus, J., & Murray, C. J. L. (2003). Household catastrophic health expenditure: a multicountry analysis. *The Lancet*, 362(9378), 111–117. doi:10.1016/S0140-6736(03)13861-5
