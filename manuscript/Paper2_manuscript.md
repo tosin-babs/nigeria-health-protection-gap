@@ -6,6 +6,8 @@
 
 ² Department of Chemistry, University of Jos, Jos, Nigeria.
 
+**Email.** Oluwatosin Dorcas Babalola: oluwatosinbabalola99@gmail.com; Oluwakemi Elizabeth Iroko: Oluwakemi2345@gmail.com; Oluwakemi Oyinlade: kemisola.oyinlade@gmail.com.
+
 **Word count.** 5,071 excluding abstract, tables and references.
 
 ---

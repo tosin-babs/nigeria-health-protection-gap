@@ -154,6 +154,6 @@ Microdata Library's terms of use and are not covered by that license.
 
 ## Authors
 
-- Oluwatosin Dorcas Babalola, Department of Actuarial Science, University of Lagos, Lagos, Nigeria (corresponding)
-- Oluwakemi Elizabeth Iroko, Department of Chemistry, University of Jos, Jos, Nigeria
-- Oluwakemi Oyinlade, Department of Actuarial Science, University of Lagos, Lagos, Nigeria
+- Oluwatosin Dorcas Babalola, Department of Actuarial Science, University of Lagos, Lagos, Nigeria, oluwatosinbabalola99@gmail.com (corresponding)
+- Oluwakemi Elizabeth Iroko, Department of Chemistry, University of Jos, Jos, Nigeria, Oluwakemi2345@gmail.com
+- Oluwakemi Oyinlade, Department of Actuarial Science, University of Lagos, Lagos, Nigeria, kemisola.oyinlade@gmail.com

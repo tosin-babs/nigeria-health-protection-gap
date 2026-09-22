@@ -67,6 +67,8 @@ def main():
 
     common = ["--resource-path", f"{MS}:{config.ROOT}"]
     subprocess.run(["pandoc", str(COMBINED), "-o", str(DOCX), *common], check=True)
+    import docx_style
+    docx_style.style(DOCX)
     print(f"wrote {DOCX.relative_to(config.ROOT)} "
           f"({DOCX.stat().st_size / 1024:,.0f} KB)")
 
