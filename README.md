@@ -143,7 +143,7 @@ URL. Every DOI in the manuscript was checked against the Crossref REST API.
 
 ## Citation
 
-Babalola, O. D., Iroko, O. E., & Oyinlade, O. (n.d.). *Measuring the Health-Protection Gap and Actuarially
+Babalola, O. D., Iroko, O. E., & Oyinlade, O. (2023). *Measuring the Health-Protection Gap and Actuarially
 Pricing Informal-Sector Health Insurance under Nigeria's NHIA Act 2022*.
 Working paper.
 
@@ -154,6 +154,6 @@ Microdata Library's terms of use and are not covered by that license.
 
 ## Authors
 
-- Oluwatosin Dorcas Babalola, Department of Actuarial Science, University of Lagos, Lagos, Nigeria, oluwatosinbabalola99@gmail.com (corresponding)
-- Oluwakemi Elizabeth Iroko, Department of Chemistry, University of Jos, Jos, Nigeria, Oluwakemi2345@gmail.com
-- Oluwakemi Oyinlade, Department of Actuarial Science, University of Lagos, Lagos, Nigeria, kemisola.oyinlade@gmail.com
+- Oluwatosin Dorcas Babalola, Independent researcher, oluwatosinbabalola99@gmail.com (corresponding)
+- Oluwakemi Elizabeth Iroko, Independent researcher, Oluwakemi2345@gmail.com
+- Oluwakemi Oyinlade, Independent researcher, kemisola.oyinlade@gmail.com

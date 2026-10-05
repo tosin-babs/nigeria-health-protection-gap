@@ -1,12 +1,12 @@
 # Measuring the Health-Protection Gap and Actuarially Pricing Informal-Sector Health Insurance under Nigeria's NHIA Act 2022
 
-**Oluwatosin Dorcas Babalola**¹ *(corresponding author)*, **Oluwakemi Elizabeth Iroko**², **Oluwakemi Oyinlade**¹
+**Oluwatosin Dorcas Babalola**¹ *(corresponding author)*, **Oluwakemi Elizabeth Iroko**¹, **Oluwakemi Oyinlade**¹
 
-¹ Department of Actuarial Science, University of Lagos, Lagos, Nigeria.
-
-² Department of Chemistry, University of Jos, Jos, Nigeria.
+¹ Independent researcher.
 
 **Email.** Oluwatosin Dorcas Babalola: oluwatosinbabalola99@gmail.com; Oluwakemi Elizabeth Iroko: Oluwakemi2345@gmail.com; Oluwakemi Oyinlade: kemisola.oyinlade@gmail.com.
+
+**Date.** December 2023.
 
 **Word count.** 5,071 excluding abstract, tables and references.
 
